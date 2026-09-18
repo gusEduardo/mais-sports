@@ -2,8 +2,8 @@
   const THEME_KEY = 'sportsTheme';
   const DARK = 'dark';
   const LIGHT = 'light';
-  const DARK_LOGO = 'img/logo.svg';
-  const LIGHT_LOGO = 'img/logoClaro.svg';
+  const DARK_LOGO = '../media/logo.svg';
+  const LIGHT_LOGO = '../media/logoClaro.svg';
   const eventLinkSelector = '[data-event-link]';
   const interactiveSelector = 'a, button, input, select, textarea, label, summary, [data-no-nav]';
 
@@ -287,8 +287,8 @@
     button.dataset.themeToggle = 'true';
     button.className = 'site-theme-toggle border border-white/15 bg-surface text-fg hover:border-lime/60 hover:text-lime transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-lime/60';
     button.innerHTML = `
-      <img src="img/sol.svg" alt="" class="theme-icon-sun" aria-hidden="true" />
-      <img src="img/lua.svg" alt="" class="theme-icon-moon" aria-hidden="true" />
+      <img src="../media/sol.svg" alt="" class="theme-icon-sun" aria-hidden="true" />
+      <img src="../media/lua.svg" alt="" class="theme-icon-moon" aria-hidden="true" />
     `;
 
     button.addEventListener('click', () => {

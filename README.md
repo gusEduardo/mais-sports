@@ -2,9 +2,9 @@
   <img src=".github/assets/logo-banner.png" alt="+Sports" width="100%">
 </p>
 
-<p align="center">
+<!-- <p align="center">
   Conectando praticantes de esportes aos espaços públicos da cidade.
-</p>
+</p> -->
 
 <p align="center">
   <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white" alt="HTML5">
@@ -22,7 +22,7 @@ O **+Sports** é uma aplicação Web que conecta a comunidade aos espaços espor
 
 O projeto foi desenvolvido como trabalho acadêmico do curso de **Sistemas de Informação (UniFOA)**, seguindo a metodologia de Design Thinking, com etapas de pesquisa com usuários reais e testes de usabilidade.
 
-🔗 **Demo online:** [Versão 2.0 - 2026.1](https://gabriellorenasi.github.io/maissports2.0/)
+🔗 **Demo online:** [Versão 2.0 - 2026.1](https://gabriel-lorenasi.github.io/maissports2.0/index.html)
 
 ## 🖥️ Preview
 
@@ -46,9 +46,9 @@ Por se tratar, na fase atual, de uma aplicação inteiramente front-end:
 |---|---|
 | **HTML5** | Estruturação semântica das páginas |
 | **Tailwind CSS v4** (via Play CDN) | Estilização e layout responsivo |
-| **CSS3** | Animações e microinterações pontuais |
-| **JavaScript (ES6+)** | Mapa customizado, cronômetros e controle de sessão |
-| **Figma** | Prototipação de interfaces |
+| **CSS3** | Animações e microinterações |
+| **JavaScript (ES6+)** | Mapa customizado, cronômetros, controle de sessão, etc... |
+| **Figma** | Prototipagem |
 | **Git & GitHub** | Versionamento e trabalho colaborativo |
 | **GitHub Pages** | Hospedagem e publicação do site |
 

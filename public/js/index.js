@@ -136,20 +136,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ── 5. MINI MAPA — ASIDE (Joga Junto) ────────────────────
   const sportIcons = {
-    society: 'img/pins/pin-society.svg',
-    volei: 'img/pins/pin-volei.svg',
-    basquete: 'img/pins/pin-basquete.svg',
-    corrida: 'img/pins/pin-corrida.svg',
-    ciclismo: 'img/pins/pin-bicicleta.svg',
-    tenis: 'img/pins/pin-tenis.svg',
-    futebol: 'img/pins/pin-futebol.svg',
-    raquete: 'img/pins/pin-raquete.svg',
-    beachTennis: 'img/pins/pin-raqueteCorpo.svg',
-    natacao: 'img/pins/pin-natacao.svg',
-    trilha: 'img/pins/pin-trilha.svg',
-    montanha: 'img/pins/pin-montanha.svg',
-    kart: 'img/pins/pin-capacete.svg',
-    default: 'img/pins/pin-base.svg',
+    society: '../media/pins/pin-society.svg',
+    volei: '../media/pins/pin-volei.svg',
+    basquete: '../media/pins/pin-basquete.svg',
+    corrida: '../media/pins/pin-corrida.svg',
+    ciclismo: '../media/pins/pin-bicicleta.svg',
+    tenis: '../media/pins/pin-tenis.svg',
+    futebol: '../media/pins/pin-futebol.svg',
+    raquete: '../media/pins/pin-raquete.svg',
+    beachTennis: '../media/pins/pin-raqueteCorpo.svg',
+    natacao: '../media/pins/pin-natacao.svg',
+    trilha: '../media/pins/pin-trilha.svg',
+    montanha: '../media/pins/pin-montanha.svg',
+    kart: '../media/pins/pin-capacete.svg',
+    default: '../media/pins/pin-base.svg',
   };
 
   const statusLabels = {

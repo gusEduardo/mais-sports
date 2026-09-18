@@ -1,0 +1,8 @@
+/* ============================================================
+   +SPORTS — GLOBAL CSS  (Tailwind v4 Browser CDN)
+
+   IMPORTANTE: NÃO usar @import "tailwindcss" aqui.
+   Com o browser CDN, o @theme funciona diretamente.
+   O @import só funciona em build tools (Vite, PostCSS).
+   ============================================================ */
+

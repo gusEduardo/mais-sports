@@ -1,0 +1,562 @@
+﻿<!doctype html>
+<html lang="pt-BR" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>+Sports — Mapa de Quadras</title>
+    <link rel="shortcut icon" href="img/favicon.png" type="image/x-icon" />
+
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+
+    <style type="text/tailwindcss">
+      @theme {
+        --color-zinc950: #0c0c0e;
+        --color-surface: #161618;
+        --color-secondary: #1f2024;
+        --color-lime: #bef264;
+        --color-lime-hover: #d9f99d;
+        --color-fg: #f3f3f3;
+        --color-muted: #9ca39e;
+        --font-display: "Archivo Black", sans-serif;
+        --font-body: "Barlow", sans-serif;
+        --font-mono: "JetBrains Mono", monospace;
+      }
+
+      .glow-lime    { box-shadow: 0 0 24px #bef264; }
+      .glow-lime-sm { box-shadow: 0 0 12px rgba(190,242,100,0.6); }
+
+      @keyframes pulse-lime {
+        0%, 100% { box-shadow: 0 0 0 0    rgba(190,242,100,0.7); }
+        50%       { box-shadow: 0 0 0 10px rgba(190,242,100,0);   }
+      }
+      .live-pin { animation: pulse-lime 2s infinite; }
+
+      /* ── Pin styles (mesmo do index.html) ─────────────────────── */
+      .sports-map-marker { background: transparent; border: 0; }
+      .sports-map-pin {
+        --pin-color: #a3e635;
+        --pin-glow: rgba(163,230,53,0.52);
+        --pin-ring: rgba(163,230,53,0.32);
+        position: relative; width: 44px; height: 56px; display: block;
+        transform-origin: 50% 100%;
+        transition: transform 180ms ease, filter 180ms ease;
+        filter: drop-shadow(0 10px 10px rgba(0,0,0,0.55));
+      }
+      .sports-map-pin__drop {
+        position: absolute; left: 5px; top: 0;
+        width: 34px; height: 34px;
+        border-radius: 50% 50% 50% 0;
+        background: radial-gradient(circle at 28% 22%, rgba(255,255,255,0.5), transparent 27%), var(--pin-color);
+        border: 2px solid transparent;
+        box-shadow: inset 0 -9px 14px rgba(0,0,0,0.28);
+        transform: rotate(-45deg);
+        transition: border-color 180ms ease, box-shadow 180ms ease;
+      }
+      .sports-map-pin__icon {
+        position: absolute; left: 10px; top: 5px; z-index: 1;
+        width: 24px; height: 24px; border-radius: 999px;
+        background: #111315; border: 0;
+        display: flex; align-items: center; justify-content: center;
+      }
+      .sports-map-pin__icon img {
+        width: 16px; height: 16px; object-fit: contain;
+        filter: brightness(0) invert(1); opacity: 0.96;
+      }
+      .sports-map-pin--available  { --pin-color:#a3e635; --pin-glow:rgba(163,230,53,0.62); --pin-ring:rgba(163,230,53,0.34); }
+      .sports-map-pin--reserve    { --pin-color:#facc15; --pin-glow:rgba(250,204,21,0.58);  --pin-ring:rgba(250,204,21,0.32); }
+      .sports-map-pin--unavailable{ --pin-color:#8b8f98; --pin-glow:rgba(139,143,152,0.42); --pin-ring:rgba(139,143,152,0.26); opacity:.88; }
+      .sports-map-pin:hover { transform: translateY(-5px) scale(1.08); filter: drop-shadow(0 16px 16px rgba(0,0,0,0.62)); }
+      .sports-map-pin:hover .sports-map-pin__drop {
+        border-color: var(--pin-ring);
+        box-shadow: 0 0 0 4px var(--pin-ring), 0 0 20px var(--pin-glow), inset 0 -9px 14px rgba(0,0,0,0.28);
+      }
+      .sports-map-pin.is-selected { transform: translateY(-7px) scale(1.14); z-index: 2; }
+      .sports-map-pin.is-selected .sports-map-pin__drop { border-color: #ffffff; box-shadow: inset 0 -9px 14px rgba(0,0,0,0.28); }
+      .sports-map-pin.is-selected:hover { transform: translateY(-8px) scale(1.18); }
+      .sports-map-pin.is-selected:hover .sports-map-pin__drop {
+        box-shadow: 0 0 0 4px var(--pin-ring), 0 0 20px var(--pin-glow), inset 0 -9px 14px rgba(0,0,0,0.28);
+      }
+
+      /* ── Sidebar ──────────────────────────────────────────────── */
+      #sidebar {
+        transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+      }
+      #sidebar.sidebar-hidden {
+        transform: translateX(-100%);
+      }
+
+      /* ── Place card hover ─────────────────────────────────────── */
+      .place-card {
+        transition: border-color 0.15s, background 0.15s;
+        cursor: pointer;
+      }
+      .place-card:hover { border-color: rgba(190,242,100,0.35); }
+      .place-card.is-active {
+        border-color: rgba(190,242,100,0.6);
+        background: rgba(190,242,100,0.04);
+      }
+
+      /* ── Filter chip ──────────────────────────────────────────── */
+      .filter-chip {
+        display: inline-flex; align-items: center; gap: 5px;
+        padding: 0.3rem 0.75rem; border-radius: 999px; white-space: nowrap;
+        font-size: 0.72rem; font-family: "JetBrains Mono", monospace;
+        border: 1px solid rgba(255,255,255,0.15); color: #9ca39e;
+        transition: all 0.15s; cursor: pointer; user-select: none;
+      }
+      .filter-chip:hover { border-color: rgba(190,242,100,0.4); color: #d9f99d; }
+      .filter-chip.active {
+        border-color: #bef264; color: #bef264;
+        background: rgba(190,242,100,0.08);
+      }
+
+      /* ── Scrollbar personalizada ──────────────────────────────── */
+      #placeList::-webkit-scrollbar { width: 4px; }
+      #placeList::-webkit-scrollbar-track { background: transparent; }
+      #placeList::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+    </style>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=JetBrains+Mono:wght@500;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet" />
+  </head>
+
+  <body class="bg-zinc950 text-fg font-body antialiased" style="display:flex;flex-direction:column;height:100vh;overflow:hidden;">
+
+    <!-- ══ NAV ════════════════════════════════════════════════════════════════════ -->
+    <header class="flex-shrink-0 sticky top-0 z-50 bg-zinc950/90 backdrop-blur border-b border-white/10">
+      <nav class="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between gap-4 relative">
+        <a href="index.html" class="flex items-center hover:opacity-80 transition-opacity z-10" aria-label="Início">
+          <img src="img/logo.svg" alt="+Sports" class="h-6 w-auto" />
+        </a>
+
+        <div class="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-6 text-[15px] font-medium text-muted">
+          <a href="index.html" class="hover:text-lime transition-colors">Home</a>
+          <a href="eventos.html" class="hover:text-lime transition-colors">Eventos</a>
+          <a href="jj.html" class="hover:text-lime transition-colors">Joga Junto</a>
+          <a href="mapa.html" class="text-lime">Mapa</a>
+        </div>
+
+        <div class="flex items-center gap-2 ml-auto z-10">
+          <a href="login.html" class="hidden md:block text-sm border border-white/20 text-fg px-3 py-1.5 rounded-lg hover:bg-surface transition-colors">Entrar</a>
+          <a href="cadastro.html" class="hidden md:block text-sm bg-lime text-zinc-900 font-semibold px-3 py-1.5 rounded-lg hover:glow-lime-sm transition-all">Criar Conta</a>
+          <button id="btnMenu" class="md:hidden text-fg text-xl w-8 h-8 flex items-center justify-center rounded-lg hover:bg-surface transition-colors" aria-label="Menu">☰</button>
+        </div>
+      </nav>
+
+      <!-- Drawer mobile -->
+      <div id="menuMobile" class="hidden md:hidden bg-surface border-b border-white/10 px-4 py-4 flex flex-col gap-3 text-sm font-medium">
+        <a href="index.html" class="text-fg hover:text-lime transition-colors">Home</a>
+        <a href="eventos.html" class="text-fg hover:text-lime transition-colors">Eventos</a>
+        <a href="jj.html" class="text-fg hover:text-lime transition-colors">Joga Junto</a>
+        <a href="mapa.html" class="text-lime">Mapa</a>
+        <hr class="border-white/10" />
+        <a href="login.html" class="text-muted hover:text-fg transition-colors">Login</a>
+        <a href="cadastro.html" class="bg-lime text-zinc-900 font-semibold px-4 py-2 rounded-lg text-center">Criar Conta</a>
+      </div>
+    </header>
+
+    <!-- ══ MAIN ═══════════════════════════════════════════════════════════════════ -->
+    <main style="flex:1;display:flex;overflow:hidden;position:relative;">
+
+      <!-- ── SIDEBAR ──────────────────────────────────────────────────────────── -->
+      <aside id="sidebar" class="w-80 flex-shrink-0 bg-surface border-r border-white/10 flex flex-col overflow-hidden z-[410]" style="position:relative;">
+
+        <!-- Cabeçalho da sidebar -->
+        <div class="px-4 py-4 border-b border-white/10 flex-shrink-0">
+          <div class="flex items-center justify-between mb-1">
+            <h1 class="font-display text-base text-fg">Quadras & Centros</h1>
+            <button id="closeSidebar" class="w-7 h-7 flex items-center justify-center rounded-lg text-muted hover:text-fg hover:bg-secondary transition-colors" aria-label="Fechar painel">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-lime live-pin flex-shrink-0"></span>
+            <p class="font-mono text-[10px] text-muted uppercase tracking-widest">Volta Redonda, RJ</p>
+          </div>
+        </div>
+
+        <!-- Filtros por esporte -->
+        <div class="px-4 py-3 border-b border-white/10 flex-shrink-0">
+          <p class="font-mono text-[10px] text-muted uppercase tracking-widest mb-2">Filtrar por esporte</p>
+          <div class="flex flex-wrap gap-1.5" id="filterBar">
+            <button class="filter-chip active" data-filter="all">🗺️ Todos</button>
+            <button class="filter-chip" data-filter="futebol">⚽ Futebol</button>
+            <button class="filter-chip" data-filter="volei">🏐 Vôlei</button>
+            <button class="filter-chip" data-filter="basquete">🏀 Basquete</button>
+            <button class="filter-chip" data-filter="tenis">🎾 Tênis & Padel</button>
+            <button class="filter-chip" data-filter="corrida">🏃 Corrida</button>
+            <button class="filter-chip" data-filter="natacao">🏊 Natação</button>
+            <button class="filter-chip" data-filter="ciclismo">🚴 Ciclismo</button>
+          </div>
+        </div>
+
+        <!-- Contagem de resultados -->
+        <div class="px-4 py-2 border-b border-white/10 flex-shrink-0">
+          <p class="font-mono text-[10px] text-muted"><span id="resultCount">13</span> locais encontrados</p>
+        </div>
+
+        <!-- Lista de locais -->
+        <div id="placeList" class="flex-1 overflow-y-auto p-3 flex flex-col gap-2"></div>
+      </aside>
+
+      <!-- ── MAPA ──────────────────────────────────────────────────────────────── -->
+      <div style="flex:1;position:relative;">
+
+        <!-- Botão para abrir sidebar (quando fechada) -->
+        <button
+          id="openSidebar"
+          class="hidden absolute top-4 left-4 z-[410] bg-surface border border-white/20 text-fg w-10 h-10 flex items-center justify-center rounded-xl shadow-xl hover:border-lime/40 hover:text-lime transition-colors"
+          aria-label="Abrir painel de locais"
+        >
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+
+        <!-- Mapa Leaflet -->
+        <div id="mapa-principal" style="width:100%;height:100%;"></div>
+
+        <!-- Legenda de status -->
+        <div class="absolute bottom-5 right-4 z-[410] bg-zinc950/85 backdrop-blur-md border border-white/10 rounded-xl px-4 py-3">
+          <p class="font-mono text-[10px] text-muted uppercase tracking-widest mb-2">Status</p>
+          <div class="flex flex-col gap-1.5 font-mono text-xs font-bold">
+            <span class="flex items-center gap-2 text-lime">
+              <span class="w-2 h-2 rounded-full bg-lime live-pin"></span>Disponível
+            </span>
+            <span class="flex items-center gap-2 text-yellow-400">
+              <span class="w-2 h-2 rounded-full bg-yellow-400"></span>Reserva
+            </span>
+            <span class="flex items-center gap-2 text-zinc-400">
+              <span class="w-2 h-2 rounded-full bg-zinc-400"></span>Completo
+            </span>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+
+    <!-- global.js para hamburger mobile -->
+    <script src="./js/global.js"></script>
+
+    <script>
+      // ── Dados dos locais ────────────────────────────────────────────────────────
+      const PLACES = [
+        {
+          id: 1,
+          title: 'Campo Society Aterrado',
+          sport: 'futebol',
+          sportKey: 'society',
+          type: 'Campo Society',
+          status: 'available',
+          coords: [-22.505, -44.092],
+          address: 'Av. Paulo de Frontin, Aterrado',
+          icon: 'img/pins/pin-society.svg',
+        },
+        {
+          id: 2,
+          title: 'Arena Jardim Belvedere',
+          sport: 'futebol',
+          sportKey: 'society',
+          type: 'Campo Society',
+          status: 'available',
+          coords: [-22.537, -44.079],
+          address: 'R. Dep. Cupertino, Jardim Belvedere',
+          icon: 'img/pins/pin-society.svg',
+        },
+        {
+          id: 3,
+          title: 'Campo Municipal Vila Mury',
+          sport: 'futebol',
+          sportKey: 'futebol',
+          type: 'Campo de Futebol',
+          status: 'reserve',
+          coords: [-22.501, -44.102],
+          address: 'Vila Mury, Volta Redonda',
+          icon: 'img/pins/pin-futebol.svg',
+        },
+        {
+          id: 4,
+          title: 'Quadra de Vôlei do Aterrado',
+          sport: 'volei',
+          sportKey: 'volei',
+          type: 'Quadra de Vôlei',
+          status: 'available',
+          coords: [-22.511, -44.098],
+          address: 'Aterrado, Volta Redonda',
+          icon: 'img/pins/pin-volei.svg',
+        },
+        {
+          id: 5,
+          title: 'Quadra Vôlei de Areia — 393',
+          sport: 'volei',
+          sportKey: 'volei',
+          type: 'Quadra de Areia',
+          status: 'reserve',
+          coords: [-22.505, -44.074],
+          address: 'Água Limpa, Volta Redonda',
+          icon: 'img/pins/pin-volei.svg',
+        },
+        {
+          id: 6,
+          title: 'Quadra de Basquete',
+          sport: 'basquete',
+          sportKey: 'basquete',
+          type: 'Quadra de Basquete',
+          status: 'available',
+          coords: [-22.510, -44.075],
+          address: 'Jardim Amalia, Volta Redonda',
+          icon: 'img/pins/pin-basquete.svg',
+        },
+
+        {
+          id: 8,
+          title: 'Clube de Tênis VR',
+          sport: 'tenis',
+          sportKey: 'tenis',
+          type: 'Clube de Tênis',
+          status: 'available',
+          coords: [-22.524, -44.120],
+          address: 'Conforto, Volta Redonda',
+          icon: 'img/pins/pin-tenis.svg',
+        },
+        {
+          id: 9,
+          title: 'Centro de Padel Vila Santa Cecília',
+          sport: 'tenis',
+          sportKey: 'raquete',
+          type: 'Arena de Padel',
+          status: 'available',
+          coords: [-22.526, -44.101],
+          address: 'Vila Santa Cecília, Volta Redonda',
+          icon: 'img/pins/pin-raquete.svg',
+        },
+        {
+          id: 10,
+          title: 'Corrida — Aterrado',
+          sport: 'corrida',
+          sportKey: 'corrida',
+          type: 'Pista de Corrida',
+          status: 'available',
+          coords: [-22.507, -44.090],
+          address: 'Orla do Aterrado, Volta Redonda',
+          icon: 'img/pins/pin-corrida.svg',
+        },
+        {
+          id: 11,
+          title: 'Pista de Atletismo Municipal',
+          sport: 'corrida',
+          sportKey: 'corrida',
+          type: 'Pista de Atletismo',
+          status: 'available',
+          coords: [-22.4642, -44.091],
+          address: 'Santa Cruz, Volta Redonda',
+          icon: 'img/pins/pin-corrida.svg',
+        },
+        {
+          id: 12,
+          title: 'Piscina Municipal VR',
+          sport: 'natacao',
+          sportKey: 'natacao',
+          type: 'Piscina Olímpica',
+          status: 'available',
+          coords: [-22.510, -44.092],
+          address: 'Aterrado, Volta Redonda',
+          icon: 'img/pins/pin-natacao.svg',
+        },
+        {
+          id: 13,
+          title: 'Ciclovia do Rio Paraíba',
+          sport: 'ciclismo',
+          sportKey: 'ciclismo',
+          type: 'Ciclovia',
+          status: 'available',
+          coords: [-22.504, -44.084],
+          address: 'Margem do Rio Paraíba, Volta Redonda',
+          icon: 'img/pins/pin-bicicleta.svg',
+        },
+      ];
+
+      // Mapeamento filtro → sport keys
+      const FILTER_SPORTS = {
+        all:      null,
+        futebol:  ['futebol', 'society'],
+        volei:    ['volei'],
+        basquete: ['basquete'],
+        tenis:    ['tenis', 'raquete'],
+        corrida:  ['corrida'],
+        natacao:  ['natacao'],
+        ciclismo: ['ciclismo'],
+      };
+
+      const STATUS_LABELS = { available: 'Disponível', reserve: 'Reserva', unavailable: 'Completo' };
+      const STATUS_COLORS = { available: 'text-lime', reserve: 'text-yellow-400', unavailable: 'text-zinc-400' };
+      const STATUS_DOT    = { available: 'bg-lime', reserve: 'bg-yellow-400', unavailable: 'bg-zinc-400' };
+
+      // ── Mapa Leaflet ────────────────────────────────────────────────────────────
+      const map = L.map('mapa-principal', {
+        zoomControl: false,
+        attributionControl: false,
+      }).setView([-22.512, -44.087], 13);
+
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(map);
+
+      L.control.zoom({ position: 'bottomleft' }).addTo(map);
+
+      function escAttr(v) {
+        return String(v).replace(/[&<>"']/g, c =>
+          ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;' })[c]);
+      }
+
+      function makePinIcon(place) {
+        const title = `${place.title} — ${STATUS_LABELS[place.status]}`;
+        return L.divIcon({
+          html: `
+            <div class="sports-map-pin sports-map-pin--${place.status}" title="${escAttr(title)}" aria-label="${escAttr(title)}">
+              <span class="sports-map-pin__drop"></span>
+              <span class="sports-map-pin__icon">
+                <img src="${place.icon}" alt="${escAttr(place.sportKey)}" />
+              </span>
+            </div>`,
+          className: 'sports-map-marker',
+          iconSize: [44, 56],
+          iconAnchor: [22, 55],
+        });
+      }
+
+      // Cria markers
+      const markerMap = {};
+      PLACES.forEach(place => {
+        const marker = L.marker(place.coords, { icon: makePinIcon(place), riseOnHover: true }).addTo(map);
+        marker.on('click', () => selectPlace(place.id));
+        markerMap[place.id] = marker;
+      });
+
+      // ── Estado ─────────────────────────────────────────────────────────────────
+      let activeFilter = 'all';
+      let selectedId   = null;
+
+      function selectPlace(id) {
+        selectedId = id;
+        // Atualiza pins
+        PLACES.forEach(p => {
+          const el = markerMap[p.id].getElement()?.querySelector('.sports-map-pin');
+          el?.classList.toggle('is-selected', p.id === id);
+          markerMap[p.id].setZIndexOffset(p.id === id ? 1000 : 0);
+        });
+        // Atualiza cards
+        document.querySelectorAll('.place-card').forEach(card => {
+          card.classList.toggle('is-active', Number(card.dataset.id) === id);
+        });
+        // Scroll para o card
+        const card = document.querySelector(`.place-card[data-id="${id}"]`);
+        if (card) card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        // Voa para o marcador
+        const place = PLACES.find(p => p.id === id);
+        if (place) map.flyTo(place.coords, 15, { duration: 0.8 });
+      }
+
+      // ── Renderiza cards ────────────────────────────────────────────────────────
+      function renderCards(filter) {
+        const list   = document.getElementById('placeList');
+        const sports = FILTER_SPORTS[filter];
+        const visible = sports ? PLACES.filter(p => sports.includes(p.sportKey)) : PLACES;
+
+        document.getElementById('resultCount').textContent = visible.length;
+
+        // Mostra/oculta markers
+        PLACES.forEach(p => {
+          const isVisible = !sports || sports.includes(p.sportKey);
+          const el = markerMap[p.id].getElement();
+          if (el) el.style.display = isVisible ? '' : 'none';
+        });
+
+        list.innerHTML = '';
+
+        if (visible.length === 0) {
+          list.innerHTML = `
+            <div class="text-center py-10 text-muted">
+              <p class="text-3xl mb-3">🔍</p>
+              <p class="text-sm">Nenhum local encontrado para este filtro.</p>
+            </div>`;
+          return;
+        }
+
+        visible.forEach(place => {
+          const card = document.createElement('div');
+          card.className = 'place-card bg-secondary border border-white/8 rounded-xl p-3';
+          card.dataset.id = place.id;
+          card.innerHTML = `
+            <div class="flex items-start gap-3">
+              <div class="w-9 h-9 rounded-lg bg-zinc950 border border-white/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <img src="${place.icon}" alt="${escAttr(place.sportKey)}" class="w-5 h-5" style="filter:brightness(0) invert(1);opacity:0.85;" />
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-semibold text-fg leading-tight truncate">${place.title}</p>
+                <p class="text-xs text-muted mt-0.5 truncate">${place.type}</p>
+                <p class="text-[10px] text-muted/70 mt-0.5 truncate flex items-center gap-1">
+                  <svg class="w-3 h-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                  </svg>
+                  ${place.address}
+                </p>
+              </div>
+              <span class="flex-shrink-0 flex items-center gap-1 font-mono text-[10px] font-bold ${STATUS_COLORS[place.status]}">
+                <span class="w-1.5 h-1.5 rounded-full ${STATUS_DOT[place.status]} ${place.status === 'available' ? 'live-pin' : ''}"></span>
+                ${STATUS_LABELS[place.status]}
+              </span>
+            </div>`;
+          card.addEventListener('click', () => selectPlace(place.id));
+          list.appendChild(card);
+        });
+
+        // Re-seleciona o card ativo se ainda visível
+        if (selectedId && visible.find(p => p.id === selectedId)) {
+          document.querySelector(`.place-card[data-id="${selectedId}"]`)?.classList.add('is-active');
+        }
+      }
+
+      // ── Filtros ────────────────────────────────────────────────────────────────
+      document.querySelectorAll('.filter-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+          document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+          chip.classList.add('active');
+          activeFilter = chip.dataset.filter;
+          renderCards(activeFilter);
+        });
+      });
+
+      // ── Sidebar toggle ─────────────────────────────────────────────────────────
+      const sidebar    = document.getElementById('sidebar');
+      const openBtn    = document.getElementById('openSidebar');
+      const closeBtn   = document.getElementById('closeSidebar');
+
+      closeBtn.addEventListener('click', () => {
+        sidebar.classList.add('sidebar-hidden');
+        openBtn.classList.remove('hidden');
+        openBtn.classList.add('flex');
+        setTimeout(() => map.invalidateSize(), 310);
+      });
+      openBtn.addEventListener('click', () => {
+        sidebar.classList.remove('sidebar-hidden');
+        openBtn.classList.add('hidden');
+        openBtn.classList.remove('flex');
+        setTimeout(() => map.invalidateSize(), 310);
+      });
+
+      // ── Init ───────────────────────────────────────────────────────────────────
+      renderCards('all');
+      selectPlace(1);
+    </script>
+    <script src="./js/auth.js"></script>
+  </body>
+</html>
+

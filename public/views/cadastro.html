@@ -1,0 +1,679 @@
+﻿<!doctype html>
+<html lang="pt-BR" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>+Sports — Criar Conta</title>
+    <link rel="shortcut icon" href="img/favicon.png" type="image/x-icon" />
+
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <style type="text/tailwindcss">
+      @theme {
+        --color-zinc950: #0c0c0e;
+        --color-surface: #161618;
+        --color-secondary: #1f2024;
+        --color-lime: #bef264;
+        --color-lime-hover: #d9f99d;
+        --color-fg: #f3f3f3;
+        --color-muted: #9ca39e;
+
+        --font-display: "Archivo Black", sans-serif;
+        --font-body: "Barlow", sans-serif;
+        --font-mono: "JetBrains Mono", monospace;
+      }
+
+      .glow-lime {
+        box-shadow: 0 0 24px #bef264;
+      }
+      .glow-lime-sm {
+        box-shadow: 0 0 12px rgba(190, 242, 100, 0.6);
+      }
+
+      .input-field {
+        background: #1f2024;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 0.75rem;
+        color: #f3f3f3;
+        font-family: "Barlow", sans-serif;
+        font-size: 0.875rem;
+        padding: 0.75rem 1rem;
+        width: 100%;
+        transition: border-color 0.2s, box-shadow 0.2s;
+        outline: none;
+      }
+      .input-field::placeholder {
+        color: #9ca39e;
+      }
+      .input-field:focus {
+        border-color: rgba(190, 242, 100, 0.5);
+        box-shadow: 0 0 0 3px rgba(190, 242, 100, 0.08);
+      }
+      .input-error {
+        border-color: rgba(248, 113, 113, 0.6) !important;
+      }
+      .select-field {
+        background: #1f2024;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 0.75rem;
+        color: #f3f3f3;
+        font-family: "Barlow", sans-serif;
+        font-size: 0.875rem;
+        padding: 0.75rem 2.5rem 0.75rem 1rem;
+        width: 100%;
+        transition: border-color 0.2s, box-shadow 0.2s;
+        outline: none;
+        cursor: pointer;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+      }
+      .select-field:focus {
+        border-color: rgba(190, 242, 100, 0.5);
+        box-shadow: 0 0 0 3px rgba(190, 242, 100, 0.08);
+      }
+      .select-field option {
+        background: #1f2024;
+        color: #f3f3f3;
+      }
+
+      /* Chips de esporte */
+      .sport-chip input[type="checkbox"] {
+        display: none;
+      }
+      .sport-chip label {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        cursor: pointer;
+        padding: 0.35rem 0.75rem;
+        border-radius: 999px;
+        border: 1px solid rgba(255,255,255,0.15);
+        font-size: 0.75rem;
+        font-family: "JetBrains Mono", monospace;
+        color: #9ca39e;
+        transition: all 0.15s;
+        user-select: none;
+      }
+      .sport-chip input:checked + label {
+        border-color: #bef264;
+        color: #bef264;
+        background: rgba(190,242,100,0.08);
+      }
+      .sport-chip label:hover {
+        border-color: rgba(190,242,100,0.4);
+        color: #d9f99d;
+      }
+
+      /* Indicador de força da senha */
+      .strength-bar {
+        height: 3px;
+        border-radius: 9999px;
+        flex: 1;
+        background: rgba(255,255,255,0.08);
+        transition: background 0.3s;
+      }
+
+      @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+      .fade-in-up {
+        animation: fadeInUp 0.45s ease both;
+      }
+
+      /* Modal de sucesso */
+      @keyframes scaleIn {
+        from { opacity: 0; transform: scale(0.82) translateY(12px); }
+        to   { opacity: 1; transform: scale(1) translateY(0); }
+      }
+      .scale-in {
+        animation: scaleIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+      }
+
+      @keyframes checkDraw {
+        from { stroke-dashoffset: 50; }
+        to   { stroke-dashoffset: 0; }
+      }
+      .check-draw {
+        stroke-dasharray: 50;
+        stroke-dashoffset: 0;
+        animation: checkDraw 0.55s ease 0.25s both;
+      }
+
+      @keyframes glowPulse {
+        0%, 100% { box-shadow: 0 0 20px rgba(190,242,100,0.2); }
+        50%       { box-shadow: 0 0 40px rgba(190,242,100,0.45); }
+      }
+      .glow-pulse {
+        animation: glowPulse 2s ease-in-out infinite;
+      }
+    </style>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=JetBrains+Mono:wght@500;700&family=Barlow:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body class="bg-zinc950 text-fg font-body antialiased min-h-screen flex flex-col">
+
+    <!-- ══ MODAL DE CONFIRMAÇÃO DE CADASTRO ══════════════════════════════════════ -->
+    <div
+      id="modalSucesso"
+      class="fixed inset-0 z-[100] flex items-center justify-center p-4 hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modalTitle"
+    >
+      <!-- Overlay -->
+      <div class="absolute inset-0 bg-zinc950/85 backdrop-blur-sm"></div>
+
+      <!-- Card -->
+      <div class="relative bg-surface border border-white/10 rounded-2xl p-8 max-w-sm w-full text-center scale-in">
+
+        <!-- Ícone animado -->
+        <div
+          class="w-20 h-20 rounded-full bg-lime/10 border-2 border-lime/40 flex items-center justify-center mx-auto mb-6 glow-pulse"
+        >
+          <svg class="w-10 h-10 text-lime" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path class="check-draw" d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+
+        <!-- Conteúdo -->
+        <p class="font-mono text-xs tracking-widest text-lime uppercase mb-2">Sucesso!</p>
+        <h2 id="modalTitle" class="font-display text-2xl text-fg mb-3">Conta criada!</h2>
+        <p class="text-muted text-sm leading-relaxed mb-1">
+          Bem-vindo(a) à comunidade <span class="text-fg font-semibold">+Sports</span>,
+          <span id="modalNome" class="text-lime font-semibold"></span>!
+        </p>
+        <p class="text-muted text-sm leading-relaxed mb-7">
+          Sua conta foi criada com sucesso. Agora você tem acesso a eventos, quadras e partidas próximas a você.
+        </p>
+
+        <!-- CTA -->
+        <a
+          href="telaPerfil.html"
+          class="w-full inline-flex items-center justify-center gap-2 bg-lime text-zinc-900 font-display text-sm px-6 py-3.5 rounded-xl hover:glow-lime transition-all uppercase tracking-wide mb-3"
+        >
+          Ir para meu perfil
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+          </svg>
+        </a>
+        <a href="index.html" class="block text-sm text-muted hover:text-fg transition-colors">
+          Ir para a página inicial
+        </a>
+      </div>
+    </div>
+
+    <!-- ══ NAV ════════════════════════════════════════════════════════════════════ -->
+    <header class="sticky top-0 z-50 bg-zinc950/90 backdrop-blur border-b border-white/10">
+      <nav class="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
+        <a href="index.html" class="flex items-center hover:opacity-80 transition-opacity" aria-label="Ir para a página inicial">
+          <img src="img/logo.svg" alt="+Sports" class="h-6 w-auto" />
+        </a>
+        <div class="flex items-center gap-2">
+          <span class="text-muted text-sm">Já tem conta?</span>
+          <a href="login.html" class="text-sm border border-white/20 text-fg px-3 py-1.5 rounded-lg hover:bg-surface transition-colors">
+            Entrar
+          </a>
+        </div>
+      </nav>
+    </header>
+
+    <!-- ══ MAIN ═══════════════════════════════════════════════════════════════════ -->
+    <main class="flex-1 flex">
+
+      <!-- Painel esquerdo — branding (lg+) -->
+      <div class="hidden lg:flex lg:w-[46%] relative overflow-hidden">
+        <img
+          src="img/eventos/CorridaGuerreiro.jpg"
+          alt="Corrida esportiva"
+          class="absolute inset-0 w-full h-full object-cover opacity-35"
+        />
+        <div class="absolute inset-0 bg-gradient-to-r from-zinc950/80 to-zinc950/20"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-zinc950 via-transparent to-zinc950/40"></div>
+
+        <div class="relative z-10 flex flex-col justify-between p-12 h-full">
+          <div>
+            <span class="inline-flex items-center gap-1.5 font-mono text-xs font-semibold border border-lime/40 text-lime px-2.5 py-1 rounded-md bg-zinc950/60 backdrop-blur-sm">
+              <span class="w-1.5 h-1.5 rounded-full bg-lime" style="box-shadow:0 0 6px #bef264"></span>
+              CADASTRO GRATUITO
+            </span>
+          </div>
+
+          <div>
+            <h2 class="font-display text-4xl xl:text-5xl text-fg leading-tight mb-4">
+              FAÇA PARTE DA<br />
+              COMUNIDADE<br />
+              <span class="text-lime">+SPORTS</span>
+            </h2>
+            <p class="text-muted text-sm max-w-sm leading-relaxed mb-8">
+              Crie sua conta e acesse eventos, quadras e partidas informais próximas a você.
+            </p>
+
+            <div class="flex flex-col gap-3">
+              <div class="flex items-center gap-3">
+                <div class="w-7 h-7 rounded-lg bg-lime/10 border border-lime/20 flex items-center justify-center flex-shrink-0">
+                  <svg class="w-3.5 h-3.5 text-lime" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <p class="text-sm text-muted">Calendário de eventos esportivos da região</p>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="w-7 h-7 rounded-lg bg-lime/10 border border-lime/20 flex items-center justify-center flex-shrink-0">
+                  <svg class="w-3.5 h-3.5 text-lime" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <p class="text-sm text-muted">Mapa de quadras com disponibilidade em tempo real</p>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="w-7 h-7 rounded-lg bg-lime/10 border border-lime/20 flex items-center justify-center flex-shrink-0">
+                  <svg class="w-3.5 h-3.5 text-lime" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <p class="text-sm text-muted">Partidas informais — Joga Junto</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Painel direito — formulário -->
+      <div class="flex-1 flex items-start justify-center px-5 py-10 overflow-y-auto">
+        <div class="w-full max-w-md fade-in-up">
+
+          <div class="mb-7">
+            <p class="font-mono text-xs tracking-widest text-lime uppercase mb-2">É rápido e gratuito</p>
+            <h1 class="font-display text-3xl text-fg">Criar conta</h1>
+            <p class="text-muted text-sm mt-2">Preencha os dados abaixo para começar.</p>
+          </div>
+
+          <div class="bg-surface border border-white/10 rounded-2xl p-6 md:p-8">
+            <form id="formCadastro" novalidate>
+
+              <!-- Nome completo -->
+              <div class="mb-5">
+                <label for="nome" class="block text-sm font-medium text-fg mb-1.5">Nome completo</label>
+                <input
+                  type="text"
+                  id="nome"
+                  name="nome"
+                  class="input-field"
+                  placeholder="Seu nome completo"
+                  autocomplete="name"
+                  required
+                />
+                <p class="text-red-400 text-xs mt-1 hidden" id="err-nome">Insira seu nome completo (somente letras, mínimo 2 palavras).</p>
+              </div>
+
+              <!-- Telefone -->
+              <div class="mb-5">
+                <label for="telefone" class="block text-sm font-medium text-fg mb-1.5">Telefone</label>
+                <input
+                  type="tel"
+                  id="telefone"
+                  name="telefone"
+                  class="input-field"
+                  placeholder="(00) 00000-0000"
+                  autocomplete="tel"
+                  maxlength="15"
+                  inputmode="numeric"
+                  required
+                />
+                <p class="text-red-400 text-xs mt-1 hidden" id="err-telefone">Insira um telefone válido com DDD.</p>
+              </div>
+
+              <!-- Email -->
+              <div class="mb-5">
+                <label for="email" class="block text-sm font-medium text-fg mb-1.5">E-mail</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  class="input-field"
+                  placeholder="seu@email.com"
+                  autocomplete="email"
+                  required
+                />
+                <p class="text-red-400 text-xs mt-1 hidden" id="err-email">Insira um e-mail válido.</p>
+              </div>
+
+              <!-- Localização -->
+              <div class="mb-5">
+                <p class="text-sm font-medium text-fg mb-3">
+                  Localização
+                  <span class="text-muted font-normal ml-1">(opcional)</span>
+                </p>
+                <div class="grid grid-cols-2 gap-3">
+                  <!-- Estado -->
+                  <div>
+                    <label for="estado" class="block text-xs text-muted mb-1.5">Estado</label>
+                    <div class="relative">
+                      <select id="estado" name="estado" class="select-field" autocomplete="address-level1">
+                        <option value="RJ">Rio de Janeiro</option>
+                      </select>
+                      <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </span>
+                    </div>
+                  </div>
+                  <!-- Cidade -->
+                  <div>
+                    <label for="cidade" class="block text-xs text-muted mb-1.5">Cidade</label>
+                    <div class="relative">
+                      <select id="cidade" name="cidade" class="select-field" autocomplete="address-level2">
+                        <option value="VR">Volta Redonda</option>
+                      </select>
+                      <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Senha -->
+              <div class="mb-2">
+                <label for="senha" class="block text-sm font-medium text-fg mb-1.5">Senha</label>
+                <div class="relative">
+                  <input
+                    type="password"
+                    id="senha"
+                    name="senha"
+                    class="input-field pr-11"
+                    placeholder="Mínimo 8 caracteres"
+                    autocomplete="new-password"
+                    required
+                  />
+                  <button
+                    type="button"
+                    id="toggleSenha"
+                    class="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-lime transition-colors"
+                    aria-label="Mostrar senha"
+                  >
+                    <svg id="iconEye" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                    <svg id="iconEyeOff" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                    </svg>
+                  </button>
+                </div>
+                <div class="flex gap-1 mt-2" id="strengthBars">
+                  <div class="strength-bar" id="bar1"></div>
+                  <div class="strength-bar" id="bar2"></div>
+                  <div class="strength-bar" id="bar3"></div>
+                  <div class="strength-bar" id="bar4"></div>
+                </div>
+                <p class="text-muted text-[11px] font-mono mt-1" id="strengthLabel"></p>
+                <p class="text-red-400 text-xs mt-1 hidden" id="err-senha">A senha precisa ter pelo menos 8 caracteres.</p>
+              </div>
+
+              <!-- Confirmar senha -->
+              <div class="mb-6">
+                <label for="confirmar" class="block text-sm font-medium text-fg mb-1.5">Confirmar senha</label>
+                <input
+                  type="password"
+                  id="confirmar"
+                  name="confirmar"
+                  class="input-field"
+                  placeholder="Repita a senha"
+                  autocomplete="new-password"
+                  required
+                />
+                <p class="text-red-400 text-xs mt-1 hidden" id="err-confirmar">As senhas não coincidem.</p>
+              </div>
+
+              <!-- Esportes de interesse -->
+              <div class="mb-6">
+                <p class="text-sm font-medium text-fg mb-3">
+                  Esportes de interesse
+                  <span class="text-muted font-normal ml-1">(opcional)</span>
+                </p>
+                <div class="flex flex-wrap gap-2">
+                  <div class="sport-chip"><input type="checkbox" id="sp-corrida" name="esportes" value="corrida"><label for="sp-corrida">🏃 Corrida</label></div>
+                  <div class="sport-chip"><input type="checkbox" id="sp-futebol" name="esportes" value="futebol"><label for="sp-futebol">⚽ Futebol</label></div>
+                  <div class="sport-chip"><input type="checkbox" id="sp-volei" name="esportes" value="volei"><label for="sp-volei">🏐 Vôlei</label></div>
+                  <div class="sport-chip"><input type="checkbox" id="sp-basquete" name="esportes" value="basquete"><label for="sp-basquete">🏀 Basquete</label></div>
+                  <div class="sport-chip"><input type="checkbox" id="sp-natacao" name="esportes" value="natacao"><label for="sp-natacao">🏊 Natação</label></div>
+                  <div class="sport-chip"><input type="checkbox" id="sp-ciclismo" name="esportes" value="ciclismo"><label for="sp-ciclismo">🚴 Ciclismo</label></div>
+                  <div class="sport-chip"><input type="checkbox" id="sp-tenis" name="esportes" value="tenis"><label for="sp-tenis">🎾 Tênis</label></div>
+                  <div class="sport-chip"><input type="checkbox" id="sp-padel" name="esportes" value="padel"><label for="sp-padel">🏓 Padel</label></div>
+                </div>
+              </div>
+
+              <!-- Termos -->
+              <div class="flex items-start gap-2.5 mb-6">
+                <input type="checkbox" id="termos" class="w-4 h-4 accent-lime rounded mt-0.5 flex-shrink-0" required />
+                <label for="termos" class="text-sm text-muted leading-snug select-none">
+                  Li e aceito os
+                  <a href="termos.html" class="text-lime hover:underline">Termos de Uso</a>
+                  e a
+                  <a href="privacidade.html" class="text-lime hover:underline">Política de Privacidade</a>
+                  do +Sports.
+                </label>
+              </div>
+              <p class="text-red-400 text-xs -mt-4 mb-5 hidden" id="err-termos">Você precisa aceitar os termos.</p>
+
+              <!-- Botão criar conta -->
+              <button
+                type="submit"
+                class="w-full bg-lime text-zinc-900 font-display text-sm px-6 py-3.5 rounded-xl hover:glow-lime transition-all uppercase tracking-wide flex items-center justify-center gap-2"
+              >
+                <span id="btnCadastroText">Criar Conta Grátis</span>
+                <svg id="btnCadastroSpinner" class="w-4 h-4 animate-spin hidden" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                </svg>
+              </button>
+
+              <!-- Divider -->
+              <div class="flex items-center gap-3 my-5">
+                <div class="flex-1 h-px bg-white/10"></div>
+                <span class="text-muted text-xs font-mono">ou</span>
+                <div class="flex-1 h-px bg-white/10"></div>
+              </div>
+
+              <!-- Google -->
+              <button
+                type="button"
+                class="w-full flex items-center justify-center gap-3 border border-white/15 text-fg text-sm font-medium py-3 rounded-xl hover:bg-secondary transition-colors"
+              >
+                <svg class="w-4 h-4" viewBox="0 0 24 24">
+                  <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                  <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                  <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                  <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                </svg>
+                Cadastrar com Google
+              </button>
+            </form>
+          </div>
+
+          <p class="text-center text-sm text-muted mt-6">
+            Já tem uma conta?
+            <a href="login.html" class="text-lime hover:text-lime-hover transition-colors font-semibold ml-1">Entrar</a>
+          </p>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      // ── Máscara nome: somente letras e espaços ────────────────────────────────
+      const nomeInput = document.getElementById('nome');
+      nomeInput.addEventListener('keydown', function (e) {
+        if (e.key.length === 1 && /[^a-zA-ZÀ-ÖØ-öø-ÿ\s]/.test(e.key)) {
+          e.preventDefault();
+        }
+      });
+      nomeInput.addEventListener('input', function () {
+        const pos  = this.selectionStart;
+        const prev = this.value;
+        this.value = prev.replace(/[^a-zA-ZÀ-ÖØ-öø-ÿ\s]/g, '');
+        const diff = prev.length - this.value.length;
+        this.setSelectionRange(Math.max(0, pos - diff), Math.max(0, pos - diff));
+      });
+
+      // ── Máscara telefone: (XX) XXXXX-XXXX / (XX) XXXX-XXXX ───────────────────
+      const telefoneInput = document.getElementById('telefone');
+      telefoneInput.addEventListener('input', function () {
+        let v = this.value.replace(/\D/g, '').slice(0, 11);
+        if (!v) { this.value = ''; return; }
+        if (v.length <= 2)  { this.value = '(' + v; return; }
+        if (v.length <= 6)  { this.value = '(' + v.slice(0,2) + ') ' + v.slice(2); return; }
+        if (v.length <= 10) {
+          this.value = '(' + v.slice(0,2) + ') ' + v.slice(2,6) + '-' + v.slice(6);
+          return;
+        }
+        this.value = '(' + v.slice(0,2) + ') ' + v.slice(2,7) + '-' + v.slice(7);
+      });
+
+      // ── Toggle visibilidade da senha ──────────────────────────────────────────
+      const toggleBtn  = document.getElementById('toggleSenha');
+      const senhaInput = document.getElementById('senha');
+      const iconEye    = document.getElementById('iconEye');
+      const iconEyeOff = document.getElementById('iconEyeOff');
+
+      toggleBtn.addEventListener('click', () => {
+        const show = senhaInput.type === 'password';
+        senhaInput.type = show ? 'text' : 'password';
+        iconEye.classList.toggle('hidden', show);
+        iconEyeOff.classList.toggle('hidden', !show);
+      });
+
+      // ── Barra de força da senha ───────────────────────────────────────────────
+      const bars = ['bar1','bar2','bar3','bar4'].map(id => document.getElementById(id));
+      const strengthLabel  = document.getElementById('strengthLabel');
+      const strengthColors = ['#ef4444','#f97316','#eab308','#bef264'];
+      const strengthLabels = ['Muito fraca','Fraca','Boa','Forte'];
+
+      senhaInput.addEventListener('input', () => {
+        const v = senhaInput.value;
+        let score = 0;
+        if (v.length >= 8)          score++;
+        if (/[A-Z]/.test(v))        score++;
+        if (/[0-9]/.test(v))        score++;
+        if (/[^A-Za-z0-9]/.test(v)) score++;
+        bars.forEach((b, i) => {
+          b.style.background = i < score ? strengthColors[score-1] : 'rgba(255,255,255,0.08)';
+        });
+        strengthLabel.textContent = v.length > 0 ? (strengthLabels[score-1] || '') : '';
+        strengthLabel.style.color = v.length > 0 ? strengthColors[score-1] : '';
+      });
+
+      // ── Helpers de validação ──────────────────────────────────────────────────
+      function setError(input, errId, show) {
+        input.classList.toggle('input-error', show);
+        document.getElementById(errId).classList.toggle('hidden', !show);
+      }
+
+      // ── Envio do formulário ───────────────────────────────────────────────────
+      document.getElementById('formCadastro').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const nome      = document.getElementById('nome');
+        const telefone  = document.getElementById('telefone');
+        const email     = document.getElementById('email');
+        const senha     = document.getElementById('senha');
+        const confirmar = document.getElementById('confirmar');
+        const termos    = document.getElementById('termos');
+
+        let valid = true;
+
+        // Nome: mín. 2 palavras, somente letras/espaços/acentos
+        const nomeVal = nome.value.trim();
+        if (!nomeVal || nomeVal.split(/\s+/).length < 2 || /[^a-zA-ZÀ-ÖØ-öø-ÿ\s]/.test(nomeVal)) {
+          setError(nome, 'err-nome', true); valid = false;
+        } else {
+          setError(nome, 'err-nome', false);
+        }
+
+        // Telefone: mín. 10 dígitos (com DDD)
+        if (telefone.value.replace(/\D/g, '').length < 10) {
+          setError(telefone, 'err-telefone', true); valid = false;
+        } else {
+          setError(telefone, 'err-telefone', false);
+        }
+
+        // E-mail
+        if (!email.value || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+          setError(email, 'err-email', true); valid = false;
+        } else {
+          setError(email, 'err-email', false);
+        }
+
+        // Senha
+        if (!senha.value || senha.value.length < 8) {
+          setError(senha, 'err-senha', true); valid = false;
+        } else {
+          setError(senha, 'err-senha', false);
+        }
+
+        // Confirmar senha
+        if (confirmar.value !== senha.value) {
+          setError(confirmar, 'err-confirmar', true); valid = false;
+        } else {
+          setError(confirmar, 'err-confirmar', false);
+        }
+
+        // Termos
+        if (!termos.checked) {
+          document.getElementById('err-termos').classList.remove('hidden'); valid = false;
+        } else {
+          document.getElementById('err-termos').classList.add('hidden');
+        }
+
+        if (!valid) return;
+
+        // Loading
+        const btnText    = document.getElementById('btnCadastroText');
+        const btnSpinner = document.getElementById('btnCadastroSpinner');
+        btnText.textContent = 'Criando conta...';
+        btnSpinner.classList.remove('hidden');
+
+        // Simula requisição — substituir por fetch real
+        setTimeout(() => {
+          btnText.textContent = 'Criar Conta Grátis';
+          btnSpinner.classList.add('hidden');
+          // Salva sessão no localStorage
+          const emailVal = document.getElementById('email').value;
+          window.SportsAuth
+            ? window.SportsAuth.setUser({ nome: nomeVal, email: emailVal })
+            : localStorage.setItem('sportsUser', JSON.stringify({ nome: nomeVal, email: emailVal }));
+          showSuccessModal(nomeVal.split(/\s+/)[0]);
+        }, 1400);
+      });
+
+      // ── Modal de confirmação ──────────────────────────────────────────────────
+      function showSuccessModal(primeiroNome) {
+        document.getElementById('modalNome').textContent = primeiroNome;
+
+        const modal = document.getElementById('modalSucesso');
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+
+        // Re-dispara a animação do checkmark
+        const path = modal.querySelector('.check-draw');
+        path.classList.remove('check-draw');
+        void path.offsetWidth;
+        path.classList.add('check-draw');
+      }
+    </script>
+    <script src="./js/global.js"></script>
+    <script src="./js/auth.js"></script>
+  </body>
+</html>
+

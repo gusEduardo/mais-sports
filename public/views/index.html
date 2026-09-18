@@ -1,0 +1,1150 @@
+﻿<!doctype html>
+<html lang="pt-BR" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>+Sports — Home</title>
+    <link rel="shortcut icon" href="img/favicon.png" type="image/x-icon" />
+
+    <!-- Tailwind v4 Browser CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <style type="text/tailwindcss">
+      @theme {
+        /* ── Paleta · Design Sheet Cronômetro Dark ── */
+        --color-zinc950: #0c0c0e; /* fundo principal · asfalto */
+        --color-surface: #161618; /* cards, sheets, popovers   */
+        --color-secondary: #1f2024; /* botões secundários, chips */
+        --color-lime: #bef264; /* CTA · live · destaque     */
+        --color-lime-hover: #d9f99d; /* hover do lime             */
+        --color-fg: #f3f3f3; /* texto principal           */
+        --color-muted: #9ca39e; /* labels, metadata          */
+
+        /* ── Tipografia ── */
+        --font-display: "Archivo Black", sans-serif;
+        --font-body: "Barlow", sans-serif;
+        --font-mono: "JetBrains Mono", monospace;
+      }
+
+      /* ── Glow lime ──────────────────────────────────────────────
+        Usar APENAS em CTAs primários e pins ativos.
+        Nunca em texto. Regra 70/25/5 do design sheet.          */
+      .glow-lime {
+        box-shadow: 0 0 24px #bef264;
+      }
+      .glow-lime-sm {
+        box-shadow: 0 0 12px rgba(190, 242, 100, 0.6);
+      }
+
+      /* ── Animação de pin live ────────────────────────────────── */
+      @keyframes pulse-lime {
+        0%,
+        100% {
+          box-shadow: 0 0 0 0 rgba(190, 242, 100, 0.7);
+        }
+        50% {
+          box-shadow: 0 0 0 10px rgba(190, 242, 100, 0);
+        }
+      }
+      .live-pin {
+        animation: pulse-lime 2s infinite;
+      }
+
+      /* ── Slideshow ───────────────────────────────────────────── */
+      .slide {
+        display: none;
+      }
+      .slide.active {
+        display: block;
+      }
+      html[data-theme="light"] .slide .theme-hero-scrim {
+        opacity: 1 !important;
+        background: linear-gradient(
+          to top,
+          rgba(24, 27, 24, 0.76) 0%,
+          rgba(35, 39, 34, 0.46) 46%,
+          rgba(35, 39, 34, 0.08) 100%
+        ) !important;
+      }
+
+      /* ── Mapas Leaflet · alturas fixas ──────────────────────── */
+      #mini-map-aside {
+        height: 200px;
+      }
+      #joga-map {
+        height: 340px;
+      }
+
+      .sports-map-marker {
+        background: transparent;
+        border: 0;
+      }
+      .sports-map-pin {
+        --pin-color: #a3e635;
+        --pin-glow: rgba(163, 230, 53, 0.52);
+        --pin-ring: rgba(163, 230, 53, 0.32);
+        position: relative;
+        width: 44px;
+        height: 56px;
+        display: block;
+        transform-origin: 50% 100%;
+        transition:
+          transform 180ms ease,
+          filter 180ms ease;
+        filter: drop-shadow(0 10px 10px rgba(0, 0, 0, 0.55));
+      }
+      .sports-map-pin__drop {
+        position: absolute;
+        left: 5px;
+        top: 0;
+        width: 34px;
+        height: 34px;
+        border-radius: 50% 50% 50% 0;
+        background:
+          radial-gradient(circle at 28% 22%, rgba(255, 255, 255, 0.5), transparent 27%),
+          var(--pin-color);
+        border: 2px solid transparent;
+        box-shadow: inset 0 -9px 14px rgba(0, 0, 0, 0.28);
+        transform: rotate(-45deg);
+        transition:
+          border-color 180ms ease,
+          box-shadow 180ms ease;
+      }
+      .sports-map-pin__icon {
+        position: absolute;
+        left: 10px;
+        top: 5px;
+        z-index: 1;
+        width: 24px;
+        height: 24px;
+        border-radius: 999px;
+        background: #111315;
+        border: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: none;
+      }
+      .sports-map-pin__icon img {
+        width: 16px;
+        height: 16px;
+        object-fit: contain;
+        filter: brightness(0) invert(1);
+        opacity: 0.96;
+      }
+      .sports-map-pin--available {
+        --pin-color: #a3e635;
+        --pin-glow: rgba(163, 230, 53, 0.62);
+        --pin-ring: rgba(163, 230, 53, 0.34);
+      }
+      .sports-map-pin--reserve {
+        --pin-color: #facc15;
+        --pin-glow: rgba(250, 204, 21, 0.58);
+        --pin-ring: rgba(250, 204, 21, 0.32);
+      }
+      .sports-map-pin--unavailable {
+        --pin-color: #8b8f98;
+        --pin-glow: rgba(139, 143, 152, 0.42);
+        --pin-ring: rgba(139, 143, 152, 0.26);
+        opacity: 0.88;
+      }
+      .sports-map-pin:hover {
+        transform: translateY(-5px) scale(1.08);
+        filter: drop-shadow(0 16px 16px rgba(0, 0, 0, 0.62));
+      }
+      .sports-map-pin:hover .sports-map-pin__drop {
+        border-color: var(--pin-ring);
+        box-shadow:
+          0 0 0 4px var(--pin-ring),
+          0 0 20px var(--pin-glow),
+          inset 0 -9px 14px rgba(0, 0, 0, 0.28);
+      }
+      .sports-map-pin.is-selected {
+        transform: translateY(-7px) scale(1.14);
+        z-index: 2;
+      }
+      .sports-map-pin.is-selected:hover {
+        transform: translateY(-8px) scale(1.18);
+      }
+      .sports-map-pin.is-selected .sports-map-pin__drop {
+        border-color: #ffffff;
+        box-shadow:
+          inset 0 -9px 14px rgba(0, 0, 0, 0.28);
+      }
+      .sports-map-pin.is-selected:hover .sports-map-pin__drop {
+        box-shadow:
+          0 0 0 4px var(--pin-ring),
+          0 0 20px var(--pin-glow),
+          inset 0 -9px 14px rgba(0, 0, 0, 0.28);
+      }
+      .sports-map-pin--mini {
+        width: 30px;
+        height: 38px;
+      }
+      .sports-map-pin--mini .sports-map-pin__drop {
+        left: 4px;
+        width: 22px;
+        height: 22px;
+        border-width: 1.5px;
+        box-shadow: inset 0 -6px 10px rgba(0, 0, 0, 0.28);
+      }
+      .sports-map-pin--mini:hover .sports-map-pin__drop {
+        box-shadow:
+          0 0 0 3px var(--pin-ring),
+          0 0 12px var(--pin-glow),
+          inset 0 -6px 10px rgba(0, 0, 0, 0.28);
+      }
+      .sports-map-pin--mini .sports-map-pin__icon {
+        left: 8px;
+        top: 4px;
+        width: 14px;
+        height: 14px;
+      }
+      .sports-map-pin--mini .sports-map-pin__icon img {
+        width: 10px;
+        height: 10px;
+      }
+    </style>
+
+    <!-- Google Fonts
+       Os preconnects são necessários: reduzem o tempo de carregamento
+       das fontes estabelecendo a conexão com o servidor antes do pedido. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=JetBrains+Mono:wght@500;700&family=Barlow:wght@400;500;600&family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Leaflet CSS -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      crossorigin=""
+    />
+  </head>
+
+  <body class="bg-zinc950 text-fg font-body antialiased">
+    <!-- =====================================================
+       NAV — sticky, blur, hamburger mobile
+  ====================================================== -->
+    <header
+      class="sticky top-0 z-50 bg-zinc950/90 backdrop-blur border-b border-white/10"
+    >
+      <nav
+        class="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between gap-4 relative"
+      >
+        <a
+          href="index.html"
+          class="flex items-center hover:opacity-80 transition-opacity z-10"
+          aria-label="Ir para a página inicial do +Sports"
+        >
+          <img src="img/logo.svg" alt="+Sports" class="h-6 w-auto" />
+        </a>
+
+        <div
+          class="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-6 text-[15px] font-medium text-muted"
+        >
+          <a href="index.html" class="text-lime">Home</a>
+          <a href="eventos.html" class="hover:text-lime transition-colors"
+            >Eventos</a
+          >
+          <a href="jj.html" class="hover:text-lime transition-colors"
+            >Joga Junto</a
+          >
+          <a href="mapa.html" class="hover:text-lime transition-colors"
+            >Mapa</a
+          >
+        </div>
+
+        <div class="flex items-center gap-2 ml-auto z-10">
+          <input
+            type="text"
+            placeholder="Pesquisar..."
+            class="hidden lg:block bg-surface border border-white/10 rounded-lg text-sm text-fg placeholder-muted px-3 py-1.5 w-44 focus:outline-none focus:border-lime/50 transition-colors"
+          />
+          <a
+            href="login.html"
+            class="hidden md:block text-sm border border-white/20 text-fg px-3 py-1.5 rounded-lg hover:bg-surface transition-colors"
+            >Entrar</a
+          >
+          <a
+            href="cadastro.html"
+            class="hidden md:block text-sm bg-lime text-zinc-900 font-semibold px-3 py-1.5 rounded-lg hover:glow-lime-sm transition-all"
+            >Criar Conta</a
+          >
+          <button
+            id="btnMenu"
+            class="md:hidden text-fg text-xl w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-lg hover:bg-surface transition-colors"
+            aria-label="Abrir menu"
+          >
+            ☰
+          </button>
+        </div>
+      </nav>
+
+      <!-- Drawer mobile -->
+      <div
+        id="menuMobile"
+        class="hidden md:hidden bg-surface border-b border-white/10 px-4 py-4 flex flex-col gap-3 text-sm font-medium"
+      >
+        <a href="index.html" class="text-lime">Home</a>
+        <a href="eventos.html" class="text-fg hover:text-lime transition-colors"
+          >Eventos</a
+        >
+        <a href="jj.html" class="text-fg hover:text-lime transition-colors"
+          >Joga Junto</a
+        >
+        <a href="mapa.html" class="text-fg hover:text-lime transition-colors"
+          >Mapa</a
+        >
+        <hr class="border-white/10" />
+        <a href="login.html" class="text-muted hover:text-fg transition-colors"
+          >Login</a
+        >
+        <a
+          href="cadastro.html"
+          class="bg-lime text-zinc-900 font-semibold px-4 py-2 rounded-lg text-center"
+          >Criar Conta</a
+        >
+      </div>
+    </header>
+
+    <!-- =====================================================
+       HERO BANNER — largura total (100%), alinhado ao grid
+  ====================================================== -->
+    <section class="max-w-7xl mx-auto px-4 pt-6">
+      <div
+        class="relative rounded-2xl overflow-hidden bg-surface border border-white/10 min-h-[420px] md:min-h-[560px] cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-lime focus-visible:ring-offset-2 focus-visible:ring-offset-zinc950"
+        data-event-link="evento-base.html"
+        role="link"
+        tabindex="0"
+        aria-label="Abrir página do evento 2ª Corrida do Clube Comercial"
+      >
+        <!-- Slides -->
+        <div class="slide active absolute inset-0">
+          <img
+            src="img/eventos/clube-comercial-banner.jpg"
+            alt="2ª Corrida do Clube Comercial"
+            class="theme-image-media w-full h-full object-cover opacity-60"
+          />
+          <div
+            class="theme-image-scrim theme-hero-scrim absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent"
+          ></div>
+        </div>
+        <div class="slide absolute inset-0">
+          <img
+            src="img/eventos/boltz-banner.jpg"
+            alt="Boltz Run 5K"
+            class="theme-image-media w-full h-full object-cover opacity-60"
+          />
+          <div
+            class="theme-image-scrim theme-hero-scrim absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent"
+          ></div>
+        </div>
+        <div class="slide absolute inset-0">
+          <img
+            src="img/eventos/royal-banner.jpg"
+            alt="Royal Night Run Resende"
+            class="theme-image-media w-full h-full object-cover opacity-60"
+          />
+          <div
+            class="theme-image-scrim theme-hero-scrim absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent"
+          ></div>
+        </div>
+        <div class="slide absolute inset-0">
+          <img
+            src="img/eventos/malte-banner.jpg"
+            alt="Corrida do Malte"
+            class="theme-image-media w-full h-full object-cover opacity-60"
+          />
+          <div
+            class="theme-image-scrim theme-hero-scrim absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent"
+          ></div>
+        </div>
+
+        <!-- Conteúdo do hero -->
+        <div class="absolute bottom-0 left-0 right-0 p-6 z-10">
+          <div class="flex flex-wrap items-end justify-between gap-6">
+            <!-- Lado esquerdo: Badge, título, subtítulo e botão -->
+            <div class="flex flex-col">
+              <span
+                id="hero-badge"
+                class="inline-flex items-center gap-1.5 text-xs font-mono font-semibold border border-lime/40 text-lime px-2.5 py-1 rounded-md mb-2 bg-zinc-950/50 backdrop-blur-sm w-fit"
+              >
+                <span class="w-1.5 h-1.5 rounded-full bg-lime live-pin"></span>
+                INSCRIÇÕES ABERTAS
+              </span>
+
+              <h1
+                id="hero-title"
+                class="font-display text-3xl md:text-5xl text-white leading-tight mb-1"
+              >
+                2ª Corrida do Clube Comercial
+              </h1>
+              <p id="hero-sub" class="text-sm text-white/75 mb-5">
+                16 de Agosto · Volta Redonda, RJ · 5K
+              </p>
+
+              <a
+                href="evento-base.html"
+                class="bg-lime text-zinc-900 font-display text-sm px-6 py-3 rounded-xl hover:glow-lime transition-all uppercase tracking-wide w-fit"
+              >
+                Garantir Vaga →
+              </a>
+            </div>
+
+            <!-- Lado direito: Countdown -->
+            <div>
+              <p
+                class="text-[10px] text-muted font-mono mb-1.5 tracking-widest uppercase"
+              >
+                Largada em
+              </p>
+              <div class="flex items-end gap-2 font-mono text-lime">
+                <div class="text-center">
+                  <span
+                    id="cd-dias"
+                    class="text-4xl font-bold tabular-nums leading-none"
+                    >--</span
+                  >
+                  <p class="text-[10px] text-muted tracking-widest mt-1">
+                    DIAS
+                  </p>
+                </div>
+                <span class="text-3xl leading-none mb-5 opacity-40">:</span>
+                <div class="text-center">
+                  <span
+                    id="cd-hrs"
+                    class="text-4xl font-bold tabular-nums leading-none"
+                    >--</span
+                  >
+                  <p class="text-[10px] text-muted tracking-widest mt-1">HRS</p>
+                </div>
+                <span class="text-3xl leading-none mb-5 opacity-40">:</span>
+                <div class="text-center">
+                  <span
+                    id="cd-min"
+                    class="text-4xl font-bold tabular-nums leading-none"
+                    >--</span
+                  >
+                  <p class="text-[10px] text-muted tracking-widest mt-1">MIN</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dots de paginação -->
+        <div
+          class="absolute top-5 right-5 z-10 flex gap-1.5 bg-zinc-950/40 px-2.5 py-2 rounded-full backdrop-blur-sm"
+        >
+          <button
+            data-slide="0"
+            class="slide-dot w-6 h-1.5 rounded-full bg-lime transition-all"
+            aria-label="Slide 1"
+          ></button>
+          <button
+            data-slide="1"
+            class="slide-dot w-1.5 h-1.5 rounded-full bg-white/30 transition-all"
+            aria-label="Slide 2"
+          ></button>
+          <button
+            data-slide="2"
+            class="slide-dot w-1.5 h-1.5 rounded-full bg-white/30 transition-all"
+            aria-label="Slide 3"
+          ></button>
+          <button
+            data-slide="3"
+            class="slide-dot w-1.5 h-1.5 rounded-full bg-white/30 transition-all"
+            aria-label="Slide 4"
+          ></button>
+        </div>
+      </div>
+    </section>
+    <!-- /HERO BANNER -->
+
+    <!-- =====================================================
+       GRID: EVENTOS (75%) + ASIDE (25%)
+       Mobile: coluna única. lg: 3+1 colunas.
+  ====================================================== -->
+    <div class="max-w-7xl mx-auto px-4 pt-6 pb-4">
+      <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <!-- ── EVENTOS EM DESTAQUE (75%) ── -->
+        <div class="lg:col-span-3 flex flex-col gap-5" id="eventos">
+          <!-- Título + filtros -->
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <h2 class="font-display text-2xl text-fg">
+              Eventos em Destaque <span class="text-lime">🔥</span>
+            </h2>
+            <div class="flex gap-2 flex-wrap">
+              <button
+                class="filtro-btn font-mono text-xs font-semibold px-4 py-1.5 rounded-full bg-lime text-zinc-900 transition-all"
+              >
+                Todas
+              </button>
+              <button
+                class="filtro-btn font-mono text-xs font-semibold px-4 py-1.5 rounded-full border border-white/20 text-muted hover:border-lime hover:text-lime transition-all"
+              >
+                Corrida
+              </button>
+              <button
+                class="filtro-btn hidden sm:inline-flex font-mono text-xs font-semibold px-4 py-1.5 rounded-full border border-white/20 text-muted hover:border-lime hover:text-lime transition-all"
+              >
+                Ciclismo
+              </button>
+              <button
+                class="filtro-btn font-mono text-xs font-semibold px-4 py-1.5 rounded-full border border-white/20 text-muted hover:border-lime hover:text-lime transition-all"
+              >
+                Futebol
+              </button>
+              <button
+                class="filtro-btn font-mono text-xs font-semibold px-4 py-1.5 rounded-full border border-white/20 text-muted hover:border-lime hover:text-lime transition-all"
+              >
+                Outros...
+              </button>
+            </div>
+          </div>
+
+          <!-- Cards de eventos -->
+          <div class="flex flex-col gap-3">
+            <!-- Destaque da semana -->
+            <article
+              class="group bg-surface border border-lime/20 rounded-2xl overflow-hidden flex flex-col md:flex-row hover:border-lime/35 transition-colors cursor-pointer min-h-[210px] focus:outline-none focus-visible:ring-2 focus-visible:ring-lime focus-visible:ring-offset-2 focus-visible:ring-offset-zinc950"
+              data-event-link="evento-base.html"
+              role="link"
+              tabindex="0"
+              aria-label="Abrir página do evento Boltz Run 5K"
+            >
+              <div class="relative h-48 md:h-auto md:w-[44%] flex-shrink-0 overflow-hidden">
+                <img
+                  src="img/eventos/boltz-card.jpg"
+                  alt="Boltz Run 5K"
+                  class="theme-image-media absolute inset-0 w-full h-full object-cover opacity-100 lg:opacity-80 group-hover:scale-105 transition-transform duration-500"
+                />
+                <div class="theme-card-edge-scrim hidden lg:block absolute inset-0 bg-gradient-to-r from-transparent to-surface"></div>
+              </div>
+              <div class="flex-1 p-5 md:p-6 flex flex-col justify-between gap-5">
+                <div>
+                  <p class="font-mono text-[10px] text-lime tracking-widest uppercase mb-2">
+                    Destaque da semana
+                  </p>
+                  <h3 class="font-display text-2xl md:text-3xl text-fg leading-tight">
+                    Boltz Run 5K
+                  </h3>
+                  <p class="text-sm text-muted mt-2">
+                    21 JUN &middot; Barra do Piraí &middot; 5K
+                  </p>
+                </div>
+                <div class="flex items-end justify-between gap-4 border-t border-white/10 pt-4">
+                  <div>
+                    <p class="font-mono text-[10px] text-muted uppercase tracking-widest">
+                      A partir de
+                    </p>
+                    <p class="font-mono text-2xl text-lime font-bold">R$ 130,00</p>
+                  </div>
+                  <span class="text-muted group-hover:text-lime transition-colors text-xl">&rarr;</span>
+                </div>
+              </div>
+            </article>
+
+            <!-- Evento 1 -->
+            <article
+              class="group bg-surface border border-white/10 rounded-2xl overflow-hidden flex flex-col md:flex-row hover:border-lime/25 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-lime focus-visible:ring-offset-2 focus-visible:ring-offset-zinc950"
+              data-event-link="evento-base.html"
+              role="link"
+              tabindex="0"
+              aria-label="Abrir página do evento Copa PS de Volleybal"
+            >
+              <div class="relative h-36 md:h-auto md:w-56 md:self-stretch flex-shrink-0 overflow-hidden">
+                <img
+                  src="img/eventos/copa-ps-card.jpg"
+                  alt="Copa PS de Volleybal"
+                  class="theme-image-media absolute inset-0 w-full h-full object-cover opacity-100 lg:opacity-75 group-hover:scale-105 transition-transform duration-500"
+                />
+                <div class="theme-card-edge-scrim hidden lg:block absolute inset-0 bg-gradient-to-r from-transparent to-surface"></div>
+              </div>
+              <div class="flex-1 p-4 md:p-5 flex flex-col sm:flex-row sm:items-center gap-4">
+                <div class="flex-1 min-w-0">
+                  <p class="font-mono text-[10px] text-muted tracking-widest uppercase mb-1">
+                    28 JUN &middot; Voleibol amador
+                  </p>
+                  <h3 class="font-display text-xl text-fg leading-tight">
+                    Copa PS de Volleybal
+                  </h3>
+                  <p class="text-xs text-muted mt-1">Paraíba do Sul, RJ</p>
+                </div>
+                <div class="sm:text-right flex-shrink-0">
+                  <p class="font-mono text-[10px] text-muted uppercase tracking-widest">
+                    Vagas
+                  </p>
+                  <p class="font-mono text-lime font-bold">LIMITADAS</p>
+                </div>
+              </div>
+            </article>
+
+            <!-- Evento 2 -->
+            <article
+              class="group bg-surface border border-white/10 rounded-2xl overflow-hidden flex flex-col md:flex-row hover:border-lime/25 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-lime focus-visible:ring-offset-2 focus-visible:ring-offset-zinc950"
+              data-event-link="evento-base.html"
+              role="link"
+              tabindex="0"
+              aria-label="Abrir página do evento Royal Night Run Resende"
+            >
+              <div class="relative h-36 md:h-auto md:w-56 md:self-stretch flex-shrink-0 overflow-hidden">
+                <img
+                  src="img/eventos/royal-card.jpg"
+                  alt="Royal Night Run Resende"
+                  class="theme-image-media absolute inset-0 w-full h-full object-cover opacity-100 lg:opacity-75 group-hover:scale-105 transition-transform duration-500"
+                />
+                <div class="theme-card-edge-scrim hidden lg:block absolute inset-0 bg-gradient-to-r from-transparent to-surface"></div>
+              </div>
+              <div class="flex-1 p-4 md:p-5 flex flex-col sm:flex-row sm:items-center gap-4">
+                <div class="flex-1 min-w-0">
+                  <p class="font-mono text-[10px] text-muted tracking-widest uppercase mb-1">
+                    08 AGO &middot; Corrida 5K
+                  </p>
+                  <h3 class="font-display text-xl text-fg leading-tight">
+                    Royal Night Run Resende
+                  </h3>
+                  <p class="text-xs text-muted mt-1">Resende, RJ</p>
+                </div>
+                <div class="sm:text-right flex-shrink-0">
+                  <p class="font-mono text-[10px] text-muted uppercase tracking-widest">
+                    A partir de
+                  </p>
+                  <p class="font-mono text-lime font-bold">R$ 89,90</p>
+                </div>
+              </div>
+            </article>
+
+            <!-- Evento 3 -->
+            <article
+              class="group bg-surface border border-white/10 rounded-2xl overflow-hidden flex flex-col md:flex-row hover:border-lime/25 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-lime focus-visible:ring-offset-2 focus-visible:ring-offset-zinc950"
+              data-event-link="evento-base.html"
+              role="link"
+              tabindex="0"
+              aria-label="Abrir página do evento Corrida do Malte"
+            >
+              <div class="relative h-36 md:h-auto md:w-56 md:self-stretch flex-shrink-0 overflow-hidden">
+                <img
+                  src="img/eventos/malte-card.jpg"
+                  alt="Corrida do Malte"
+                  class="theme-image-media absolute inset-0 w-full h-full object-cover opacity-100 lg:opacity-75 group-hover:scale-105 transition-transform duration-500"
+                />
+                <div class="theme-card-edge-scrim hidden lg:block absolute inset-0 bg-gradient-to-r from-transparent to-surface"></div>
+              </div>
+              <div class="flex-1 p-4 md:p-5 flex flex-col sm:flex-row sm:items-center gap-4">
+                <div class="flex-1 min-w-0">
+                  <p class="font-mono text-[10px] text-muted tracking-widest uppercase mb-1">
+                    10 OUT &middot; Corrida 5K
+                  </p>
+                  <h3 class="font-display text-xl text-fg leading-tight">
+                    Corrida do Malte
+                  </h3>
+                  <p class="text-xs text-muted mt-1">Bananal, SP</p>
+                </div>
+                <div class="sm:text-right flex-shrink-0">
+                  <p class="font-mono text-[10px] text-muted uppercase tracking-widest">
+                    A partir de
+                  </p>
+                  <p class="font-mono text-lime font-bold">R$ 99,90</p>
+                </div>
+              </div>
+            </article>
+
+            <!-- Evento 4 -->
+            <article
+              class="group bg-surface border border-white/10 rounded-2xl overflow-hidden flex flex-col md:flex-row hover:border-lime/25 transition-colors cursor-pointer opacity-60 focus:outline-none focus-visible:ring-2 focus-visible:ring-lime focus-visible:ring-offset-2 focus-visible:ring-offset-zinc950"
+              data-event-link="evento-base.html"
+              role="link"
+              tabindex="0"
+              aria-label="Abrir página do evento Nutri Day Run"
+            >
+              <div class="relative h-36 md:h-auto md:w-56 md:self-stretch flex-shrink-0 overflow-hidden">
+                <img
+                  src="img/eventos/NutriDayRun.jpg"
+                  alt="Nutri Day Run"
+                  class="theme-image-media absolute inset-0 w-full h-full object-cover opacity-100 lg:opacity-75 group-hover:scale-105 transition-transform duration-500"
+                />
+                <div class="theme-card-edge-scrim hidden lg:block absolute inset-0 bg-gradient-to-r from-transparent to-surface"></div>
+              </div>
+              <div class="flex-1 p-4 md:p-5 flex flex-col sm:flex-row sm:items-center gap-4">
+                <div class="flex-1 min-w-0">
+                  <p class="font-mono text-[10px] text-muted tracking-widest uppercase mb-1">
+                    21 JUN &middot; Corrida 5K
+                  </p>
+                  <h3 class="font-display text-xl text-fg leading-tight">
+                    Nutri Day Run 2026
+                  </h3>
+                  <p class="text-xs text-muted mt-1">Resende, RJ &middot; Ecoparque</p>
+                </div>
+                <div class="sm:text-right flex-shrink-0">
+                  <p class="font-mono text-[10px] text-red-500 uppercase tracking-widest">
+                    Esgotado
+                  </p>
+                  <p class="font-mono text-muted font-bold">R$ 89,90</p>
+                </div>
+              </div>
+            </article>
+          </div>
+          <div class="text-center pt-1">
+            <a
+              href="eventos.html"
+              class="font-mono text-xs tracking-widest text-muted hover:text-lime transition-colors uppercase pb-1 border-b border-transparent hover:border-lime/50"
+            >
+              Ver todos os eventos →
+            </a>
+          </div>
+        </div>
+        <!-- /EVENTOS -->
+
+        <!-- ── ASIDE (25%) — calendário + mini-mapa + stats ── -->
+        <aside class="lg:col-span-1 flex flex-col gap-4">
+          <!-- CALENDÁRIO -->
+          <div class="bg-surface rounded-2xl border border-white/10 p-4">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="font-mono text-xs tracking-widest text-fg uppercase">
+                Junho 2026
+              </h3>
+              <div class="flex gap-1">
+                <button
+                  class="bg-secondary text-muted hover:text-lime w-6 h-6 flex items-center justify-center rounded-lg transition-colors text-sm"
+                  aria-label="Mês anterior"
+                >
+                  ‹
+                </button>
+                <button
+                  class="bg-secondary text-muted hover:text-lime w-6 h-6 flex items-center justify-center rounded-lg transition-colors text-sm"
+                  aria-label="Próximo mês"
+                >
+                  ›
+                </button>
+              </div>
+            </div>
+
+            <div
+              class="grid grid-cols-7 text-center text-[9px] text-muted font-mono tracking-widest mb-1"
+            >
+              <span>D</span><span>S</span><span>T</span><span>Q</span
+              ><span>Q</span><span>S</span><span>S</span>
+            </div>
+
+            <!-- Dias gerados pelo JS -->
+            <div
+              class="grid grid-cols-7 text-center gap-y-0.5 gap-x-0.5"
+              id="calendario-grid"
+            ></div>
+
+            <!-- Lista de eventos do mês -->
+            <div class="mt-3 border-t border-white/10 pt-3 flex flex-col gap-2">
+              <div class="flex items-start gap-2">
+                <span
+                  class="w-1.5 h-1.5 rounded-full bg-lime flex-shrink-0 mt-1"
+                  style="box-shadow: 0 0 6px #bef264"
+                ></span>
+                <div class="min-w-0">
+                  <p class="text-muted font-mono text-[10px]">21/JUN</p>
+                  <p class="text-fg text-[11px] truncate">Boltz Run 5K</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-2">
+                <span
+                  class="w-1.5 h-1.5 rounded-full bg-lime flex-shrink-0 mt-1"
+                  style="box-shadow: 0 0 6px #bef264"
+                ></span>
+                <div class="min-w-0">
+                  <p class="text-muted font-mono text-[10px]">21/JUN</p>
+                  <p class="text-fg text-[11px] truncate">
+                    Nutri Day Run
+                  </p>
+                </div>
+              </div>
+              <div class="flex items-start gap-2">
+                <span
+                  class="w-1.5 h-1.5 rounded-full bg-lime flex-shrink-0 mt-1"
+                  style="box-shadow: 0 0 6px #bef264"
+                ></span>
+                <div class="min-w-0">
+                  <p class="text-muted font-mono text-[10px]">28/JUN</p>
+                  <p class="text-fg text-[11px] truncate">Copa PS Volleybal</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- MINI MAPA — Joga Junto -->
+          <div
+            class="bg-surface rounded-2xl border border-white/10 overflow-hidden"
+          >
+            <div
+              class="px-4 py-3 border-b border-white/10 flex items-center justify-between"
+            >
+              <div>
+                <p
+                  class="text-[10px] font-mono tracking-widest text-muted uppercase"
+                >
+                  Joga Junto
+                </p>
+                <p
+                  class="text-xs font-display text-fg mt-0.5 flex items-center gap-1.5"
+                >
+                  <span
+                    class="inline-block w-2 h-2 rounded-full bg-lime live-pin flex-shrink-0"
+                  ></span
+                  >6 Quadras Ativas
+                </p>
+              </div>
+              <a
+                href="#joga-junto"
+                class="text-[10px] font-mono tracking-widest uppercase border border-white/20 text-muted px-2.5 py-1 rounded-lg hover:border-lime hover:text-lime transition-colors"
+                >Ver</a
+              >
+            </div>
+            <div id="mini-map-aside" class="w-full"></div>
+          </div>
+
+          <!-- STATS DO MÊS -->
+          <div class="bg-surface rounded-2xl border border-white/10 p-4">
+            <p
+              class="text-[10px] font-mono tracking-widest text-muted uppercase mb-3"
+            >
+              Este Mês
+            </p>
+            <div class="grid grid-cols-2 gap-2">
+              <div class="bg-secondary rounded-xl p-3 border border-white/5">
+                <p
+                  class="text-[10px] text-muted font-mono uppercase tracking-widest mb-1"
+                >
+                  Eventos
+                </p>
+                <p class="text-xl font-display text-fg">12</p>
+              </div>
+              <div class="bg-secondary rounded-xl p-3 border border-white/5">
+                <p
+                  class="text-[10px] text-muted font-mono uppercase tracking-widest mb-1"
+                >
+                  Participantes
+                </p>
+                <p class="text-xl font-display text-lime">
+                  3287<span class="text-xs text-muted font-body ml-0.5">pessoas</span>
+                </p>
+              </div>
+            </div>
+          </div>
+        </aside>
+        <!-- /ASIDE -->
+      </div>
+    </div>
+    <!-- /GRID -->
+
+    <!-- =====================================================
+       SECAO JOGA JUNTO
+  ====================================================== -->
+    <section
+      class="mt-6 py-16 bg-[#0a1f0a] border-y border-lime/10"
+      id="joga-junto"
+    >
+      <div
+        class="max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center"
+      >
+        <div>
+          <span
+            class="inline-block font-mono text-xs tracking-widest border border-lime/40 text-lime px-3 py-1 rounded-md mb-5 uppercase"
+            >Joga Junto</span
+          >
+          <h2
+            class="font-display text-4xl md:text-5xl text-white leading-tight mb-5"
+          >
+            ENCONTRE O LUGAR<br />
+            <span class="text-lime">PERFEITO PARA</span><br />
+            JOGAR
+          </h2>
+          <p class="text-white/70 text-sm mb-8 max-w-md leading-relaxed">
+            Mapeamos as melhores quadras p&uacute;blicas e privadas da cidade.
+            Filtre por esporte, ilumina&ccedil;&atilde;o e avalia&ccedil;&otilde;es
+            da comunidade.
+          </p>
+          <a
+            href="mapa.html"
+            class="inline-flex items-center gap-2 bg-lime text-zinc-900 font-display text-sm px-6 py-3.5 rounded-xl hover:glow-lime transition-all uppercase tracking-wide"
+          >
+            Abrir o Mapa &rarr;
+          </a>
+        </div>
+
+        <div class="rounded-2xl overflow-hidden border border-lime/20 relative">
+          <div id="joga-map" class="w-full"></div>
+          <div
+            class="absolute bottom-0 left-0 right-0 bg-zinc-950/80 backdrop-blur-md px-5 py-4 flex items-center justify-between z-[400]"
+          >
+            <div>
+              <p
+                class="text-[10px] font-mono tracking-widest text-muted uppercase"
+              >
+                Status
+              </p>
+              <div
+                class="font-mono font-bold text-xs sm:text-sm flex flex-wrap items-center gap-3 mt-1"
+              >
+                <span class="flex items-center gap-1.5 text-lime">
+                  <span class="w-2 h-2 rounded-full bg-lime live-pin"></span>Dispon&iacute;vel
+                </span>
+                <span class="flex items-center gap-1.5 text-yellow-400">
+                  <span class="w-2 h-2 rounded-full bg-yellow-400"></span>Reserva
+                </span>
+                <span class="flex items-center gap-1.5 text-zinc-400">
+                  <span class="w-2 h-2 rounded-full bg-zinc-400"></span>Completo
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+       SE??O CTA
+  ====================================================== -->
+    <section class="max-w-7xl mx-auto px-4 py-10">
+      <div
+        class="relative min-h-[430px] overflow-hidden rounded-2xl border border-white/10 bg-zinc-950"
+      >
+        <img
+          src="img/braden-collum-9HI8UJMSdZA-unsplash.jpg"
+          alt="Atleta na largada de uma corrida"
+          class="theme-image-media absolute inset-0 w-full h-full object-cover opacity-45"
+        />
+        <div
+          class="theme-image-scrim absolute inset-0 bg-gradient-to-r from-zinc-950 via-zinc-950/85 to-zinc-950/20"
+        ></div>
+        <div class="theme-image-scrim absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-transparent"></div>
+
+        <div class="relative max-w-2xl px-6 py-16 md:px-14 md:py-20">
+          <h2 class="font-display text-4xl md:text-5xl text-white leading-tight mb-5">
+            Pronto para come&ccedil;ar sua jornada esportiva?
+          </h2>
+          <p class="text-white/75 text-base md:text-lg mb-8 max-w-xl leading-relaxed">
+            Cadastre-se gratuitamente e encontre corridas, campeonatos, quadras e partidas informais perto de voc&ecirc; em Volta Redonda.
+          </p>
+
+          <div class="flex flex-col sm:flex-row gap-4 mb-8">
+            <a
+              href="cadastro.html"
+              class="bg-lime text-zinc-900 font-display px-7 py-3.5 rounded-xl hover:glow-lime transition-all uppercase tracking-wide text-sm text-center"
+              >Criar Conta Gr&aacute;tis &rarr;</a
+            >
+            <a
+              href="eventos.html"
+              class="border border-white/20 text-white px-7 py-3.5 rounded-xl hover:bg-white/5 transition-colors text-sm font-semibold text-center"
+              >Explorar Eventos</a
+            >
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-xl">
+            <div class="border-t border-white/15 pt-3">
+              <p class="font-mono text-[10px] text-lime tracking-widest uppercase">Eventos locais</p>
+              <p class="text-xs text-white/65 mt-1">Calend&aacute;rio esportivo da regi&atilde;o.</p>
+            </div>
+            <div class="border-t border-white/15 pt-3">
+              <p class="font-mono text-[10px] text-lime tracking-widest uppercase">Joga Junto</p>
+              <p class="text-xs text-white/65 mt-1">Quadras e partidas abertas.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+       FOOTER
+  ====================================================== -->
+    <footer class="border-t border-white/10 bg-surface">
+      <div
+        class="max-w-7xl mx-auto px-4 py-10 grid grid-cols-2 md:grid-cols-4 gap-8"
+      >
+        <div class="col-span-2 md:col-span-1">
+          <a
+            href="index.html"
+            class="flex items-center mb-3 hover:opacity-80 transition-opacity"
+            aria-label="Ir para a página inicial do +Sports"
+          >
+            <img src="img/logo.svg" alt="+Sports" class="h-7 w-auto" />
+          </a>
+          <p class="text-muted text-xs leading-relaxed">
+            Conectando a comunidade de Volta Redonda aos melhores eventos
+            esportivos da região.
+          </p>
+          <div class="flex gap-4 mt-4 text-muted">
+            <a
+              href="https://www.instagram.com/maissportsvr?igsh=MTBobzRmNHJ2aXJhZw%3D%3D&utm_source=qr"
+              class="hover:text-lime transition-colors"
+              aria-label="Acessar nosso Instagram"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="w-5 h-5"
+              >
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                <path
+                  d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"
+                ></path>
+                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+              </svg>
+            </a>
+            <a
+              href="#"
+              class="hover:text-lime transition-colors"
+              aria-label="Acessar nosso Facebook"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="w-5 h-5"
+              >
+                <path
+                  d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"
+                ></path>
+              </svg>
+            </a>
+            <a
+              href="#"
+              class="hover:text-lime transition-colors"
+              aria-label="Acessar nosso Twitter"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="w-5 h-5"
+              >
+                <path
+                  d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"
+                ></path>
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        <div>
+          <h4
+            class="font-mono text-xs tracking-widest text-muted uppercase mb-3"
+          >
+            Navegação
+          </h4>
+          <ul class="flex flex-col gap-2 text-sm text-fg/70">
+            <li>
+              <a href="index.html" class="hover:text-lime transition-colors"
+                >Home</a
+              >
+            </li>
+            <li>
+              <a href="eventos.html" class="hover:text-lime transition-colors"
+                >Eventos</a
+              >
+            </li>
+            <li>
+              <a href="jj.html" class="hover:text-lime transition-colors"
+                >Joga Junto</a
+              >
+            </li>
+            <li>
+              <a href="mapa.html" class="hover:text-lime transition-colors"
+                >Mapa</a
+              >
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <h4
+            class="font-mono text-xs tracking-widest text-muted uppercase mb-3"
+          >
+            Conta
+          </h4>
+          <ul class="flex flex-col gap-2 text-sm text-fg/70">
+            <li>
+              <a href="login.html" class="hover:text-lime transition-colors"
+                >Login</a
+              >
+            </li>
+            <li>
+              <a href="cadastro.html" class="hover:text-lime transition-colors"
+                >Cadastrar</a
+              >
+            </li>
+            <li>
+              <a href="meus-eventos.html" class="hover:text-lime transition-colors"
+                >Meus Eventos</a
+              >
+            </li>
+            <li>
+              <a href="ajuda.html" class="hover:text-lime transition-colors">Ajuda</a>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <h4
+            class="font-mono text-xs tracking-widest text-muted uppercase mb-3"
+          >
+            +Sports
+          </h4>
+          <ul class="flex flex-col gap-2 text-sm text-fg/70">
+            <li>
+              <a href="sobre.html" class="hover:text-lime transition-colors"
+                >Sobre Nós</a
+              >
+            </li>
+            <li>
+              <a href="contato.html" class="hover:text-lime transition-colors">Contato</a>
+            </li>
+            <li>
+              <a href="privacidade.html" class="hover:text-lime transition-colors"
+                >Política de Privacidade</a
+              >
+            </li>
+            <li>
+              <a href="termos.html" class="hover:text-lime transition-colors"
+                >Termos de Uso</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-white/10 text-center py-4">
+        <p class="text-muted text-xs font-mono">
+          © 2026 +Sports. Todos os direitos reservados. Desenvolvido por alunos
+          da UniFOA.
+        </p>
+      </div>
+    </footer>
+
+    <!-- Scripts: global.js → Leaflet → index.js -->
+    <script src="./js/global.js"></script>
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      crossorigin=""
+    ></script>
+    <script src="./js/index.js"></script>
+    <script src="./js/auth.js"></script>
+  </body>
+</html>
+
+
+
+

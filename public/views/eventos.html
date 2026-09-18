@@ -1,0 +1,1021 @@
+﻿<!doctype html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>+Sports - Eventos</title>
+  <link rel="shortcut icon" href="img/favicon.png" type="image/x-icon" />
+
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+  <style type="text/tailwindcss">
+    @theme {
+      --color-zinc950:    #0c0c0e;
+      --color-surface:    #161618;
+      --color-secondary:  #1f2024;
+      --color-lime:       #bef264;
+      --color-lime-hover: #d9f99d;
+      --color-fg:         #f3f3f3;
+      --color-muted:      #9ca39e;
+
+      --font-display: "Archivo Black", sans-serif;
+      --font-body: "Barlow", sans-serif;
+      --font-mono: "JetBrains Mono", monospace;
+    }
+
+    .glow-lime-sm { box-shadow: 0 0 12px rgba(190, 242, 100, 0.6); }
+
+    .filter-group > summary::-webkit-details-marker { display: none; }
+    .filter-group > summary { list-style: none; }
+    .filter-chevron {
+      transition: transform 180ms ease, color 180ms ease;
+      transform: rotate(0deg);
+    }
+    .filter-group[open] .filter-chevron {
+      transform: rotate(180deg);
+      color: var(--color-lime);
+    }
+    .filter-content {
+      display: grid;
+      grid-template-rows: 0fr;
+      opacity: 0;
+      transition: grid-template-rows 180ms ease, opacity 180ms ease;
+    }
+    .filter-content > div { overflow: hidden; }
+    .filter-group[open] .filter-content {
+      grid-template-rows: 1fr;
+      opacity: 1;
+    }
+    .order-menu {
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-8px) scale(0.98);
+      pointer-events: none;
+      transition: opacity 170ms ease, transform 170ms ease, visibility 170ms ease;
+    }
+    .order-menu.is-open {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+    @media (min-width: 1024px) {
+      #eventos-layout { position: relative; }
+      #eventos-content {
+        width: calc(100% - 304px);
+        margin-left: auto;
+        margin-right: auto;
+        transition: transform 220ms ease;
+        will-change: transform;
+      }
+      #eventos-layout.filters-open #eventos-content {
+        transform: translateX(152px);
+      }
+      #filters-panel {
+        opacity: 0;
+        transform: translateX(-14px);
+        pointer-events: none;
+        transition: opacity 220ms ease, transform 220ms ease;
+      }
+      #filters-panel.is-visible {
+        opacity: 1;
+        transform: translateX(0);
+        pointer-events: auto;
+      }
+    }
+  </style>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=JetBrains+Mono:wght@500;700&family=Barlow:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+</head>
+
+<body class="bg-zinc950 text-fg font-body antialiased">
+
+  <header class="sticky top-0 z-50 bg-zinc950/90 backdrop-blur border-b border-white/10">
+    <nav class="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between gap-4 relative">
+
+      <a href="index.html" class="flex items-center hover:opacity-80 transition-opacity z-10" aria-label="Ir para a página inicial do +Sports">
+        <img src="img/logo.svg" alt="+Sports" class="h-6 w-auto" />
+      </a>
+
+      <div class="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-6 text-[15px] font-medium text-muted">
+        <a href="index.html" class="hover:text-lime transition-colors whitespace-nowrap">Home</a>
+        <a href="eventos.html" class="text-lime transition-colors whitespace-nowrap">Eventos</a>
+        <a href="jj.html" class="hover:text-lime transition-colors whitespace-nowrap">Joga Junto</a>
+        <a href="mapa.html" class="hover:text-lime transition-colors whitespace-nowrap">Mapa</a>
+      </div>
+
+      <div class="flex items-center gap-2 ml-auto z-10">
+        <input
+          type="text"
+          placeholder="Pesquisar..."
+          class="hidden lg:block bg-surface border border-white/10 rounded-lg text-sm text-fg placeholder-muted px-3 py-1.5 w-44 focus:outline-none focus:border-lime/50 transition-colors"
+        />
+        <a href="login.html" class="hidden md:block text-sm border border-white/20 text-fg px-3 py-1.5 rounded-lg hover:bg-surface transition-colors whitespace-nowrap">Entrar</a>
+        <a href="cadastro.html" class="hidden md:block text-sm bg-lime text-zinc-900 font-semibold px-3 py-1.5 rounded-lg hover:glow-lime-sm transition-all whitespace-nowrap">Criar Conta</a>
+
+        <button id="btnMenu" class="md:hidden text-fg text-xl w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-lg hover:bg-surface transition-colors" aria-label="Abrir menu">&#9776;</button>
+      </div>
+    </nav>
+
+    <div id="menuMobile" class="hidden md:hidden bg-surface border-b border-white/10 px-4 py-4 flex flex-col gap-3 text-sm font-medium">
+      <a href="index.html" class="text-fg hover:text-lime transition-colors">Home</a>
+      <a href="eventos.html" class="text-fg hover:text-lime transition-colors">Eventos</a>
+      <a href="jj.html" class="text-fg hover:text-lime transition-colors">Joga Junto</a>
+      <a href="mapa.html" class="text-fg hover:text-lime transition-colors">Mapa</a>
+      <hr class="border-white/10" />
+      <a href="login.html" class="text-muted hover:text-fg transition-colors">Login</a>
+      <a href="cadastro.html" class="bg-lime text-zinc-900 font-semibold px-4 py-2 rounded-lg text-center">Criar Conta</a>
+    </div>
+  </header>
+
+  <main class="max-w-[1500px] mx-auto px-4 py-5 md:py-6 min-h-[65vh]">
+
+    <div class="mt-2 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+      <h1 class="font-display text-xl sm:text-2xl text-fg leading-tight">Eventos esportivos <span class="text-fg/65 text-base sm:text-lg align-middle">(15)</span></h1>
+
+      <div class="w-full lg:flex-1 lg:flex lg:justify-center">
+        <label class="w-full lg:max-w-2xl flex items-center gap-3 bg-surface/90 border border-white/15 rounded-2xl px-4 py-3 focus-within:border-lime/50 transition-colors">
+          <svg class="w-5 h-5 text-muted flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="8"></circle>
+            <path d="m21 21-4.3-4.3"></path>
+          </svg>
+          <input type="search" placeholder="Pesquisar evento, modalidade ou local..." class="w-full bg-transparent text-fg placeholder-muted outline-none" />
+          <button class="hidden sm:flex w-10 h-10 rounded-xl bg-lime text-zinc-900 items-center justify-center hover:brightness-110 transition" aria-label="Pesquisar">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="m21 21-4.3-4.3"></path>
+            </svg>
+          </button>
+        </label>
+      </div>
+
+      <div class="hidden lg:flex items-center gap-4 text-sm text-fg/90">
+        <button class="hover:text-lime transition-colors inline-flex items-center gap-2">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7"></path><path d="M16 6l-4-4-4 4"></path><path d="M12 2v14"></path></svg>
+          Compartilhar
+        </button>
+        <span class="w-px h-5 bg-white/15"></span>
+        <button id="btnToggleFilters" type="button" aria-expanded="false" class="hover:text-lime transition-colors inline-flex items-center gap-2">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M7 12h10"></path><path d="M10 18h4"></path></svg>
+          Filtros
+        </button>
+        <span class="w-px h-5 bg-white/15"></span>
+        <div class="relative">
+          <button id="btnOrderMenu" type="button" aria-expanded="false" class="hover:text-lime transition-colors inline-flex items-center gap-2">
+            <span id="orderLabel">Ordenar por</span>
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg>
+          </button>
+          <div id="orderMenu" class="order-menu absolute right-0 top-[calc(100%+0.55rem)] z-40 w-72 rounded-xl border border-white/15 bg-surface/95 backdrop-blur-md p-2 shadow-[0_18px_32px_rgba(0,0,0,0.5)]">
+            <button type="button" data-order-option="Preço: menor para maior" class="w-full text-left px-3 py-2 rounded-lg text-sm text-fg/90 hover:bg-secondary hover:text-lime transition-colors">Preço: menor para maior</button>
+            <button type="button" data-order-option="Preço: maior para menor" class="w-full text-left px-3 py-2 rounded-lg text-sm text-fg/90 hover:bg-secondary hover:text-lime transition-colors">Preço: maior para menor</button>
+            <button type="button" data-order-option="Distância: menor para maior" class="w-full text-left px-3 py-2 rounded-lg text-sm text-fg/90 hover:bg-secondary hover:text-lime transition-colors">Distância: menor para maior</button>
+            <button type="button" data-order-option="Distância: maior para menor" class="w-full text-left px-3 py-2 rounded-lg text-sm text-fg/90 hover:bg-secondary hover:text-lime transition-colors">Distância: maior para menor</button>
+            <button type="button" data-order-option="Data: mais próxima" class="w-full text-left px-3 py-2 rounded-lg text-sm text-fg/90 hover:bg-secondary hover:text-lime transition-colors">Data: mais próxima</button>
+            <button type="button" data-order-option="Vagas: mais vagas primeiro" class="w-full text-left px-3 py-2 rounded-lg text-sm text-fg/90 hover:bg-secondary hover:text-lime transition-colors">Vagas: mais vagas primeiro</button>
+            <button type="button" data-order-option="Gratuitos primeiro" class="w-full text-left px-3 py-2 rounded-lg text-sm text-fg/90 hover:bg-secondary hover:text-lime transition-colors">Gratuitos primeiro</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-4 lg:hidden flex items-start gap-2">
+      <details id="mobileFiltersPanel" class="flex-1 bg-surface border border-white/10 rounded-2xl p-4">
+        <summary class="list-none cursor-pointer flex items-center justify-between text-sm font-semibold text-fg">
+          Ajustar filtros
+          <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg>
+        </summary>
+        <div class="mt-4 space-y-3 text-sm">
+        <details open class="filter-group border-b border-white/10 pb-3">
+          <summary class="cursor-pointer flex items-center justify-between font-semibold">
+            Modalidade
+            <svg class="filter-chevron w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg>
+          </summary>
+          <div class="filter-content">
+            <div class="mt-3 grid grid-cols-2 gap-2 text-muted">
+              <label class="flex items-center gap-2"><input type="checkbox" checked class="accent-lime" /> Corrida</label>
+              <label class="flex items-center gap-2"><input type="checkbox" class="accent-lime" /> Futebol</label>
+              <label class="flex items-center gap-2"><input type="checkbox" class="accent-lime" /> Padel</label>
+              <label class="flex items-center gap-2"><input type="checkbox" class="accent-lime" /> Kart</label>
+              <label class="flex items-center gap-2"><input type="checkbox" class="accent-lime" /> Beach Tennis</label>
+              <label class="flex items-center gap-2"><input type="checkbox" class="accent-lime" /> Futvôlei</label>
+            </div>
+          </div>
+        </details>
+
+        <details open class="filter-group border-b border-white/10 pb-3">
+          <summary class="cursor-pointer flex items-center justify-between font-semibold">
+            Data
+            <svg class="filter-chevron w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg>
+          </summary>
+          <div class="filter-content">
+            <div class="mt-3 grid grid-cols-1 gap-2 text-muted">
+              <label class="flex items-center gap-2"><input type="checkbox" checked class="accent-lime" /> Este fim de semana</label>
+              <label class="flex items-center gap-2"><input type="checkbox" class="accent-lime" /> Próximos 7 dias</label>
+              <label class="flex items-center gap-2"><input type="checkbox" class="accent-lime" /> Próximos 30 dias</label>
+            </div>
+          </div>
+        </details>
+
+        <details class="filter-group border-b border-white/10 pb-3">
+          <summary class="cursor-pointer flex items-center justify-between font-semibold">
+            Local
+            <svg class="filter-chevron w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg>
+          </summary>
+          <div class="filter-content">
+            <div class="mt-3 grid grid-cols-1 gap-2 text-muted">
+              <label class="flex items-center gap-2"><input type="checkbox" class="accent-lime" /> Volta Redonda/RJ</label>
+              <label class="flex items-center gap-2"><input type="checkbox" class="accent-lime" /> Barra Mansa/RJ</label>
+              <label class="flex items-center gap-2"><input type="checkbox" class="accent-lime" /> Resende/RJ</label>
+              <label class="flex items-center gap-2"><input type="checkbox" class="accent-lime" /> Rio Claro/RJ</label>
+              <label class="flex items-center gap-2"><input type="checkbox" class="accent-lime" /> Itatiaia/RJ</label>
+            </div>
+          </div>
+        </details>
+
+        <details class="filter-group border-b border-white/10 pb-3">
+          <summary class="cursor-pointer flex items-center justify-between font-semibold">
+            Preço
+            <svg class="filter-chevron w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg>
+          </summary>
+          <div class="filter-content">
+            <div class="mt-3 grid grid-cols-1 gap-2 text-muted">
+              <label class="flex items-center gap-2"><input type="checkbox" class="accent-lime" /> Grátis</label>
+              <label class="flex items-center gap-2"><input type="checkbox" class="accent-lime" /> Até R$ 50</label>
+              <label class="flex items-center gap-2"><input type="checkbox" class="accent-lime" /> R$ 50 - R$ 100</label>
+              <label class="flex items-center gap-2"><input type="checkbox" class="accent-lime" /> R$ 100 - R$ 150</label>
+              <label class="flex items-center gap-2"><input type="checkbox" class="accent-lime" /> R$ 150+</label>
+            </div>
+          </div>
+        </details>
+
+        <details class="filter-group">
+          <summary class="cursor-pointer flex items-center justify-between font-semibold">
+            Status
+            <svg class="filter-chevron w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg>
+          </summary>
+          <div class="filter-content">
+            <div class="mt-3 grid grid-cols-1 gap-2 text-muted">
+              <label class="flex items-center gap-2"><input type="checkbox" class="accent-lime" /> Disponível</label>
+              <label class="flex items-center gap-2"><input type="checkbox" class="accent-lime" /> Últimas vagas</label>
+              <label class="flex items-center gap-2"><input type="checkbox" class="accent-lime" /> Encerrado</label>
+            </div>
+          </div>
+        </details>
+        </div>
+      </details>
+      <div class="relative">
+        <button id="btnOrderMenuMobile" type="button" aria-expanded="false" class="h-[52px] w-[52px] rounded-xl border border-white/20 text-fg inline-flex items-center justify-center hover:border-lime hover:text-lime transition-colors" aria-label="Ordenar eventos">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M7 12h10"></path><path d="M10 18h4"></path></svg>
+        </button>
+        <div id="orderMenuMobile" class="order-menu absolute right-0 top-[calc(100%+0.5rem)] z-40 w-72 max-w-[calc(100vw-2rem)] rounded-xl border border-white/15 bg-surface/95 backdrop-blur-md p-2 shadow-[0_18px_32px_rgba(0,0,0,0.5)]">
+          <button type="button" data-order-option-mobile="Preço: menor para maior" class="w-full text-left px-3 py-2 rounded-lg text-sm text-fg/90 hover:bg-secondary hover:text-lime transition-colors">Preço: menor para maior</button>
+          <button type="button" data-order-option-mobile="Preço: maior para menor" class="w-full text-left px-3 py-2 rounded-lg text-sm text-fg/90 hover:bg-secondary hover:text-lime transition-colors">Preço: maior para menor</button>
+          <button type="button" data-order-option-mobile="Distância: menor para maior" class="w-full text-left px-3 py-2 rounded-lg text-sm text-fg/90 hover:bg-secondary hover:text-lime transition-colors">Distância: menor para maior</button>
+          <button type="button" data-order-option-mobile="Distância: maior para menor" class="w-full text-left px-3 py-2 rounded-lg text-sm text-fg/90 hover:bg-secondary hover:text-lime transition-colors">Distância: maior para menor</button>
+          <button type="button" data-order-option-mobile="Data: mais próxima" class="w-full text-left px-3 py-2 rounded-lg text-sm text-fg/90 hover:bg-secondary hover:text-lime transition-colors">Data: mais próxima</button>
+          <button type="button" data-order-option-mobile="Vagas: mais vagas primeiro" class="w-full text-left px-3 py-2 rounded-lg text-sm text-fg/90 hover:bg-secondary hover:text-lime transition-colors">Vagas: mais vagas primeiro</button>
+          <button type="button" data-order-option-mobile="Gratuitos primeiro" class="w-full text-left px-3 py-2 rounded-lg text-sm text-fg/90 hover:bg-secondary hover:text-lime transition-colors">Gratuitos primeiro</button>
+        </div>
+      </div>
+    </div>
+
+    <section id="eventos-layout" class="mt-5 grid grid-cols-1 gap-4 lg:gap-6">
+      <aside id="filters-panel" class="hidden lg:block lg:absolute lg:left-0 lg:top-0 lg:w-[280px] bg-surface/95 border border-white/10 rounded-2xl p-4 h-fit">
+        <details open class="filter-group border-b border-white/10 pb-4 mb-4">
+          <summary class="cursor-pointer flex items-center justify-between font-semibold">
+            Modalidade
+            <svg class="filter-chevron w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg>
+          </summary>
+          <div class="filter-content">
+            <div class="mt-3 space-y-2 text-muted text-[15px]">
+              <label class="flex items-center justify-between"><span class="flex items-center gap-2"><input type="checkbox" checked class="accent-lime" /> Corrida</span><span>42</span></label>
+              <label class="flex items-center justify-between"><span class="flex items-center gap-2"><input type="checkbox" class="accent-lime" /> Futebol</span><span>28</span></label>
+              <label class="flex items-center justify-between"><span class="flex items-center gap-2"><input type="checkbox" class="accent-lime" /> Padel</span><span>16</span></label>
+              <label class="flex items-center justify-between"><span class="flex items-center gap-2"><input type="checkbox" class="accent-lime" /> Kart</span><span>12</span></label>
+              <label class="flex items-center justify-between"><span class="flex items-center gap-2"><input type="checkbox" class="accent-lime" /> Beach Tennis</span><span>9</span></label>
+              <label class="flex items-center justify-between"><span class="flex items-center gap-2"><input type="checkbox" class="accent-lime" /> Futvôlei</span><span>8</span></label>
+              <label class="flex items-center justify-between"><span class="flex items-center gap-2"><input type="checkbox" class="accent-lime" /> Grátis</span><span>18</span></label>
+            </div>
+          </div>
+        </details>
+
+        <details open class="filter-group border-b border-white/10 pb-4 mb-4">
+          <summary class="cursor-pointer flex items-center justify-between font-semibold">
+            Data
+            <svg class="filter-chevron w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg>
+          </summary>
+          <div class="filter-content">
+            <div class="mt-3 space-y-2 text-muted text-[15px]">
+              <label class="flex items-center justify-between"><span class="flex items-center gap-2"><input type="checkbox" checked class="accent-lime" /> Este fim de semana</span><span>24</span></label>
+              <label class="flex items-center justify-between"><span class="flex items-center gap-2"><input type="checkbox" class="accent-lime" /> Próximos 7 dias</span><span>36</span></label>
+              <label class="flex items-center justify-between"><span class="flex items-center gap-2"><input type="checkbox" class="accent-lime" /> Próximos 30 dias</span><span>84</span></label>
+              <button class="w-full text-left text-fg/80 hover:text-lime transition-colors mt-1">Escolher data</button>
+            </div>
+          </div>
+        </details>
+
+        <details class="filter-group border-b border-white/10 pb-4 mb-4">
+          <summary class="cursor-pointer flex items-center justify-between font-semibold">
+            Local
+            <svg class="filter-chevron w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg>
+          </summary>
+          <div class="filter-content">
+            <div class="mt-3 space-y-2 text-muted text-[15px]">
+              <label class="flex items-center gap-2"><input type="checkbox" class="accent-lime" /> Volta Redonda/RJ</label>
+              <label class="flex items-center gap-2"><input type="checkbox" class="accent-lime" /> Barra Mansa/RJ</label>
+              <label class="flex items-center gap-2"><input type="checkbox" class="accent-lime" /> Resende/RJ</label>
+              <label class="flex items-center gap-2"><input type="checkbox" class="accent-lime" /> Rio Claro/RJ</label>
+              <label class="flex items-center gap-2"><input type="checkbox" class="accent-lime" /> Itatiaia/RJ</label>
+              <label class="flex items-center gap-2"><input type="checkbox" class="accent-lime" /> Pinheiral/RJ</label>
+              <label class="flex items-center gap-2"><input type="checkbox" class="accent-lime" /> Porto Real/RJ</label>
+              <label class="flex items-center gap-2"><input type="checkbox" class="accent-lime" /> Piraí/RJ</label>
+            </div>
+          </div>
+        </details>
+
+        <details class="filter-group border-b border-white/10 pb-4 mb-4">
+          <summary class="cursor-pointer flex items-center justify-between font-semibold">
+            Preço
+            <svg class="filter-chevron w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg>
+          </summary>
+          <div class="filter-content">
+            <div class="mt-3 space-y-2 text-muted text-[15px]">
+              <label class="flex items-center gap-2"><input type="checkbox" class="accent-lime" /> Grátis</label>
+              <label class="flex items-center gap-2"><input type="checkbox" class="accent-lime" /> Até R$ 50</label>
+              <label class="flex items-center gap-2"><input type="checkbox" class="accent-lime" /> R$ 50 - R$ 100</label>
+              <label class="flex items-center gap-2"><input type="checkbox" class="accent-lime" /> R$ 100 - R$ 150</label>
+              <label class="flex items-center gap-2"><input type="checkbox" class="accent-lime" /> R$ 150+</label>
+            </div>
+          </div>
+        </details>
+
+        <details class="filter-group">
+          <summary class="cursor-pointer flex items-center justify-between font-semibold">
+            Status
+            <svg class="filter-chevron w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg>
+          </summary>
+          <div class="filter-content">
+            <div class="mt-3 space-y-2 text-muted text-[15px]">
+              <label class="flex items-center gap-2"><input type="checkbox" class="accent-lime" /> Disponível</label>
+              <label class="flex items-center gap-2"><input type="checkbox" class="accent-lime" /> Últimas vagas</label>
+              <label class="flex items-center gap-2"><input type="checkbox" class="accent-lime" /> Encerrado</label>
+            </div>
+          </div>
+        </details>
+      </aside>
+
+      <div id="eventos-content">
+        <div id="eventsGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+
+          <article class="group bg-surface border border-white/10 rounded-2xl overflow-hidden hover:border-lime/40 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-lime focus-visible:ring-offset-2 focus-visible:ring-offset-zinc950" data-event-link="evento-base.html" role="link" tabindex="0" aria-label="Abrir página do evento Boltz Run 5K">
+            <div class="relative h-44 overflow-hidden">
+              <img src="img/eventos/boltz-card.jpg" alt="Boltz Run 5K" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+              <div class="absolute inset-0 bg-gradient-to-t from-zinc-950/85 via-zinc-950/45 to-transparent"></div>
+              <span class="absolute top-3 left-3 text-[10px] font-mono uppercase tracking-widest bg-zinc-950/85 text-lime border border-lime/45 rounded-md px-2 py-1">Inscrições abertas</span>
+              <button class="absolute top-3 right-3 w-9 h-9 rounded-full border border-white/35 bg-zinc950/60 text-fg hover:border-lime hover:text-lime transition-colors" aria-label="Salvar evento">&#9825;</button>
+            </div>
+            <div class="p-4">
+              <div class="flex gap-3 min-w-0">
+                <div class="flex-shrink-0 w-12 h-12 rounded-lg bg-zinc950/70 border border-white/15 flex flex-col items-center justify-center leading-none">
+                  <span class="text-2xl font-semibold">21</span><span class="text-[11px] text-muted uppercase">JUN</span>
+                </div>
+                <div class="min-w-0">
+                  <h3 class="font-display text-lg sm:text-xl leading-tight whitespace-nowrap overflow-hidden text-ellipsis">Boltz Run 5K</h3>
+                  <p class="text-muted whitespace-nowrap overflow-hidden text-ellipsis">5K - Barra do Piraí, RJ</p>
+                </div>
+              </div>
+              <div class="mt-4 flex items-end justify-between gap-4">
+                <p class="font-mono text-lg sm:text-xl text-lime font-bold">R$ 130,00</p>
+                <p class="text-muted text-sm">242 / 300 vagas</p>
+              </div>
+            </div>
+          </article>
+
+          <article class="group bg-surface border border-white/10 rounded-2xl overflow-hidden hover:border-lime/40 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-lime focus-visible:ring-offset-2 focus-visible:ring-offset-zinc950" data-event-link="evento-base.html" role="link" tabindex="0" aria-label="Abrir página do evento Copa PS de Volleybal">
+            <div class="relative h-44 overflow-hidden">
+              <img src="img/eventos/copa-ps-card.jpg" alt="Copa PS de Volleybal" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+              <div class="absolute inset-0 bg-gradient-to-t from-zinc-950/85 via-zinc-950/45 to-transparent"></div>
+              <span class="absolute top-3 left-3 text-[10px] font-mono uppercase tracking-widest bg-zinc-950/85 text-amber-300 border border-amber-300/40 rounded-md px-2 py-1">Vagas limitadas</span>
+              <button class="absolute top-3 right-3 w-9 h-9 rounded-full border border-white/35 bg-zinc950/60 text-fg hover:border-lime hover:text-lime transition-colors" aria-label="Salvar evento">&#9825;</button>
+            </div>
+            <div class="p-4">
+              <div class="flex gap-3 min-w-0">
+                <div class="flex-shrink-0 w-12 h-12 rounded-lg bg-zinc950/70 border border-white/15 flex flex-col items-center justify-center leading-none">
+                  <span class="text-2xl font-semibold">28</span><span class="text-[11px] text-muted uppercase">JUN</span>
+                </div>
+                <div class="min-w-0">
+                  <h3 class="font-display text-lg sm:text-xl leading-tight whitespace-nowrap overflow-hidden text-ellipsis">Copa PS de Volleybal</h3>
+                  <p class="text-muted whitespace-nowrap overflow-hidden text-ellipsis">Voleibol amador - Paraíba do Sul, RJ</p>
+                </div>
+              </div>
+              <div class="mt-4 flex items-end justify-between gap-4">
+                <p class="font-mono text-lg sm:text-xl text-lime font-bold">Em breve</p>
+                <p class="text-muted text-sm">Vagas limitadas</p>
+              </div>
+            </div>
+          </article>
+
+          <article class="group bg-surface border border-white/10 rounded-2xl overflow-hidden hover:border-lime/40 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-lime focus-visible:ring-offset-2 focus-visible:ring-offset-zinc950" data-event-link="evento-base.html" role="link" tabindex="0" aria-label="Abrir página do evento Royal Night Run Resende">
+            <div class="relative h-44 overflow-hidden">
+              <img src="img/eventos/royal-card.jpg" alt="Royal Night Run Resende" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+              <div class="absolute inset-0 bg-gradient-to-t from-zinc-950/85 via-zinc-950/45 to-transparent"></div>
+              <span class="absolute top-3 left-3 text-[10px] font-mono uppercase tracking-widest bg-zinc-950/85 text-lime border border-lime/45 rounded-md px-2 py-1">Inscrições abertas</span>
+              <button class="absolute top-3 right-3 w-9 h-9 rounded-full border border-white/35 bg-zinc950/60 text-fg hover:border-lime hover:text-lime transition-colors" aria-label="Salvar evento">&#9825;</button>
+            </div>
+            <div class="p-4">
+              <div class="flex gap-3 min-w-0">
+                <div class="flex-shrink-0 w-12 h-12 rounded-lg bg-zinc950/70 border border-white/15 flex flex-col items-center justify-center leading-none">
+                  <span class="text-2xl font-semibold">08</span><span class="text-[11px] text-muted uppercase">AGO</span>
+                </div>
+                <div class="min-w-0">
+                  <h3 class="font-display text-lg sm:text-xl leading-tight whitespace-nowrap overflow-hidden text-ellipsis">Royal Night Run Resende</h3>
+                  <p class="text-muted whitespace-nowrap overflow-hidden text-ellipsis">5K - Resende, RJ</p>
+                </div>
+              </div>
+              <div class="mt-4 flex items-end justify-between gap-4">
+                <p class="font-mono text-lg sm:text-xl text-lime font-bold">R$ 119,90</p>
+                <p class="text-muted text-sm">210 / 400 vagas</p>
+              </div>
+            </div>
+          </article>
+
+          <article class="group bg-surface border border-white/10 rounded-2xl overflow-hidden hover:border-lime/40 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-lime focus-visible:ring-offset-2 focus-visible:ring-offset-zinc950" data-event-link="evento-base.html" role="link" tabindex="0" aria-label="Abrir página do evento 2ª Corrida do Clube Comercial">
+            <div class="relative h-44 overflow-hidden">
+              <img src="img/eventos/clube-comercial-card.jpg" alt="2ª Corrida do Clube Comercial" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+              <div class="absolute inset-0 bg-gradient-to-t from-zinc-950/85 via-zinc-950/45 to-transparent"></div>
+              <span class="absolute top-3 left-3 text-[10px] font-mono uppercase tracking-widest bg-zinc-950/85 text-lime border border-lime/45 rounded-md px-2 py-1">Inscrições abertas</span>
+              <button class="absolute top-3 right-3 w-9 h-9 rounded-full border border-white/35 bg-zinc950/60 text-fg hover:border-lime hover:text-lime transition-colors" aria-label="Salvar evento">&#9825;</button>
+            </div>
+            <div class="p-4">
+              <div class="flex gap-3 min-w-0">
+                <div class="flex-shrink-0 w-12 h-12 rounded-lg bg-zinc950/70 border border-white/15 flex flex-col items-center justify-center leading-none">
+                  <span class="text-2xl font-semibold">16</span><span class="text-[11px] text-muted uppercase">AGO</span>
+                </div>
+                <div class="min-w-0">
+                  <h3 class="font-display text-lg sm:text-xl leading-tight whitespace-nowrap overflow-hidden text-ellipsis">2ª Corrida do Clube Comercial</h3>
+                  <p class="text-muted whitespace-nowrap overflow-hidden text-ellipsis">5K - Volta Redonda, RJ</p>
+                </div>
+              </div>
+              <div class="mt-4 flex items-end justify-between gap-4">
+                <p class="font-mono text-lg sm:text-xl text-lime font-bold">R$ 99,90</p>
+                <p class="text-muted text-sm">364 / 500 vagas</p>
+              </div>
+            </div>
+          </article>
+
+          <article class="group bg-surface border border-white/10 rounded-2xl overflow-hidden hover:border-lime/40 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-lime focus-visible:ring-offset-2 focus-visible:ring-offset-zinc950" data-event-link="evento-base.html" role="link" tabindex="0" aria-label="Abrir página do evento Corrida do Malte">
+            <div class="relative h-44 overflow-hidden">
+              <img src="img/eventos/malte-card.jpg" alt="Corrida do Malte" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+              <div class="absolute inset-0 bg-gradient-to-t from-zinc-950/85 via-zinc-950/45 to-transparent"></div>
+              <span class="absolute top-3 left-3 text-[10px] font-mono uppercase tracking-widest bg-zinc-950/85 text-lime border border-lime/45 rounded-md px-2 py-1">Inscrições abertas</span>
+              <button class="absolute top-3 right-3 w-9 h-9 rounded-full border border-white/35 bg-zinc950/60 text-fg hover:border-lime hover:text-lime transition-colors" aria-label="Salvar evento">&#9825;</button>
+            </div>
+            <div class="p-4">
+              <div class="flex gap-3 min-w-0">
+                <div class="flex-shrink-0 w-12 h-12 rounded-lg bg-zinc950/70 border border-white/15 flex flex-col items-center justify-center leading-none">
+                  <span class="text-2xl font-semibold">10</span><span class="text-[11px] text-muted uppercase">OUT</span>
+                </div>
+                <div class="min-w-0">
+                  <h3 class="font-display text-lg sm:text-xl leading-tight whitespace-nowrap overflow-hidden text-ellipsis">Corrida do Malte</h3>
+                  <p class="text-muted whitespace-nowrap overflow-hidden text-ellipsis">5K - Bananal, SP</p>
+                </div>
+              </div>
+              <div class="mt-4 flex items-end justify-between gap-4">
+                <p class="font-mono text-lg sm:text-xl text-lime font-bold">R$ 109,90</p>
+                <p class="text-muted text-sm">Vagas limitadas</p>
+              </div>
+            </div>
+          </article>
+
+          <article class="group bg-surface border border-white/10 rounded-2xl overflow-hidden hover:border-lime/40 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-lime focus-visible:ring-offset-2 focus-visible:ring-offset-zinc950" data-event-link="evento-base.html" role="link" tabindex="0" aria-label="Abrir página do evento Corrida do Guerreiro">
+            <div class="relative h-44 overflow-hidden">
+              <img src="img/eventos/CorridaGuerreiro.jpg" alt="Corrida do Guerreiro" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+              <div class="absolute inset-0 bg-gradient-to-t from-zinc-950/85 via-zinc-950/45 to-transparent"></div>
+              <span class="absolute top-3 left-3 text-[10px] font-mono uppercase tracking-widest bg-zinc-950/85 text-fg border border-white/30 rounded-md px-2 py-1">Encerrado</span>
+              <button class="absolute top-3 right-3 w-9 h-9 rounded-full border border-white/35 bg-zinc950/60 text-fg hover:border-lime hover:text-lime transition-colors" aria-label="Salvar evento">&#9825;</button>
+            </div>
+            <div class="p-4">
+              <div class="flex gap-3 min-w-0">
+                <div class="flex-shrink-0 w-12 h-12 rounded-lg bg-zinc950/70 border border-white/15 flex flex-col items-center justify-center leading-none">
+                  <span class="text-2xl font-semibold">21</span><span class="text-[11px] text-muted uppercase">ABR</span>
+                </div>
+                <div class="min-w-0">
+                  <h3 class="font-display text-lg sm:text-xl leading-tight whitespace-nowrap overflow-hidden text-ellipsis">Corrida do Guerreiro</h3>
+                  <p class="text-muted whitespace-nowrap overflow-hidden text-ellipsis">3K e 5K - Volta Redonda, RJ</p>
+                </div>
+              </div>
+              <div class="mt-4 flex items-end justify-between gap-4">
+                <p class="font-mono text-lg sm:text-xl text-muted font-bold">R$ 130,90</p>
+                <p class="text-muted text-sm">500 participantes</p>
+              </div>
+            </div>
+          </article>
+
+          <article class="group bg-surface border border-white/10 rounded-2xl overflow-hidden hover:border-lime/40 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-lime focus-visible:ring-offset-2 focus-visible:ring-offset-zinc950" data-event-link="evento-base.html" role="link" tabindex="0" aria-label="Abrir página do evento Falcões de Aço 2026">
+            <div class="relative h-44 overflow-hidden">
+              <img src="img/eventos/RoyalRun.jpg" alt="Falcões de Aço 2026" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+              <div class="absolute inset-0 bg-gradient-to-t from-zinc-950/85 via-zinc-950/45 to-transparent"></div>
+              <span class="absolute top-3 left-3 text-[10px] font-mono uppercase tracking-widest bg-zinc-950/85 text-fg border border-white/30 rounded-md px-2 py-1">Encerrado</span>
+              <button class="absolute top-3 right-3 w-9 h-9 rounded-full border border-white/35 bg-zinc950/60 text-fg hover:border-lime hover:text-lime transition-colors" aria-label="Salvar evento">&#9825;</button>
+            </div>
+            <div class="p-4">
+              <div class="flex gap-3 min-w-0">
+                <div class="flex-shrink-0 w-12 h-12 rounded-lg bg-zinc950/70 border border-white/15 flex flex-col items-center justify-center leading-none">
+                  <span class="text-2xl font-semibold">25</span><span class="text-[11px] text-muted uppercase">ABR</span>
+                </div>
+                <div class="min-w-0">
+                  <h3 class="font-display text-lg sm:text-xl leading-tight whitespace-nowrap overflow-hidden text-ellipsis">Falcões de Aço 2026</h3>
+                  <p class="text-muted whitespace-nowrap overflow-hidden text-ellipsis">Futebol Society - Volta Redonda, RJ</p>
+                </div>
+              </div>
+              <div class="mt-4 flex items-end justify-between gap-4">
+                <p class="font-mono text-lg sm:text-xl text-muted font-bold">R$ 250,00</p>
+                <p class="text-muted text-sm">32 participantes</p>
+              </div>
+            </div>
+          </article>
+
+          <article class="group bg-surface border border-white/10 rounded-2xl overflow-hidden hover:border-lime/40 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-lime focus-visible:ring-offset-2 focus-visible:ring-offset-zinc950" data-event-link="evento-base.html" role="link" tabindex="0" aria-label="Abrir página do evento Desafio MTB Aço">
+            <div class="relative h-44 overflow-hidden">
+              <img src="img/eventos/nerdRun.jpg" alt="Desafio MTB Aço" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+              <div class="absolute inset-0 bg-gradient-to-t from-zinc-950/85 via-zinc-950/45 to-transparent"></div>
+              <span class="absolute top-3 left-3 text-[10px] font-mono uppercase tracking-widest bg-zinc-950/85 text-fg border border-white/30 rounded-md px-2 py-1">Encerrado</span>
+              <button class="absolute top-3 right-3 w-9 h-9 rounded-full border border-white/35 bg-zinc950/60 text-fg hover:border-lime hover:text-lime transition-colors" aria-label="Salvar evento">&#9825;</button>
+            </div>
+            <div class="p-4">
+              <div class="flex gap-3 min-w-0">
+                <div class="flex-shrink-0 w-12 h-12 rounded-lg bg-zinc950/70 border border-white/15 flex flex-col items-center justify-center leading-none">
+                  <span class="text-2xl font-semibold">19</span><span class="text-[11px] text-muted uppercase">MAI</span>
+                </div>
+                <div class="min-w-0">
+                  <h3 class="font-display text-lg sm:text-xl leading-tight whitespace-nowrap overflow-hidden text-ellipsis">Desafio MTB Aço</h3>
+                  <p class="text-muted whitespace-nowrap overflow-hidden text-ellipsis">MTB - Volta Redonda, RJ</p>
+                </div>
+              </div>
+              <div class="mt-4 flex items-end justify-between gap-4">
+                <p class="font-mono text-lg sm:text-xl text-muted font-bold">--</p>
+                <p class="text-muted text-sm">120 participantes</p>
+              </div>
+            </div>
+          </article>
+
+          <article class="group bg-surface border border-white/10 rounded-2xl overflow-hidden hover:border-lime/40 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-lime focus-visible:ring-offset-2 focus-visible:ring-offset-zinc950" data-event-link="evento-base.html" role="link" tabindex="0" aria-label="Abrir página do evento Festival Esportivo Sul Fluminense">
+            <div class="relative h-44 overflow-hidden">
+              <img src="img/eventos/Economize.jpg" alt="Festival Esportivo Sul Fluminense" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+              <div class="absolute inset-0 bg-gradient-to-t from-zinc-950/85 via-zinc-950/45 to-transparent"></div>
+              <span class="absolute top-3 left-3 text-[10px] font-mono uppercase tracking-widest bg-zinc-950/85 text-fg border border-white/30 rounded-md px-2 py-1">Encerrado</span>
+              <button class="absolute top-3 right-3 w-9 h-9 rounded-full border border-white/35 bg-zinc950/60 text-fg hover:border-lime hover:text-lime transition-colors" aria-label="Salvar evento">&#9825;</button>
+            </div>
+            <div class="p-4">
+              <div class="flex gap-3 min-w-0">
+                <div class="flex-shrink-0 w-12 h-12 rounded-lg bg-zinc950/70 border border-white/15 flex flex-col items-center justify-center leading-none">
+                  <span class="text-2xl font-semibold">10</span><span class="text-[11px] text-muted uppercase">MAI</span>
+                </div>
+                <div class="min-w-0">
+                  <h3 class="font-display text-lg sm:text-xl leading-tight whitespace-nowrap overflow-hidden text-ellipsis">Festival Esportivo Sul Fluminense</h3>
+                  <p class="text-muted whitespace-nowrap overflow-hidden text-ellipsis">Multiesportivo - Volta Redonda, RJ</p>
+                </div>
+              </div>
+              <div class="mt-4 flex items-end justify-between gap-4">
+                <p class="font-mono text-lg sm:text-xl text-muted font-bold">Grátis</p>
+                <p class="text-muted text-sm">200 participantes</p>
+              </div>
+            </div>
+          </article>
+
+          <!-- Lote extra (inicia oculto) -->
+          <article class="extra-event hidden group bg-surface border border-white/10 rounded-2xl overflow-hidden hover:border-lime/40 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-lime focus-visible:ring-offset-2 focus-visible:ring-offset-zinc950" data-event-link="evento-base.html" role="link" tabindex="0" aria-label="Abrir página do evento Corrida da Ponte">
+            <div class="relative h-44 overflow-hidden">
+              <img src="img/eventos/CorridaGuerreiro.jpg" alt="Corrida da Ponte" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+              <div class="absolute inset-0 bg-gradient-to-t from-zinc-950/85 via-zinc-950/45 to-transparent"></div>
+              <span class="absolute top-3 left-3 text-[10px] font-mono uppercase tracking-widest bg-zinc-950/85 text-fg border border-white/30 rounded-md px-2 py-1">Encerrado</span>
+              <button class="absolute top-3 right-3 w-9 h-9 rounded-full border border-white/35 bg-zinc950/60 text-fg hover:border-lime hover:text-lime transition-colors" aria-label="Salvar evento">&#9825;</button>
+            </div>
+            <div class="p-4">
+              <div class="flex gap-3 min-w-0">
+                <div class="flex-shrink-0 w-12 h-12 rounded-lg bg-zinc950/70 border border-white/15 flex flex-col items-center justify-center leading-none">
+                  <span class="text-2xl font-semibold">12</span><span class="text-[11px] text-muted uppercase">MAI</span>
+                </div>
+                <div class="min-w-0">
+                  <h3 class="font-display text-lg sm:text-xl leading-tight whitespace-nowrap overflow-hidden text-ellipsis">Corrida da Ponte</h3>
+                  <p class="text-muted whitespace-nowrap overflow-hidden text-ellipsis">5K - Barra Mansa, RJ</p>
+                </div>
+              </div>
+              <div class="mt-4 flex items-end justify-between gap-4">
+                <p class="font-mono text-lg sm:text-xl text-muted font-bold">R$ 95,00</p>
+                <p class="text-muted text-sm">220 participantes</p>
+              </div>
+            </div>
+          </article>
+
+          <article class="extra-event hidden group bg-surface border border-white/10 rounded-2xl overflow-hidden hover:border-lime/40 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-lime focus-visible:ring-offset-2 focus-visible:ring-offset-zinc950" data-event-link="evento-base.html" role="link" tabindex="0" aria-label="Abrir página do evento Circuito Dr. Saúde 5Km">
+            <div class="relative h-44 overflow-hidden">
+              <img src="img/eventos/DrSaude.jpg" alt="Circuito Dr. Saúde 5Km" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+              <div class="absolute inset-0 bg-gradient-to-t from-zinc-950/85 via-zinc-950/45 to-transparent"></div>
+              <span class="absolute top-3 left-3 text-[10px] font-mono uppercase tracking-widest bg-zinc-950/85 text-fg border border-white/30 rounded-md px-2 py-1">Encerrado</span>
+              <button class="absolute top-3 right-3 w-9 h-9 rounded-full border border-white/35 bg-zinc950/60 text-fg hover:border-lime hover:text-lime transition-colors" aria-label="Salvar evento">&#9825;</button>
+            </div>
+            <div class="p-4">
+              <div class="flex gap-3 min-w-0">
+                <div class="flex-shrink-0 w-12 h-12 rounded-lg bg-zinc950/70 border border-white/15 flex flex-col items-center justify-center leading-none">
+                  <span class="text-2xl font-semibold">03</span><span class="text-[11px] text-muted uppercase">MAI</span>
+                </div>
+                <div class="min-w-0">
+                  <h3 class="font-display text-lg sm:text-xl leading-tight whitespace-nowrap overflow-hidden text-ellipsis">Circuito Dr. Saúde 5Km</h3>
+                  <p class="text-muted whitespace-nowrap overflow-hidden text-ellipsis">Caminhada e corrida - Bananal, SP</p>
+                </div>
+              </div>
+              <div class="mt-4 flex items-end justify-between gap-4">
+                <p class="font-mono text-lg sm:text-xl text-muted font-bold">Grátis</p>
+                <p class="text-muted text-sm">300 participantes</p>
+              </div>
+            </div>
+          </article>
+
+          <article class="extra-event hidden group bg-surface border border-white/10 rounded-2xl overflow-hidden hover:border-lime/40 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-lime focus-visible:ring-offset-2 focus-visible:ring-offset-zinc950" data-event-link="evento-base.html" role="link" tabindex="0" aria-label="Abrir página do evento Night Run Sider">
+            <div class="relative h-44 overflow-hidden">
+              <img src="img/eventos/RoyalRun.jpg" alt="Night Run Sider" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+              <div class="absolute inset-0 bg-gradient-to-t from-zinc-950/85 via-zinc-950/45 to-transparent"></div>
+              <span class="absolute top-3 left-3 text-[10px] font-mono uppercase tracking-widest bg-zinc-950/85 text-fg border border-white/30 rounded-md px-2 py-1">Encerrado</span>
+              <button class="absolute top-3 right-3 w-9 h-9 rounded-full border border-white/35 bg-zinc950/60 text-fg hover:border-lime hover:text-lime transition-colors" aria-label="Salvar evento">&#9825;</button>
+            </div>
+            <div class="p-4">
+              <div class="flex gap-3 min-w-0">
+                <div class="flex-shrink-0 w-12 h-12 rounded-lg bg-zinc950/70 border border-white/15 flex flex-col items-center justify-center leading-none">
+                  <span class="text-2xl font-semibold">20</span><span class="text-[11px] text-muted uppercase">MAI</span>
+                </div>
+                <div class="min-w-0">
+                  <h3 class="font-display text-lg sm:text-xl leading-tight whitespace-nowrap overflow-hidden text-ellipsis">Night Run Sider</h3>
+                  <p class="text-muted whitespace-nowrap overflow-hidden text-ellipsis">10K - Resende, RJ</p>
+                </div>
+              </div>
+              <div class="mt-4 flex items-end justify-between gap-4">
+                <p class="font-mono text-lg sm:text-xl text-muted font-bold">R$ 135,00</p>
+                <p class="text-muted text-sm">260 participantes</p>
+              </div>
+            </div>
+          </article>
+
+          <article class="extra-event hidden group bg-surface border border-white/10 rounded-2xl overflow-hidden hover:border-lime/40 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-lime focus-visible:ring-offset-2 focus-visible:ring-offset-zinc950" data-event-link="evento-base.html" role="link" tabindex="0" aria-label="Abrir página do evento Torneio Beach Tennis VR">
+            <div class="relative h-44 overflow-hidden">
+              <img src="img/JOGA JUNTO/volei areia.jpeg" alt="Torneio Beach Tennis VR" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+              <div class="absolute inset-0 bg-gradient-to-t from-zinc-950/85 via-zinc-950/45 to-transparent"></div>
+              <span class="absolute top-3 left-3 text-[10px] font-mono uppercase tracking-widest bg-zinc-950/85 text-fg border border-white/30 rounded-md px-2 py-1">Encerrado</span>
+              <button class="absolute top-3 right-3 w-9 h-9 rounded-full border border-white/35 bg-zinc950/60 text-fg hover:border-lime hover:text-lime transition-colors" aria-label="Salvar evento">&#9825;</button>
+            </div>
+            <div class="p-4">
+              <div class="flex gap-3 min-w-0">
+                <div class="flex-shrink-0 w-12 h-12 rounded-lg bg-zinc950/70 border border-white/15 flex flex-col items-center justify-center leading-none">
+                  <span class="text-2xl font-semibold">22</span><span class="text-[11px] text-muted uppercase">MAI</span>
+                </div>
+                <div class="min-w-0">
+                  <h3 class="font-display text-lg sm:text-xl leading-tight whitespace-nowrap overflow-hidden text-ellipsis">Torneio Beach Tennis VR</h3>
+                  <p class="text-muted whitespace-nowrap overflow-hidden text-ellipsis">Beach Tennis - Volta Redonda, RJ</p>
+                </div>
+              </div>
+              <div class="mt-4 flex items-end justify-between gap-4">
+                <p class="font-mono text-lg sm:text-xl text-muted font-bold">R$ 85,00</p>
+                <p class="text-muted text-sm">80 participantes</p>
+              </div>
+            </div>
+          </article>
+
+          <article class="extra-event hidden group bg-surface border border-white/10 rounded-2xl overflow-hidden hover:border-lime/40 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-lime focus-visible:ring-offset-2 focus-visible:ring-offset-zinc950" data-event-link="evento-base.html" role="link" tabindex="0" aria-label="Abrir página do evento Festival Futsociety Aço">
+            <div class="relative h-44 overflow-hidden">
+              <img src="img/eventos/Caicara.jpg" alt="Festival Futsociety Aço" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+              <div class="absolute inset-0 bg-gradient-to-t from-zinc-950/85 via-zinc-950/45 to-transparent"></div>
+              <span class="absolute top-3 left-3 text-[10px] font-mono uppercase tracking-widest bg-zinc-950/85 text-fg border border-white/30 rounded-md px-2 py-1">Encerrado</span>
+              <button class="absolute top-3 right-3 w-9 h-9 rounded-full border border-white/35 bg-zinc950/60 text-fg hover:border-lime hover:text-lime transition-colors" aria-label="Salvar evento">&#9825;</button>
+            </div>
+            <div class="p-4">
+              <div class="flex gap-3 min-w-0">
+                <div class="flex-shrink-0 w-12 h-12 rounded-lg bg-zinc950/70 border border-white/15 flex flex-col items-center justify-center leading-none">
+                  <span class="text-2xl font-semibold">25</span><span class="text-[11px] text-muted uppercase">MAI</span>
+                </div>
+                <div class="min-w-0">
+                  <h3 class="font-display text-lg sm:text-xl leading-tight whitespace-nowrap overflow-hidden text-ellipsis">Festival Futsociety Aço</h3>
+                  <p class="text-muted whitespace-nowrap overflow-hidden text-ellipsis">Futebol Society - Porto Real, RJ</p>
+                </div>
+              </div>
+              <div class="mt-4 flex items-end justify-between gap-4">
+                <p class="font-mono text-lg sm:text-xl text-muted font-bold">R$ 140,00</p>
+                <p class="text-muted text-sm">100 participantes</p>
+              </div>
+            </div>
+          </article>
+
+          <article class="extra-event hidden group bg-surface border border-white/10 rounded-2xl overflow-hidden hover:border-lime/40 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-lime focus-visible:ring-offset-2 focus-visible:ring-offset-zinc950" data-event-link="evento-base.html" role="link" tabindex="0" aria-label="Abrir página do evento Kart Challenge Resende">
+            <div class="relative h-44 overflow-hidden">
+              <img src="img/eventos/Economize.jpg" alt="Kart Challenge Resende" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+              <div class="absolute inset-0 bg-gradient-to-t from-zinc-950/85 via-zinc-950/45 to-transparent"></div>
+              <span class="absolute top-3 left-3 text-[10px] font-mono uppercase tracking-widest bg-zinc-950/85 text-fg border border-white/30 rounded-md px-2 py-1">Encerrado</span>
+              <button class="absolute top-3 right-3 w-9 h-9 rounded-full border border-white/35 bg-zinc950/60 text-fg hover:border-lime hover:text-lime transition-colors" aria-label="Salvar evento">&#9825;</button>
+            </div>
+            <div class="p-4">
+              <div class="flex gap-3 min-w-0">
+                <div class="flex-shrink-0 w-12 h-12 rounded-lg bg-zinc950/70 border border-white/15 flex flex-col items-center justify-center leading-none">
+                  <span class="text-2xl font-semibold">29</span><span class="text-[11px] text-muted uppercase">MAI</span>
+                </div>
+                <div class="min-w-0">
+                  <h3 class="font-display text-lg sm:text-xl leading-tight whitespace-nowrap overflow-hidden text-ellipsis">Kart Challenge Resende</h3>
+                  <p class="text-muted whitespace-nowrap overflow-hidden text-ellipsis">Kart - Resende, RJ</p>
+                </div>
+              </div>
+              <div class="mt-4 flex items-end justify-between gap-4">
+                <p class="font-mono text-lg sm:text-xl text-muted font-bold">R$ 170,00</p>
+                <p class="text-muted text-sm">12 participantes</p>
+              </div>
+            </div>
+          </article>
+
+        </div>
+
+        <div class="pt-4 flex flex-col items-center gap-2">
+          <div id="loadControls" class="flex flex-wrap justify-center gap-3 w-full md:w-auto">
+            <button id="loadMoreBtn" type="button" class="w-full md:w-auto min-w-56 px-6 py-3 rounded-xl border border-white/15 bg-surface text-lime font-semibold hover:border-lime/50 hover:bg-secondary transition-colors">
+              Carregar mais
+            </button>
+            <button id="loadLessBtn" type="button" class="hidden w-full md:w-auto min-w-56 px-6 py-3 rounded-xl border border-white/15 bg-surface text-lime font-semibold hover:border-lime/50 hover:bg-secondary transition-colors">
+              Carregar menos
+            </button>
+          </div>
+          <p id="loadMoreDone" class="hidden w-full md:w-auto text-center text-sm text-muted font-mono tracking-wide">
+            Todos os eventos disponíveis já foram exibidos.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t border-white/10 bg-surface mt-16">
+    <div class="max-w-7xl mx-auto px-4 py-10 grid grid-cols-2 md:grid-cols-4 gap-8">
+
+      <div class="col-span-2 md:col-span-1">
+        <a href="index.html" class="flex items-center mb-3 hover:opacity-80 transition-opacity" aria-label="Ir para a página inicial do +Sports">
+          <img src="img/logo.svg" alt="+Sports" class="h-7 w-auto" />
+        </a>
+        <p class="text-muted text-xs leading-relaxed">
+          Conectando a comunidade de Volta Redonda aos melhores eventos esportivos da região.
+        </p>
+        <div class="flex gap-4 mt-4 text-muted">
+          <a href="https://www.instagram.com/maissportsvr?igsh=MTBobzRmNHJ2aXJhZw%3D%3D&utm_source=qr" class="hover:text-lime transition-colors" aria-label="Acessar nosso Instagram">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+            </svg>
+          </a>
+          <a href="#" class="hover:text-lime transition-colors" aria-label="Acessar nosso Facebook">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5">
+              <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+            </svg>
+          </a>
+          <a href="#" class="hover:text-lime transition-colors" aria-label="Acessar nosso Twitter">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5">
+              <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <div>
+        <h4 class="font-mono text-xs tracking-widest text-muted uppercase mb-3">Navegação</h4>
+        <ul class="flex flex-col gap-2 text-sm text-fg/70">
+          <li><a href="index.html" class="hover:text-lime transition-colors">Home</a></li>
+          <li><a href="eventos.html" class="hover:text-lime transition-colors">Eventos</a></li>
+          <li><a href="jj.html" class="hover:text-lime transition-colors">Joga Junto</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="font-mono text-xs tracking-widest text-muted uppercase mb-3">Conta</h4>
+        <ul class="flex flex-col gap-2 text-sm text-fg/70">
+          <li><a href="login.html" class="hover:text-lime transition-colors">Login</a></li>
+          <li><a href="cadastro.html" class="hover:text-lime transition-colors">Cadastrar</a></li>
+          <li><a href="meus-eventos.html" class="hover:text-lime transition-colors">Meus Eventos</a></li>
+          <li><a href="ajuda.html" class="hover:text-lime transition-colors">Ajuda</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="font-mono text-xs tracking-widest text-muted uppercase mb-3">+Sports</h4>
+        <ul class="flex flex-col gap-2 text-sm text-fg/70">
+          <li><a href="sobre.html" class="hover:text-lime transition-colors">Sobre Nós</a></li>
+          <li><a href="contato.html" class="hover:text-lime transition-colors">Contato</a></li>
+          <li><a href="privacidade.html" class="hover:text-lime transition-colors">Política de Privacidade</a></li>
+          <li><a href="termos.html" class="hover:text-lime transition-colors">Termos de Uso</a></li>
+        </ul>
+      </div>
+
+    </div>
+    <div class="border-t border-white/10 text-center py-4">
+      <p class="text-muted text-xs font-mono">&copy; 2026 +Sports. Todos os direitos reservados. Desenvolvido por alunos do UniFOA.</p>
+    </div>
+  </footer>
+
+  <script>
+    (() => {
+      const toggleBtn = document.getElementById("btnToggleFilters");
+      const filtersPanel = document.getElementById("filters-panel");
+      const eventosLayout = document.getElementById("eventos-layout");
+      const orderBtn = document.getElementById("btnOrderMenu");
+      const orderMenu = document.getElementById("orderMenu");
+      const orderLabel = document.getElementById("orderLabel");
+      const mobileFiltersPanel = document.getElementById("mobileFiltersPanel");
+      const orderBtnMobile = document.getElementById("btnOrderMenuMobile");
+      const orderMenuMobile = document.getElementById("orderMenuMobile");
+      const eventsGrid = document.getElementById("eventsGrid");
+      const loadMoreBtn = document.getElementById("loadMoreBtn");
+      const loadLessBtn = document.getElementById("loadLessBtn");
+      const loadMoreDone = document.getElementById("loadMoreDone");
+      const allEventCards = eventsGrid ? Array.from(eventsGrid.querySelectorAll("article")) : [];
+      const desktopQuery = window.matchMedia("(min-width: 1024px)");
+      const mobileQuery = window.matchMedia("(max-width: 767px)");
+
+      if (!toggleBtn || !filtersPanel || !eventosLayout) return;
+
+      let isOpen = false;
+      let orderOpen = false;
+      let orderOpenMobile = false;
+
+      const syncFiltersState = () => {
+        if (!desktopQuery.matches) {
+          filtersPanel.classList.add("hidden");
+          filtersPanel.classList.remove("block", "is-visible");
+          eventosLayout.classList.remove("filters-open");
+          toggleBtn.setAttribute("aria-expanded", "false");
+          toggleBtn.classList.remove("text-lime");
+          if (orderMenu && orderBtn) {
+            orderMenu.classList.remove("is-open");
+            orderBtn.setAttribute("aria-expanded", "false");
+            orderBtn.classList.remove("text-lime");
+            orderOpen = false;
+          }
+          return;
+        }
+
+        filtersPanel.classList.remove("hidden");
+        filtersPanel.classList.add("block");
+        filtersPanel.classList.toggle("is-visible", isOpen);
+        eventosLayout.classList.toggle("filters-open", isOpen);
+        toggleBtn.setAttribute("aria-expanded", isOpen ? "true" : "false");
+        toggleBtn.classList.toggle("text-lime", isOpen);
+      };
+
+      const syncOrderState = () => {
+        if (!orderBtn || !orderMenu || !desktopQuery.matches) return;
+        orderMenu.classList.toggle("is-open", orderOpen);
+        orderBtn.setAttribute("aria-expanded", orderOpen ? "true" : "false");
+        orderBtn.classList.toggle("text-lime", orderOpen);
+      };
+
+      const syncOrderMobileState = () => {
+        if (!orderBtnMobile || !orderMenuMobile || desktopQuery.matches) {
+          if (orderMenuMobile && orderBtnMobile) {
+            orderMenuMobile.classList.remove("is-open");
+            orderBtnMobile.setAttribute("aria-expanded", "false");
+            orderBtnMobile.classList.remove("text-lime");
+          }
+          return;
+        }
+        orderMenuMobile.classList.toggle("is-open", orderOpenMobile);
+        orderBtnMobile.setAttribute("aria-expanded", orderOpenMobile ? "true" : "false");
+        orderBtnMobile.classList.toggle("text-lime", orderOpenMobile);
+      };
+
+      const setupLoadMore = () => {
+        if (!loadMoreBtn || !loadLessBtn || !loadMoreDone || !allEventCards.length) return;
+        const batchSize = 6;
+        const totalCards = allEventCards.length;
+        const getBaseline = () => (mobileQuery.matches ? 5 : 9);
+        let visibleCount = getBaseline();
+
+        const syncLoadMore = () => {
+          const baseline = getBaseline();
+          const hasMore = visibleCount < totalCards;
+          const canLoadLess = visibleCount > baseline;
+
+          allEventCards.forEach((card, index) => {
+            card.classList.toggle("hidden", index >= visibleCount);
+          });
+
+          loadMoreBtn.classList.toggle("hidden", !hasMore);
+          loadLessBtn.classList.toggle("hidden", !canLoadLess);
+          loadMoreDone.classList.toggle("hidden", hasMore);
+        };
+
+        loadMoreBtn.addEventListener("click", () => {
+          visibleCount = Math.min(visibleCount + batchSize, totalCards);
+          syncLoadMore();
+        });
+
+        loadLessBtn.addEventListener("click", () => {
+          const baseline = getBaseline();
+          visibleCount = Math.max(visibleCount - batchSize, baseline);
+          syncLoadMore();
+        });
+
+        mobileQuery.addEventListener("change", () => {
+          const baseline = getBaseline();
+          if (visibleCount < baseline) visibleCount = baseline;
+          if (visibleCount > totalCards) visibleCount = totalCards;
+          syncLoadMore();
+        });
+
+        syncLoadMore();
+      };
+
+      toggleBtn.addEventListener("click", () => {
+        if (!desktopQuery.matches) return;
+        isOpen = !isOpen;
+        syncFiltersState();
+      });
+
+      if (orderBtn && orderMenu && orderLabel) {
+        orderBtn.addEventListener("click", (event) => {
+          if (!desktopQuery.matches) return;
+          event.stopPropagation();
+          orderOpen = !orderOpen;
+          syncOrderState();
+        });
+
+        orderMenu.querySelectorAll("[data-order-option]").forEach((optionBtn) => {
+          optionBtn.addEventListener("click", () => {
+            orderLabel.textContent = "Ordenar por";
+            orderOpen = false;
+            syncOrderState();
+          });
+        });
+      }
+
+      if (orderBtnMobile && orderMenuMobile) {
+        orderBtnMobile.addEventListener("click", (event) => {
+          if (desktopQuery.matches) return;
+          event.stopPropagation();
+          orderOpenMobile = !orderOpenMobile;
+          syncOrderMobileState();
+        });
+
+        orderMenuMobile.querySelectorAll("[data-order-option-mobile]").forEach((optionBtn) => {
+          optionBtn.addEventListener("click", () => {
+            orderOpenMobile = false;
+            syncOrderMobileState();
+          });
+        });
+      }
+
+      document.addEventListener("click", (event) => {
+        if (orderOpen && orderMenu && orderBtn) {
+          if (orderMenu.contains(event.target) || orderBtn.contains(event.target)) return;
+          orderOpen = false;
+          syncOrderState();
+        }
+
+        if (orderOpenMobile && orderMenuMobile && orderBtnMobile) {
+          if (orderMenuMobile.contains(event.target) || orderBtnMobile.contains(event.target)) return;
+          orderOpenMobile = false;
+          syncOrderMobileState();
+        }
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key !== "Escape") return;
+        if (orderOpen) {
+          orderOpen = false;
+          syncOrderState();
+        }
+        if (orderOpenMobile) {
+          orderOpenMobile = false;
+          syncOrderMobileState();
+        }
+      });
+
+      desktopQuery.addEventListener("change", () => {
+        if (!desktopQuery.matches) isOpen = false;
+        if (!desktopQuery.matches) orderOpen = false;
+        if (desktopQuery.matches) {
+          orderOpenMobile = false;
+          if (mobileFiltersPanel) mobileFiltersPanel.open = false;
+        }
+        syncFiltersState();
+        syncOrderState();
+        syncOrderMobileState();
+      });
+
+      syncFiltersState();
+      syncOrderState();
+      syncOrderMobileState();
+      setupLoadMore();
+    })();
+  </script>
+
+  <script src="js/global.js"></script>
+
+  <script src="./js/auth.js"></script>
+</body>
+</html>
+
+
+

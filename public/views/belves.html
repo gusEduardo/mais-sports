@@ -1,0 +1,331 @@
+﻿<!doctype html>
+<html lang="pt-BR" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>+Sports — Pelada do Belves</title>
+    <link rel="shortcut icon" href="img/favicon.png" type="image/x-icon" />
+
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <style type="text/tailwindcss">
+        @theme {
+      /* ── Paleta · Design Sheet Cronômetro Dark ── */
+      --color-zinc950:    #0c0c0e;
+      --color-surface:    #161618;
+      --color-secondary:  #1f2024;
+      --color-lime:       #bef264;
+      --color-lime-hover: #d9f99d;
+      --color-fg:         #f3f3f3;
+      --color-muted:      #9ca39e;
+
+      /* ── Tipografia ── */
+      --font-display: "Archivo Black", sans-serif;
+      --font-body: "Barlow", sans-serif;
+      --font-mono:    "JetBrains Mono", monospace;
+    }
+
+    /* ── Efeitos e Animações Globais ── */
+    .glow-lime    { box-shadow: 0 0 24px var(--color-lime); }
+    .glow-lime-sm { box-shadow: 0 0 12px rgba(190, 242, 100, 0.6); }
+
+    @keyframes pulse-lime {
+      0%, 100% { box-shadow: 0 0 0 0    rgba(190, 242, 100, 0.7); }
+      50%       { box-shadow: 0 0 0 10px rgba(190, 242, 100, 0);   }
+    }
+    .live-pin { animation: pulse-lime 2s infinite; }
+
+    /* ── Componentes Globais ── */
+    .slide        { display: none;  }
+    .slide.active { display: block; }
+    .hero-banner  { min-height: 420px; }
+  </style>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=JetBrains+Mono:wght@500;700&family=Barlow:wght@400;500;600&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet" />
+</head>
+
+<body class="bg-zinc950 text-fg font-body antialiased">
+
+    <header class="sticky top-0 z-50 bg-zinc950/90 backdrop-blur border-b border-white/10">
+        <nav class="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between gap-4 relative">
+
+            <a href="index.html" class="flex items-center hover:opacity-80 transition-opacity z-10"
+                aria-label="Ir para a página inicial do +Sports">
+                <img src="img/logo.svg" alt="+Sports" class="h-6 w-auto" />
+            </a>
+
+            <div
+                class="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-6 text-[15px] font-medium text-muted">
+                <a href="index.html" class="hover:text-lime transition-colors whitespace-nowrap">Home</a>
+                <a href="eventos.html" class="hover:text-lime transition-colors whitespace-nowrap">Eventos</a>
+                <a href="jj.html" class="hover:text-lime transition-colors whitespace-nowrap">Joga Junto</a>
+                <a href="mapa.html" class="hover:text-lime transition-colors whitespace-nowrap">Mapa</a>
+            </div>
+
+            <div class="flex items-center gap-2 ml-auto z-10">
+                <input type="text" placeholder="Pesquisar..."
+                    class="hidden lg:block bg-surface border border-white/10 rounded-lg text-sm text-fg placeholder-muted px-3 py-1.5 w-44 focus:outline-none focus:border-lime/50 transition-colors" />
+                <a href="telaPerfil.html"
+                    class="hidden md:block text-sm border border-white/20 text-fg px-3 py-1.5 rounded-lg hover:bg-surface transition-colors whitespace-nowrap">Entrar</a>
+                <a href="cadastro.html"
+                    class="hidden md:block text-sm bg-lime text-zinc-900 font-semibold px-3 py-1.5 rounded-lg hover:glow-lime-sm transition-all whitespace-nowrap">Criar
+                    Conta</a>
+
+                <button id="btnMenu"
+                    class="md:hidden text-fg text-xl w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-lg hover:bg-surface transition-colors"
+                    aria-label="Abrir menu">☰</button>
+            </div>
+        </nav>
+
+        <div id="menuMobile"
+            class="hidden md:hidden bg-surface border-b border-white/10 px-4 py-4 flex flex-col gap-3 text-sm font-medium">
+            <a href="index.html" class="text-fg hover:text-lime transition-colors">Home</a>
+            <a href="eventos.html" class="text-fg hover:text-lime transition-colors">Eventos</a>
+            <a href="jj.html" class="text-fg hover:text-lime transition-colors">Joga Junto</a>
+            <a href="mapa.html" class="text-fg hover:text-lime transition-colors">Mapa</a>
+            <hr class="border-white/10" />
+            <a href="telaPerfil.html" class="text-muted hover:text-fg transition-colors">Login</a>
+            <a href="cadastro.html" class="bg-lime text-zinc-900 font-semibold px-4 py-2 rounded-lg text-center">Criar
+                Conta</a>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-8 min-h-[60vh]">
+        <main class="max-w-7xl mx-auto px-4 py-8 min-h-[60vh]">
+
+            <!-- IMAGEM DE CAPA -->
+            <div>
+                <figure
+                    class="relative w-full hover:scale-[1.02] transition-all duration-300 hover:border-lime/40 cursor-pointer overflow-hidden border border-white/10 rounded-lg bg-surface p-0">
+                    <img src="img/JOGA JUNTO/volei quadra.jpeg" alt="Pelada do Belves"
+                        class="w-full h-32 sm:h-40 md:h-48 lg:h-52 xl:h-56 object-cover">
+                </figure>
+            </div>
+
+            <!-- TÍTULO DA COMUNIDADE -->
+            <h1
+                class="text-3xl font-semibold text-center p-2 hover:text-red-400 hover:scale-105 transition-all duration-300 cursor-pointer inline-block text-center w-full mb-3">
+                Pelada do Belves
+            </h1>
+
+            <br>
+
+            <!-- ABAS (Informações e Jogos) -->
+            <div class="flex flex-row items-center justify-center gap-4">
+                <!-- Aba Informações -->
+                <span
+                    class="relative bg-secondary text-white rounded-full flex items-center justify-center gap-2 px-3 py-2 cursor-pointer hover:scale-103 hover:border hover:border-lime/40 transition-all duration-300 w-fit">
+                    <img src="https://img.icons8.com/?size=100&id=AqxR8HVzKNDb&format=png&color=000000" class="w-5 h-5"
+                        alt="informações">
+                    Informações
+                </span>
+
+                <!-- Aba Jogos -->
+                <span
+                    class="relative bg-secondary text-white rounded-full flex items-center justify-center gap-2 px-3 py-2 cursor-pointer hover:scale-103 hover:border hover:border-lime/40 transition-all duration-300 w-fit">
+                    <img src="https://img.icons8.com/?size=100&id=6YtrB5VnlPqY&format=png&color=000000" class="w-5 h-5"
+                        alt="jogos">
+                    Jogos
+                </span>
+            </div>
+            <!-- Fim das abas -->
+
+            <!-- DESCRIÇÃO DA COMUNIDADE -->
+            <div class="px-3 sm:px-6 w-full">
+                <span
+                    class="block text-sm sm:text-base lg:text-lg font-semibold bg-secondary text-white rounded-xl sm:rounded-2xl px-3 sm:px-4 lg:px-6 py-2 sm:py-3 lg:py-4 my-3 text-center break-words whitespace-normal w-full max-w-full hover:border hover:border-lime/40 transition-all duration-300">
+                    Grupo oficial da pelada do Belves. Venha jogar com a galera e se divertir!
+                </span>
+            </div>
+            <!-- Fim da descrição -->
+
+            <!-- TÍTULO DA SEÇÃO CHATS -->
+            <h1
+                class="text-3xl font-semibold mb-4 hover:border-b hover:border-lime/40 pb-1 inline-block transition-all duration-300 cursor-pointer">
+                Chats
+            </h1>
+
+            <!-- CARDS DE CHAT E ANÚNCIOS -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 max-w-4xl mx-auto px-4">
+
+                <!-- Chat Geral -->
+                <div class="flex justify-center md:justify-start">
+                    <span
+                        class="relative bg-secondary text-white rounded-full flex items-center justify-start gap-2 px-3 py-1.5 w-64 overflow-hidden group cursor-pointer hover:scale-103 hover:border hover:border-lime/40 transition-all duration-300">
+                        <img src="https://img.icons8.com/?size=100&id=7859&format=png&color=000000" class="w-6 h-6"
+                            alt="chat">
+                        <span>
+                            <p class="text-sm font-medium">Chat Geral</p>
+                            <p class="text-xs text-muted">Converse com todos os membros da comunidade aqui.</p>
+                        </span>
+                    </span>
+                </div>
+
+                <!-- Anúncios -->
+                <div class="flex justify-center md:justify-end">
+                    <span
+                        class="relative bg-secondary text-white rounded-full flex items-center justify-start gap-2 px-3 py-1.5 w-64 overflow-hidden group cursor-pointer hover:scale-103 hover:border hover:border-lime/40 transition-all duration-300">
+                        <img src="https://img.icons8.com/?size=100&id=11149&format=png&color=000000" class="w-6 h-6"
+                            alt="anuncios">
+                        <span>
+                            <p class="text-sm font-medium">Anúncios</p>
+                            <p class="text-xs text-muted">Anúncios importantes para a comunidade.</p>
+                        </span>
+                    </span>
+                </div>
+
+            </div>
+            <!-- Fim dos chats e anúncios -->
+            <!-- Tags da comunidade -->
+            <h1
+                class="text-3xl font-semibold mb-4 hover:border-b hover:border-lime/40 pb-1 inline-block transition-all duration-300 cursor-pointer py-5">
+                Tags da Comunidade
+            </h1>
+            <div class="flex flex-wrap gap-2">
+                <span
+                    class="bg-secondary text-white text-xs font-medium px-3 py-1 rounded-full hover:bg-secondary/80 transition-colors cursor-pointer">
+                    Volei
+                </span>
+                <span
+                    class="bg-secondary text-white text-xs font-medium px-3 py-1 rounded-full hover:bg-secondary/80 transition-colors cursor-pointer">
+                    Pelada
+                </span>
+                <span
+                    class="bg-secondary text-white text-xs font-medium px-3 py-1 rounded-full hover:bg-secondary/80 transition-colors cursor-pointer">
+                    Amistoso
+                </span>
+                <span
+                    class="bg-secondary text-white text-xs font-medium px-3 py-1 rounded-full hover:bg-secondary/80 transition-colors cursor-pointer">
+                    Iniciante
+                </span>
+                <span
+                    class="bg-secondary text-white text-xs font-medium px-3 py-1 rounded-full hover:bg-secondary/80 transition-colors cursor-pointer">
+                    Intermediario
+                </span>
+                <span
+                    class="bg-secondary text-white text-xs font-medium px-3 py-1 rounded-full hover:bg-secondary/80 transition-colors cursor-pointer">
+                    Idade livre
+                </span>
+                <span
+                    class="bg-secondary text-white text-xs font-medium px-3 py-1 rounded-full hover:bg-secondary/80 transition-colors cursor-pointer">
+                    Casual
+                </span>
+                <span
+                    class="bg-secondary text-white text-xs font-medium px-3 py-1 rounded-full hover:bg-secondary/80 transition-colors cursor-pointer">
+                    Competitivo
+                </span>
+            </div>
+            <h1
+                class="text-3xl font-semibold mb-4 hover:border-b hover:border-lime/40 pb-1 inline-block transition-all duration-300 cursor-pointer py-5">
+                Administradores da comunidade
+            </h1>
+            <div class="flex flex-wrap gap-4">
+                <div
+                    class="flex items-center gap-3 bg-secondary text-white rounded-full px-3 py-1.5 cursor-pointer hover:scale-103 hover:border hover:border-lime/40 transition-all duration-300">
+                    <img src="img/JOGA JUNTO/foto perfil juiu.jpeg"
+                        class="w-20 h-20 rounded-full object-cover border-2 border-lime" alt="admin">
+                    <span>
+                        <p class="text-sm font-medium">Júlio Cezar</p>
+                        <p class="text-xs text-muted">Administrador da comunidade.</p>
+                    </span>
+                </div>
+            </div>
+            <h1
+                class="text-3xl font-semibold mb-4 hover:border-b hover:border-lime/40 pb-1 inline-block transition-all duration-300 cursor-pointer py-5">
+                Membros</h1>
+            <div class="flex flex-wrap gap-4">
+                <div
+                    class="flex items-center gap-3 bg-secondary text-white rounded-full px-3 py-1.5 cursor-pointer hover:scale-103 hover:border hover:border-lime/40 transition-all duration-300">
+                    <img src="https://img.icons8.com/?size=100&id=ssHO0z0fjK3u&format=png&color=000000"
+                        class="w-15 h-15 mx-3 object-cover" alt="membro">
+                    Ver membros
+                </div>
+            </div>
+        </main>
+    </main>
+
+    <footer class="border-t border-white/10 bg-surface mt-16">
+        <div class="max-w-7xl mx-auto px-4 py-10 grid grid-cols-2 md:grid-cols-4 gap-8">
+
+            <div class="col-span-2 md:col-span-1">
+                <a href="index.html" class="flex items-center mb-3 hover:opacity-80 transition-opacity"
+                    aria-label="Ir para a página inicial do +Sports">
+                    <img src="img/logo.svg" alt="+Sports" class="h-7 w-auto" />
+                </a>
+                <p class="text-muted text-xs leading-relaxed">
+                    Conectando a comunidade de Volta Redonda aos melhores eventos esportivos da região.
+                </p>
+                <div class="flex gap-4 mt-4 text-muted">
+                    <a href="#" class="hover:text-lime transition-colors" aria-label="Acessar nosso Instagram">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5">
+                            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                        </svg>
+                    </a>
+                    <a href="#" class="hover:text-lime transition-colors" aria-label="Acessar nosso Facebook">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5">
+                            <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                        </svg>
+                    </a>
+                    <a href="#" class="hover:text-lime transition-colors" aria-label="Acessar nosso Twitter">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5">
+                            <path
+                                d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z">
+                            </path>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+
+            <div>
+                <h4 class="font-mono text-xs tracking-widest text-muted uppercase mb-3">Navegação</h4>
+                <ul class="flex flex-col gap-2 text-sm text-fg/70">
+                    <li><a href="index.html" class="hover:text-lime transition-colors">Home</a></li>
+                    <li><a href="eventos.html" class="hover:text-lime transition-colors">Eventos</a></li>
+                    <li><a href="jj.html" class="hover:text-lime transition-colors">Joga Junto</a></li>
+                    <li><a href="#" class="hover:text-lime transition-colors">Mapa</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="font-mono text-xs tracking-widest text-muted uppercase mb-3">Conta</h4>
+                <ul class="flex flex-col gap-2 text-sm text-fg/70">
+                    <li><a href="telaPerfil.html" class="hover:text-lime transition-colors">Login</a></li>
+                    <li><a href="cadastro.html" class="hover:text-lime transition-colors">Cadastrar</a></li>
+                    <li><a href="meus-eventos.html" class="hover:text-lime transition-colors">Meus Eventos</a></li>
+                    <li><a href="ajuda.html" class="hover:text-lime transition-colors">Ajuda</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="font-mono text-xs tracking-widest text-muted uppercase mb-3">+Sports</h4>
+                <ul class="flex flex-col gap-2 text-sm text-fg/70">
+                    <li><a href="#" class="hover:text-lime transition-colors">Sobre Nós</a></li>
+                    <li><a href="contato.html" class="hover:text-lime transition-colors">Contato</a></li>
+                    <li><a href="#" class="hover:text-lime transition-colors">Política de Privacidade</a></li>
+                    <li><a href="termos.html" class="hover:text-lime transition-colors">Termos de Uso</a></li>
+                </ul>
+            </div>
+
+        </div>
+        <div class="border-t border-white/10 text-center py-4">
+            <p class="text-muted text-xs font-mono">© 2026 +Sports. Todos os direitos reservados. Desenvolvido por
+                alunos do UniFOA.</p>
+        </div>
+    </footer>
+
+    <script src="js/global.js"></script>
+    <script src="./js/auth.js"></script>
+
+</body>
+
+</html>

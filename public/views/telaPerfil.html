@@ -1,0 +1,1226 @@
+﻿<!doctype html>
+<html lang="pt-BR" class="scroll-smooth">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>+Sports — Perfil</title>
+  <link rel="shortcut icon" href="img/favicon.png" type="image/x-icon" />
+
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+  <style type="text/tailwindcss">
+    @theme {
+      /* ── Paleta · Design Sheet Cronômetro Dark ── */
+      --color-zinc950:    #0c0c0e;
+      --color-surface:    #161618;
+      --color-secondary:  #1f2024;
+      --color-lime:       #bef264;
+      --color-lime-hover: #d9f99d;
+      --color-fg:         #f3f3f3;
+      --color-muted:      #9ca39e;
+
+      /* ── Tipografia ── */
+      --font-display: "Archivo Black", sans-serif;
+      --font-body: "Barlow", sans-serif;
+      --font-mono:    "JetBrains Mono", monospace;
+    }
+
+    /* ── Efeitos e Animações Globais ── */
+    .glow-lime    { box-shadow: 0 0 24px var(--color-lime); }
+    .glow-lime-sm { box-shadow: 0 0 12px rgba(190, 242, 100, 0.6); }
+
+    @keyframes pulse-lime {
+      0%, 100% { box-shadow: 0 0 0 0    rgba(190, 242, 100, 0.7); }
+      50%       { box-shadow: 0 0 0 10px rgba(190, 242, 100, 0);   }
+    }
+    .live-pin { animation: pulse-lime 2s infinite; }
+
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+    .timer-sep-anim { animation: blink 1.5s ease-in-out infinite; }
+  </style>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=JetBrains+Mono:wght@500;700&family=Barlow:wght@400;500;600&family=Inter:wght@400;500;600&display=swap"
+    rel="stylesheet" />
+</head>
+
+<body class="bg-zinc950 text-fg font-body antialiased">
+
+  <!-- ============ HEADER (padrão base.html) ============ -->
+  <header class="sticky top-0 z-50 bg-zinc950/90 backdrop-blur border-b border-white/10">
+    <nav class="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between gap-4 relative">
+
+      <a href="index.html" class="flex items-center hover:opacity-80 transition-opacity flex-shrink-0 z-10"
+        aria-label="Ir para a página inicial do +Sports">
+        <img src="img/logo.svg" alt="+Sports" class="h-6 w-auto" />
+      </a>
+
+      <div class="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-6 text-[15px] font-medium text-muted">
+        <a href="index.html" class="hover:text-lime transition-colors whitespace-nowrap">Home</a>
+        <a href="eventos.html" class="hover:text-lime transition-colors whitespace-nowrap">Eventos</a>
+        <a href="jj.html" class="hover:text-lime transition-colors whitespace-nowrap">Joga Junto</a>
+        <a href="mapa.html" class="hover:text-lime transition-colors whitespace-nowrap">Mapa</a>
+      </div>
+
+      <div class="flex items-center gap-1 sm:gap-2 ml-auto z-10">
+        <input type="text" placeholder="Pesquisar..."
+          class="hidden lg:block bg-surface border border-white/10 rounded-lg text-sm text-fg placeholder-muted px-3 py-1.5 w-36 xl:w-44 focus:outline-none focus:border-lime/50 transition-colors" />
+        <a href="login.html" id="logoutBtn"
+          class="hidden md:block text-sm border border-white/20 text-fg px-3 py-1.5 rounded-lg hover:bg-surface transition-colors whitespace-nowrap">Sair</a>
+
+        <button id="btnMenu"
+          class="md:hidden text-fg text-xl w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-lg hover:bg-surface transition-colors"
+          aria-label="Abrir menu">☰</button>
+      </div>
+    </nav>
+
+    <div id="menuMobile"
+      class="hidden md:hidden bg-surface border-b border-white/10 px-4 py-4 flex flex-col gap-3 text-sm font-medium">
+      <a href="index.html" class="text-fg hover:text-lime transition-colors">Home</a>
+      <a href="eventos.html" class="text-fg hover:text-lime transition-colors">Eventos</a>
+      <a href="jj.html" class="text-fg hover:text-lime transition-colors">Joga Junto</a>
+      <a href="mapa.html" class="text-fg hover:text-lime transition-colors">Mapa</a>
+      <hr class="border-white/10" />
+      <a href="login.html" id="logoutBtnMobile" class="bg-lime text-zinc-900 font-semibold px-4 py-2 rounded-lg text-center">Encerrar Sessão</a>
+    </div>
+  </header>
+
+  <!-- ============ MAIN ============ -->
+  <main class="max-w-7xl mx-auto px-4 py-4 sm:py-6 lg:py-8">
+
+    <div class="grid grid-cols-1 lg:grid-cols-[300px_minmax(0,1fr)] gap-4 sm:gap-5 lg:gap-6">
+
+      <!-- ===== COLUNA ESQUERDA ===== -->
+      <div class="flex flex-col gap-3 sm:gap-4">
+
+        <!-- CARD PERFIL -->
+        <div class="bg-surface border border-white/10 rounded-2xl p-4 sm:p-5">
+          <div class="flex justify-between items-center mb-4">
+            <span class="font-mono text-[10px] tracking-widest text-muted/70 uppercase">Atleta · ID 00482</span>
+            <span
+              class="inline-flex items-center gap-1.5 text-[10px] font-bold tracking-widest uppercase text-lime bg-lime/10 border border-lime/30 rounded-full px-2 py-0.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-lime live-pin"></span>Ativo
+            </span>
+          </div>
+
+          <!-- Avatar com upload de foto (clique no avatar abre o seletor de arquivo) -->
+          <div class="relative inline-block mb-4">
+            <div id="avatarDisplay"
+              class="block w-20 h-20 rounded-xl bg-secondary border-2 border-lime flex items-center justify-center transition-all overflow-hidden bg-cover bg-center">
+              <span id="avatarInitials" class="font-display text-3xl text-lime">BA</span>
+            </div>
+
+            <!-- Botão pequeno EDITAR PERFIL (canto superior direito) — lápis -->
+            <button id="editProfileBtn" type="button"
+              class="absolute -top-2 -right-2 flex items-center justify-center w-7 h-7 bg-secondary border border-white/10 rounded-full text-muted hover:text-lime hover:border-lime/50 transition-colors cursor-pointer"
+              aria-label="Editar perfil">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+              </svg>
+            </button>
+
+
+
+
+          </div>
+
+          <div>
+            <div id="profileName" class="font-display text-2xl text-fg leading-none">BRUNO ALVES</div>
+            <div class="flex items-center gap-1.5 mt-2 text-muted">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                <circle cx="12" cy="10" r="3" />
+              </svg>
+              <span id="profileLocation" class="text-xs">Volta Redonda · RJ</span>
+            </div>
+          </div>
+
+          <!-- Stats -->
+          <div class="grid grid-cols-3 gap-2 py-4 my-3 border-y border-white/10 text-center">
+            <div>
+              <div class="font-mono text-xl font-bold text-fg leading-none">14</div>
+              <div class="text-[9px] font-semibold tracking-widest text-muted/70 uppercase mt-1">Eventos</div>
+            </div>
+            <div class="border-x border-white/10">
+              <div class="font-mono text-xl font-bold text-fg leading-none">06</div>
+              <div class="text-[9px] font-semibold tracking-widest text-muted/70 uppercase mt-1">Medalhas</div>
+            </div>
+            <div>
+              <div class="font-mono text-xl font-bold text-lime leading-none">22:08</div>
+              <div class="text-[9px] font-semibold tracking-widest text-muted/70 uppercase mt-1">PR · 5K</div>
+            </div>
+          </div>
+
+          <!-- Progresso -->
+          <div class="flex flex-col gap-3">
+            <div>
+              <div class="flex justify-between items-center mb-1.5">
+                <span class="text-[10px] font-bold tracking-widest text-muted/70 uppercase">Volume Abr</span>
+                <span class="font-mono text-xs font-bold text-fg">42.6 <span class="text-muted/70">KM</span></span>
+              </div>
+              <div class="h-1 rounded-full bg-secondary overflow-hidden">
+                <div class="h-full rounded-full bg-lime" style="width:69%;"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between items-center mb-1.5">
+                <span class="text-[10px] font-bold tracking-widest text-muted/70 uppercase">Meta Mensal</span>
+                <span class="font-mono text-xs font-bold text-fg">62 <span class="text-muted/70">KM</span></span>
+              </div>
+              <div class="h-1 rounded-full bg-secondary overflow-hidden">
+                <div class="h-full rounded-full bg-lime" style="width:45%;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MENU (Painel +Sports) — hambúrguer funcional em mobile e desktop, começa fechado -->
+        <div class="bg-surface border border-white/10 rounded-2xl p-2.5 flex flex-col gap-1">
+          <button id="painelToggle" type="button" aria-expanded="false" aria-controls="painelItems"
+            class="flex justify-between items-center px-3.5 py-3 rounded-lg bg-secondary text-fg text-sm font-semibold hover:bg-white/10 transition-colors cursor-pointer">
+            <span>Painel +Sports</span>
+            <svg id="painelChevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" class="transition-transform">
+              <path d="m9 18 6-6-6-6" />
+            </svg>
+          </button>
+
+          <div id="painelItems" class="hidden flex-col gap-1">
+            <a href="meus-eventos.html"
+              class="flex justify-between items-center px-3.5 py-3 rounded-lg text-muted text-sm font-medium hover:bg-secondary hover:text-fg transition-colors cursor-pointer">
+              <span>Minhas Inscrições</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="m9 18 6-6-6-6" />
+              </svg>
+            </a>
+            <a href="meus-eventos.html"
+              class="flex justify-between items-center px-3.5 py-3 rounded-lg text-muted text-sm font-medium hover:bg-secondary hover:text-fg transition-colors cursor-pointer">
+              <span>Histórico de Provas</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="m9 18 6-6-6-6" />
+              </svg>
+            </a>
+            <a href="checkout.html"
+              class="flex justify-between items-center px-3.5 py-3 rounded-lg text-muted text-sm font-medium hover:bg-secondary hover:text-fg transition-colors cursor-pointer">
+              <span>Pagamentos</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="m9 18 6-6-6-6" />
+              </svg>
+            </a>
+            <a href="contato.html"
+              class="flex justify-between items-center px-3.5 py-3 rounded-lg text-muted text-sm font-medium hover:bg-secondary hover:text-fg transition-colors cursor-pointer">
+              <span>Configurações</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="m9 18 6-6-6-6" />
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- CONQUISTAS -->
+        <div class="bg-surface border border-white/10 rounded-2xl p-4">
+          <div class="flex justify-between items-center mb-3">
+            <span class="font-mono text-[10px] tracking-widest text-muted/70 uppercase">Conquistas</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              class="text-muted/60">
+              <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
+              <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
+              <path d="M4 22h16" />
+              <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22" />
+              <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22" />
+              <path d="M18 2H6v7a6 6 0 0 0 12 0V2z" />
+            </svg>
+          </div>
+          <div class="flex flex-col gap-1.5">
+            <div class="flex items-center justify-between gap-2 px-3 py-2 rounded-lg bg-secondary border border-white/10">
+              <span class="font-mono text-[11px] font-bold tracking-wider text-lime bg-zinc950 border border-white/10 rounded px-2 py-0.5 min-w-[72px] text-center">PR 5K</span>
+              <span class="text-xs text-muted text-right">22:08 · Meia Maratona do Aço</span>
+            </div>
+            <div class="flex items-center justify-between gap-2 px-3 py-2 rounded-lg bg-secondary border border-white/10">
+              <span class="font-mono text-[11px] font-bold tracking-wider text-lime bg-zinc950 border border-white/10 rounded px-2 py-0.5 min-w-[72px] text-center">STREAK 30D</span>
+              <span class="text-xs text-muted text-right">Treinos consecutivos</span>
+            </div>
+            <div class="flex items-center justify-between gap-2 px-3 py-2 rounded-lg bg-secondary border border-white/10">
+              <span class="font-mono text-[11px] font-bold tracking-wider text-lime bg-zinc950 border border-white/10 rounded px-2 py-0.5 min-w-[72px] text-center">TOP 100</span>
+              <span class="text-xs text-muted text-right">Circuito Dr. Saúde 10K</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ===== COLUNA PRINCIPAL ===== -->
+      <div class="flex flex-col gap-4 sm:gap-5">
+
+        <!-- HERO PRÓXIMA LARGADA -->
+        <div class="relative overflow-hidden bg-surface border border-white/10 rounded-2xl">
+          <div class="absolute inset-0 bg-cover bg-center"
+            style="background-image:url('img/eventos/CorridaGuerreiro.jpg');"></div>
+          <div class="absolute inset-0 bg-gradient-to-br from-zinc950 via-zinc950/95 to-zinc950/70"></div>
+
+          <div class="relative p-5 sm:p-6">
+            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 mb-4">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="font-mono text-[10px] tracking-widest text-muted/70 uppercase">Próxima Largada · EVT-041</span>
+                <span
+                  class="inline-flex items-center gap-1.5 text-[10px] font-bold tracking-widest uppercase text-lime bg-lime/10 border border-lime/30 rounded-full px-2 py-0.5">
+                  <span class="w-1.5 h-1.5 rounded-full bg-lime live-pin"></span>Inscrito
+                </span>
+              </div>
+              <div class="sm:text-right">
+                <div class="font-mono text-[9px] tracking-widest text-muted/70 uppercase mb-1">Largada em</div>
+                <div class="flex items-end sm:justify-end gap-1">
+                  <span class="font-mono text-4xl sm:text-5xl font-bold text-lime leading-none tabular-nums" id="t-days">12</span>
+                  <span class="font-mono text-3xl sm:text-4xl font-bold text-muted/50 leading-none timer-sep-anim">:</span>
+                  <span class="font-mono text-4xl sm:text-5xl font-bold text-lime leading-none tabular-nums" id="t-hrs">08</span>
+                  <span class="font-mono text-3xl sm:text-4xl font-bold text-muted/50 leading-none timer-sep-anim">:</span>
+                  <span class="font-mono text-4xl sm:text-5xl font-bold text-lime leading-none tabular-nums" id="t-min">45</span>
+                </div>
+                <div class="flex sm:justify-end gap-5 mt-1.5 pr-1">
+                  <span class="font-mono text-[9px] tracking-widest text-muted/60 uppercase">Dias</span>
+                  <span class="font-mono text-[9px] tracking-widest text-muted/60 uppercase">Hrs</span>
+                  <span class="font-mono text-[9px] tracking-widest text-muted/60 uppercase">Min</span>
+                </div>
+                <div class="mt-2">
+                  <span class="text-[10px] text-muted/70">PEITORAL </span>
+                  <span class="font-mono text-sm font-bold text-lime">#0428</span>
+                </div>
+              </div>
+            </div>
+            <div class="max-w-sm mb-5">
+              <h2 class="font-display text-3xl sm:text-4xl text-fg leading-tight">Corrida do Guerreiro</h2>
+              <p class="mt-3 text-sm text-muted leading-relaxed">
+                Prova mais tradicional de Volta Redonda. 5K e 10K pelo centro histórico. Largada na Praça Brasil, 06:00.
+              </p>
+            </div>
+
+            <div class="flex gap-2 flex-wrap">
+              <button
+                class="bg-lime text-zinc-900 font-semibold text-sm px-4 py-2 rounded-lg transition-all hover:bg-lime-500 hover:scale-[1.05] active:scale-[0.98] cursor-pointer">
+                Ver Comprovante
+              </button>
+              <button id="statusInscBtn" type="button"
+                class="border border-white/20 text-fg font-semibold text-sm px-4 py-2 rounded-lg hover:bg-secondary transition-colors cursor-pointer">
+                Status Inscrição
+              </button>
+              <button
+                class="border border-white/10 text-muted font-semibold text-sm px-4 py-2 rounded-lg hover:text-fg hover:border-white/30 transition-colors cursor-pointer">
+                Informações
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- PRÓXIMOS EVENTOS -->
+        <div>
+          <div class="flex items-center gap-2 mb-3">
+            <span class="font-mono text-[10px] tracking-widest text-muted/70 uppercase">Próximos Eventos</span>
+            <span
+              class="font-mono text-[10px] font-bold text-lime bg-secondary border border-white/10 w-[18px] h-[18px] rounded inline-flex items-center justify-center">2</span>
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <!-- EVT-041 -->
+            <a href="#"
+              class="relative overflow-hidden flex items-stretch rounded-xl bg-surface border border-white/10 hover:border-lime/40 transition-colors cursor-pointer">
+              <div class="relative w-24 sm:w-36 md:w-48 flex-shrink-0 self-stretch">
+                <img src="img/eventos/CorridaGuerreiro.jpg" alt="" aria-hidden="true"
+                  class="absolute inset-0 w-full h-full object-cover opacity-70 pointer-events-none" />
+                <div class="absolute inset-0 bg-gradient-to-r from-transparent to-surface pointer-events-none"></div>
+              </div>
+
+              <div class="flex-1 min-w-0 flex items-center justify-between gap-3 p-3.5">
+                <div class="flex items-center gap-3.5 min-w-0">
+                  <div class="flex flex-col items-center min-w-[44px]">
+                    <span class="font-mono text-2xl font-bold text-lime leading-none">21</span>
+                    <span class="text-[10px] font-bold tracking-widest text-muted/70 uppercase mt-0.5">Abr</span>
+                  </div>
+                  <div class="min-w-0">
+                    <div class="flex items-center gap-1.5 mb-1 flex-wrap">
+                      <span class="font-mono text-[10px] text-muted/70">EVT-041</span>
+                      <span
+                        class="text-[9px] font-bold tracking-wider uppercase text-lime bg-lime/10 border border-lime/25 rounded-full px-1.5 py-0.5">Inscrito</span>
+                    </div>
+                    <div class="font-display text-base text-fg leading-tight">Corrida do Guerreiro</div>
+                    <div class="flex items-center gap-3 mt-1 flex-wrap text-[10px] text-muted/70">
+                      <span class="flex items-center gap-1">
+                        <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                          <circle cx="12" cy="10" r="3" />
+                        </svg>
+                        Volta Redonda · RJ
+                      </span>
+                      <span>⚡ Corrida 5K</span>
+                      <span>🕒 06:00</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3 text-right flex-shrink-0">
+                  <div>
+                    <div class="font-mono text-[9px] tracking-widest text-muted/70 uppercase">Peitoral</div>
+                    <div class="font-mono text-base font-bold text-lime">#0428</div>
+                    <div class="font-mono text-[9px] tracking-widest text-muted/70 uppercase mt-1">T-Minus</div>
+                    <div class="font-mono text-lg font-bold text-fg">12d</div>
+                  </div>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    class="text-muted/50">
+                    <path d="m9 18 6-6-6-6" />
+                  </svg>
+                </div>
+              </div>
+            </a>
+
+            <!-- EVT-046 -->
+            <a href="#"
+              class="relative overflow-hidden flex items-stretch rounded-xl bg-surface border border-white/10 hover:border-lime/40 transition-colors cursor-pointer">
+              <div class="relative w-24 sm:w-36 md:w-48 flex-shrink-0 self-stretch">
+                <img src="img/eventos/RoyalRun.jpg" alt="" aria-hidden="true"
+                  class="absolute inset-0 w-full h-full object-cover opacity-70 pointer-events-none" />
+                <div class="absolute inset-0 bg-gradient-to-r from-transparent to-surface pointer-events-none"></div>
+              </div>
+
+              <div class="flex-1 min-w-0 flex items-center justify-between gap-3 p-3.5">
+                <div class="flex items-center gap-3.5 min-w-0">
+                  <div class="flex flex-col items-center min-w-[44px]">
+                    <span class="font-mono text-2xl font-bold text-lime leading-none">26</span>
+                    <span class="text-[10px] font-bold tracking-widest text-muted/70 uppercase mt-0.5">Abr</span>
+                  </div>
+                  <div class="min-w-0">
+                    <div class="flex items-center gap-1.5 mb-1 flex-wrap">
+                      <span class="font-mono text-[10px] text-muted/70">EVT-046</span>
+                      <span
+                        class="text-[9px] font-bold tracking-wider uppercase text-lime bg-lime/10 border border-lime/25 rounded-full px-1.5 py-0.5">Inscrito</span>
+                    </div>
+                    <div class="font-display text-base text-fg leading-tight">Falcões de Aço 2026</div>
+                    <div class="flex items-center gap-3 mt-1 flex-wrap text-[10px] text-muted/70">
+                      <span class="flex items-center gap-1">
+                        <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                          <circle cx="12" cy="10" r="3" />
+                        </svg>
+                        Volta Redonda · RJ
+                      </span>
+                      <span>⚡ Corrida 5K</span>
+                      <span>🕒 07:30</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3 text-right flex-shrink-0">
+                  <div>
+                    <div class="font-mono text-[9px] tracking-widest text-muted/70 uppercase">Peitoral</div>
+                    <div class="font-mono text-base font-bold text-lime">#0521</div>
+                    <div class="font-mono text-[9px] tracking-widest text-muted/70 uppercase mt-1">T-Minus</div>
+                    <div class="font-mono text-lg font-bold text-fg">17d</div>
+                  </div>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    class="text-muted/50">
+                    <path d="m9 18 6-6-6-6" />
+                  </svg>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <!-- EVENTOS FINALIZADOS -->
+        <div>
+          <div class="flex items-center gap-2 mb-3">
+            <span class="font-mono text-[10px] tracking-widest text-muted/70 uppercase">Eventos Finalizados</span>
+            <span
+              class="font-mono text-[10px] font-bold text-muted bg-secondary border border-white/10 w-[18px] h-[18px] rounded inline-flex items-center justify-center">2</span>
+          </div>
+
+          <div class="bg-surface border border-white/10 rounded-2xl overflow-x-auto">
+            <table class="w-full border-collapse min-w-[520px]">
+              <thead>
+                <tr class="border-b border-white/10">
+                  <th class="text-left px-4 py-3 font-mono text-[9px] font-bold tracking-widest text-muted/60 uppercase">Data</th>
+                  <th class="text-left px-2 py-3 font-mono text-[9px] font-bold tracking-widest text-muted/60 uppercase">Evento</th>
+                  <th class="text-right px-2 py-3 font-mono text-[9px] font-bold tracking-widest text-muted/60 uppercase">Tempo</th>
+                  <th class="text-right px-2 py-3 font-mono text-[9px] font-bold tracking-widest text-muted/60 uppercase">Pace</th>
+                  <th class="text-right px-4 py-3 font-mono text-[9px] font-bold tracking-widest text-muted/60 uppercase">Rank</th>
+                  <th class="w-5"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="border-b border-white/5 hover:bg-secondary/60 transition-colors cursor-pointer open-result-modal"
+                  data-evento="2ª Meia Maratona do Aço" data-id="EVT-039" data-data="12 Abr 2026"
+                  data-categoria="Masculino Geral · 5K" data-local="Volta Redonda · RJ"
+                  data-peitoral="#0312" data-tempo-bruto="24:21.54" data-tempo-liq="24:18.07"
+                  data-pace="4:51/km" data-posicao="087" data-total="412"
+                  data-fotos="https://www.focoradical.com.br/">
+                  <td class="px-4 py-3.5 text-xs text-muted/70 whitespace-nowrap">12 ABR</td>
+                  <td class="px-2 py-3.5">
+                    <div class="text-sm font-semibold text-fg">2ª Meia Maratona do Aço</div>
+                    <div class="text-[10px] text-muted/70 mt-0.5">Masculino Geral 5K · Volta Redonda · RJ</div>
+                  </td>
+                  <td class="px-2 py-3.5 text-right">
+                    <span class="font-mono text-base font-bold text-lime">24:18.07</span>
+                  </td>
+                  <td class="px-2 py-3.5 text-right font-mono text-xs text-muted">4:51/km</td>
+                  <td class="px-4 py-3.5 text-right font-mono text-xs text-muted">087 / 412</td>
+                  <td class="py-3.5 pr-3">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                      class="text-muted/40">
+                      <path d="m9 18 6-6-6-6" />
+                    </svg>
+                  </td>
+                </tr>
+                <tr class="hover:bg-secondary/60 transition-colors cursor-pointer open-result-modal"
+                  data-evento="Circuito Dr. Saúde" data-id="EVT-031" data-data="02 Mar 2026"
+                  data-categoria="Caminhada & Corrida · 10K" data-local="Ilha de São João · RJ"
+                  data-peitoral="#0198" data-tempo-bruto="52:09.11" data-tempo-liq="52:04.22"
+                  data-pace="5:12/km" data-posicao="142" data-total="689"
+                  data-fotos="https://www.focoradical.com.br/">
+                  <td class="px-4 py-3.5 text-xs text-muted/70 whitespace-nowrap">02 MAR</td>
+                  <td class="px-2 py-3.5">
+                    <div class="text-sm font-semibold text-fg">Circuito Dr. Saúde</div>
+                    <div class="text-[10px] text-muted/70 mt-0.5">Caminhada & Corrida 10K · Ilha de São João</div>
+                  </td>
+                  <td class="px-2 py-3.5 text-right">
+                    <span class="font-mono text-base font-bold text-lime">52:04.22</span>
+                  </td>
+                  <td class="px-2 py-3.5 text-right font-mono text-xs text-muted">5:12/km</td>
+                  <td class="px-4 py-3.5 text-right font-mono text-xs text-muted">142 / 689</td>
+                  <td class="py-3.5 pr-3">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                      class="text-muted/40">
+                      <path d="m9 18 6-6-6-6" />
+                    </svg>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ============ MODAL · RESULTADO DA PROVA ============ -->
+  <div id="resultModal"
+    class="hidden fixed inset-0 z-[100] bg-zinc950/80 backdrop-blur items-center justify-center p-4">
+    <div class="bg-surface border border-white/10 rounded-2xl w-full max-w-md p-5 sm:p-6">
+
+      <!-- Cabeçalho -->
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="font-display text-xl text-fg">Resultado da Prova</h3>
+        <button id="resultModalClose" type="button"
+          class="text-muted hover:text-fg text-2xl leading-none w-7 h-7 flex items-center justify-center rounded-md hover:bg-secondary transition-colors"
+          aria-label="Fechar">×</button>
+      </div>
+
+      <!-- Badge Finalizado + ID -->
+      <div class="flex items-center gap-2 mb-3 flex-wrap">
+        <span class="inline-flex items-center gap-1.5 text-[10px] font-bold tracking-widest uppercase text-muted bg-secondary border border-white/20 rounded-full px-2 py-0.5">
+          <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Finalizado
+        </span>
+        <span id="rm-id" class="font-mono text-[10px] text-muted/70">EVT-000</span>
+      </div>
+
+      <!-- Nome do evento -->
+      <h4 id="rm-evento" class="font-display text-2xl text-fg leading-tight mb-1">—</h4>
+      <div id="rm-categoria" class="text-xs text-muted/70 mb-4">—</div>
+
+      <!-- Grid de dados -->
+      <div class="flex flex-col gap-px bg-white/10 border border-white/10 rounded-xl overflow-hidden mb-4">
+
+        <div class="flex justify-between items-center bg-surface px-3.5 py-3 gap-3">
+          <span class="text-[10px] font-bold tracking-widest text-muted/70 uppercase">Peitoral</span>
+          <span id="rm-peitoral" class="font-mono text-base font-bold text-lime">—</span>
+        </div>
+
+        <div class="flex justify-between items-center bg-surface px-3.5 py-3 gap-3">
+          <span class="text-[10px] font-bold tracking-widest text-muted/70 uppercase">Data</span>
+          <span id="rm-data" class="font-mono text-sm text-fg">—</span>
+        </div>
+
+        <div class="flex justify-between items-center bg-surface px-3.5 py-3 gap-3">
+          <span class="text-[10px] font-bold tracking-widest text-muted/70 uppercase">Local</span>
+          <span id="rm-local" class="font-mono text-xs text-fg text-right">—</span>
+        </div>
+
+        <div class="flex justify-between items-center bg-surface px-3.5 py-3 gap-3">
+          <span class="text-[10px] font-bold tracking-widest text-muted/70 uppercase">Tempo Bruto</span>
+          <span id="rm-tempo-bruto" class="font-mono text-sm text-fg">—</span>
+        </div>
+
+        <div class="flex justify-between items-center bg-surface px-3.5 py-3 gap-3">
+          <span class="text-[10px] font-bold tracking-widest text-muted/70 uppercase">Tempo Líquido</span>
+          <span id="rm-tempo-liq" class="font-mono text-base font-bold text-lime">—</span>
+        </div>
+
+        <div class="flex justify-between items-center bg-surface px-3.5 py-3 gap-3">
+          <span class="text-[10px] font-bold tracking-widest text-muted/70 uppercase">Pace</span>
+          <span id="rm-pace" class="font-mono text-sm text-fg">—</span>
+        </div>
+
+        <div class="flex justify-between items-center bg-surface px-3.5 py-3 gap-3">
+          <span class="text-[10px] font-bold tracking-widest text-muted/70 uppercase">Posição Geral</span>
+          <div class="flex items-baseline gap-1">
+            <span id="rm-posicao" class="font-mono text-base font-bold text-lime">—</span>
+            <span class="text-[10px] text-muted/60">/ </span>
+            <span id="rm-total" class="font-mono text-sm text-muted">—</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Botões -->
+      <div class="flex gap-2 justify-end">
+        <a id="rm-fotos-link" href="#" target="_blank" rel="noopener noreferrer"
+          class="flex items-center gap-1.5 border border-white/20 text-fg font-semibold text-sm px-4 py-2 rounded-lg hover:bg-secondary transition-colors cursor-pointer">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+            <circle cx="8.5" cy="8.5" r="1.5"/>
+            <polyline points="21 15 16 10 5 21"/>
+          </svg>
+          Veja suas fotos
+        </a>
+        <button type="button" id="resultModalOk"
+          class="bg-lime text-zinc-900 font-semibold text-sm px-4 py-2 rounded-lg hover:bg-lime-500 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer">
+          Fechar
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============ MODAL · EDITAR PERFIL ============ -->
+  <div id="editProfileModal"
+    class="hidden fixed inset-0 z-[100] bg-zinc950/80 backdrop-blur items-center justify-center p-4">
+    <div class="bg-surface border border-white/10 rounded-2xl w-full max-w-md p-5 sm:p-6">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="font-display text-xl text-fg">Editar Perfil</h3>
+        <button id="editProfileClose" type="button"
+          class="text-muted hover:text-fg text-2xl leading-none w-7 h-7 flex items-center justify-center rounded-md hover:bg-secondary transition-colors"
+          aria-label="Fechar">×</button>
+      </div>
+      <form id="editProfileForm" class="flex flex-col gap-3">
+
+        <!-- Seção Foto de Perfil -->
+        <div class="flex items-center gap-4 p-3 bg-secondary rounded-xl border border-white/10">
+          <div id="modalAvatarPreview"
+            class="w-16 h-16 rounded-xl bg-zinc950 border-2 border-lime flex items-center justify-center flex-shrink-0 overflow-hidden bg-cover bg-center">
+            <span id="modalAvatarInitials" class="font-display text-2xl text-lime">BA</span>
+          </div>
+          <div class="flex flex-col gap-2 flex-1">
+            <span class="text-[10px] font-bold tracking-widest text-muted/70 uppercase">Foto de Perfil</span>
+            <div class="flex gap-2 flex-wrap">
+              <label for="avatarInput"
+                class="flex items-center gap-1.5 bg-lime/10 border border-lime/30 text-lime text-[11px] font-semibold px-3 py-1.5 rounded-lg hover:bg-lime/20 transition-colors cursor-pointer">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                  <circle cx="12" cy="13" r="4"/>
+                </svg>
+                Editar foto
+              </label>
+              <button id="avatarRemove" type="button" hidden
+                class="flex items-center gap-1.5 border border-red-500/30 text-red-400 text-[11px] font-semibold px-3 py-1.5 rounded-lg hover:bg-red-500/10 hover:border-red-400/60 transition-colors cursor-pointer"
+                aria-label="Remover foto de perfil">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="3 6 5 6 21 6"/>
+                  <path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/>
+                  <path d="M10 11v6"/><path d="M14 11v6"/>
+                </svg>
+                Remover
+              </button>
+            </div>
+          </div>
+        </div>
+        <input id="avatarInput" type="file" accept="image/*" class="hidden" />
+
+        <label class="flex flex-col gap-1">
+          <span class="text-[10px] font-bold tracking-widest text-muted/70 uppercase">Nome</span>
+          <input id="inputName" type="text" required maxlength="60"
+            class="bg-secondary border border-white/10 rounded-lg px-3 py-2 text-sm text-fg focus:outline-none focus:border-lime/50 transition-colors" />
+        </label>
+
+        <label class="flex flex-col gap-1">
+          <span class="text-[10px] font-bold tracking-widest text-muted/70 uppercase">Telefone</span>
+          <input id="inputPhone" type="tel" maxlength="20" placeholder="(24) 99999-0000"
+            class="bg-secondary border border-white/10 rounded-lg px-3 py-2 text-sm text-fg focus:outline-none focus:border-lime/50 transition-colors" />
+        </label>
+
+        <div class="grid grid-cols-[120px_minmax(0,1fr)] gap-3">
+          <label class="flex flex-col gap-1">
+            <span class="text-[10px] font-bold tracking-widest text-muted/70 uppercase">CEP</span>
+            <input id="inputCep" type="text" maxlength="9" placeholder="00000-000" inputmode="numeric"
+              class="bg-secondary border border-white/10 rounded-lg px-3 py-2 text-sm text-fg focus:outline-none focus:border-lime/50 transition-colors" />
+          </label>
+          <label class="flex flex-col gap-1">
+            <span class="text-[10px] font-bold tracking-widest text-muted/70 uppercase">Cidade · Estado</span>
+            <input id="inputLocation" type="text" maxlength="60" placeholder="Volta Redonda · RJ"
+              class="bg-secondary border border-white/10 rounded-lg px-3 py-2 text-sm text-fg focus:outline-none focus:border-lime/50 transition-colors" />
+          </label>
+        </div>
+
+        <div class="grid grid-cols-[minmax(0,1fr)_90px] gap-3">
+          <label class="flex flex-col gap-1">
+            <span class="text-[10px] font-bold tracking-widest text-muted/70 uppercase">Endereço</span>
+            <input id="inputAddress" type="text" maxlength="120" placeholder="Rua, bairro"
+              class="bg-secondary border border-white/10 rounded-lg px-3 py-2 text-sm text-fg focus:outline-none focus:border-lime/50 transition-colors" />
+          </label>
+          <label class="flex flex-col gap-1">
+            <span class="text-[10px] font-bold tracking-widest text-muted/70 uppercase">Número</span>
+            <input id="inputNumber" type="text" maxlength="10" placeholder="123" inputmode="numeric"
+              class="bg-secondary border border-white/10 rounded-lg px-3 py-2 text-sm text-fg focus:outline-none focus:border-lime/50 transition-colors" />
+          </label>
+        </div>
+
+        <label class="flex flex-col gap-1">
+          <span class="text-[10px] font-bold tracking-widest text-muted/70 uppercase">Complemento <span class="font-body normal-case tracking-normal text-muted/60">(apto, bloco, casa…)</span></span>
+          <input id="inputComplement" type="text" maxlength="60" placeholder="Apto 302, Bloco B…"
+            class="bg-secondary border border-white/10 rounded-lg px-3 py-2 text-sm text-fg focus:outline-none focus:border-lime/50 transition-colors" />
+          <span id="cepHint" class="text-[10px] text-muted/60 mt-1">Digite o CEP para preencher endereço automaticamente.</span>
+        </label>
+
+        <div class="flex gap-2 justify-end mt-2">
+          <button type="button" id="editProfileCancel"
+            class="border border-white/20 text-fg text-sm px-4 py-2 rounded-lg hover:bg-secondary transition-colors cursor-pointer">
+            Cancelar
+          </button>
+          <button type="submit"
+            class="bg-lime text-zinc-900 font-semibold text-sm px-4 py-2 rounded-lg hover:bg-lime-500 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer">
+            Salvar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============ MODAL · STATUS DA INSCRIÇÃO ============ -->
+  <div id="statusInscModal"
+    class="hidden fixed inset-0 z-[100] bg-zinc950/80 backdrop-blur items-center justify-center p-4">
+    <div class="bg-surface border border-white/10 rounded-2xl w-full max-w-md p-5 sm:p-6">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="font-display text-xl text-fg">Status da Inscrição</h3>
+        <button id="statusInscClose" type="button"
+          class="text-muted hover:text-fg text-2xl leading-none w-7 h-7 flex items-center justify-center rounded-md hover:bg-secondary transition-colors"
+          aria-label="Fechar">×</button>
+      </div>
+
+      <!-- Status + ID do evento -->
+      <div class="flex items-center gap-2 mb-3 flex-wrap">
+        <span
+          class="inline-flex items-center gap-1.5 text-[10px] font-bold tracking-widest uppercase text-lime bg-lime/10 border border-lime/30 rounded-full px-2 py-0.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-lime live-pin"></span>Inscrito
+        </span>
+        <span class="font-mono text-[10px] text-muted/70">EVT-041</span>
+      </div>
+
+      <h4 class="font-display text-2xl text-fg leading-tight mb-4">Corrida do Guerreiro</h4>
+
+      <!-- Lista de dados da inscrição -->
+      <div class="flex flex-col gap-px bg-white/10 border border-white/10 rounded-xl overflow-hidden">
+        <div class="flex justify-between items-center bg-surface px-3.5 py-3 gap-3">
+          <span class="text-[10px] font-bold tracking-widest text-muted/70 uppercase">Peitoral</span>
+          <span class="font-mono text-base font-bold text-lime">#0428</span>
+        </div>
+        <div class="flex justify-between items-center bg-surface px-3.5 py-3 gap-3">
+          <span class="text-[10px] font-bold tracking-widest text-muted/70 uppercase">Data</span>
+          <span class="font-mono text-sm text-fg">10 Jun 2026</span>
+        </div>
+        <div class="flex justify-between items-center bg-surface px-3.5 py-3 gap-3">
+          <span class="text-[10px] font-bold tracking-widest text-muted/70 uppercase">Hora · Largada</span>
+          <span class="font-mono text-sm text-fg">06:00</span>
+        </div>
+        <div class="flex justify-between items-center bg-surface px-3.5 py-3 gap-3">
+          <span class="text-[10px] font-bold tracking-widest text-muted/70 uppercase">Distância</span>
+          <span class="font-mono text-sm text-fg">5 KM</span>
+        </div>
+        <div class="flex justify-between items-center bg-surface px-3.5 py-3 gap-3">
+          <span class="text-[10px] font-bold tracking-widest text-muted/70 uppercase">Local</span>
+          <span class="font-mono text-xs text-fg text-right leading-snug">Praça Brasil<br />Volta Redonda · RJ</span>
+        </div>
+        <div class="flex justify-between items-center bg-surface px-3.5 py-3 gap-3">
+          <span class="text-[10px] font-bold tracking-widest text-muted/70 uppercase">Kit · Retirada</span>
+          <span class="font-mono text-xs text-fg text-right">09 Jun · 14h – 18h</span>
+        </div>
+        <div class="flex justify-between items-center bg-surface px-3.5 py-3 gap-3">
+          <span class="text-[10px] font-bold tracking-widest text-muted/70 uppercase">Pagamento</span>
+          <span class="font-mono text-xs font-bold text-lime">Confirmado</span>
+        </div>
+      </div>
+
+      <div class="flex gap-2 justify-end mt-5">
+        <button type="button" id="statusInscOk"
+          class="bg-lime text-zinc-900 font-semibold text-sm px-4 py-2 rounded-lg hover:bg-lime-500 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer">
+          Entendi
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ MODAL · CONFIRMAR SAIR ============ -->
+  <div id="logoutConfirmModal"
+    class="hidden fixed inset-0 z-[110] bg-zinc950/80 backdrop-blur items-center justify-center p-4">
+    <div class="bg-surface border border-white/10 rounded-2xl w-full max-w-sm p-5 sm:p-6">
+      <h3 class="font-display text-xl text-fg mb-2">Sair da conta?</h3>
+      <p class="text-sm text-muted leading-relaxed mb-5">
+        Tem certeza que deseja encerrar sua sessão no +Sports?
+      </p>
+      <div class="flex gap-2 justify-end">
+        <button type="button" id="logoutCancel"
+          class="border border-white/20 text-fg text-sm px-4 py-2 rounded-lg hover:bg-secondary transition-colors cursor-pointer">
+          Cancelar
+        </button>
+        <button type="button" id="logoutConfirm"
+          class="bg-red-600/90 text-fg font-semibold text-sm px-4 py-2 rounded-lg hover:bg-red-600 transition-colors cursor-pointer">
+          Sair
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ MODAL · REMOVER FOTO DE PERFIL ============ -->
+  <div id="removePhotoModal"
+    class="hidden fixed inset-0 z-[110] bg-zinc950/80 backdrop-blur items-center justify-center p-4">
+    <div class="bg-surface border border-white/10 rounded-2xl w-full max-w-sm p-5 sm:p-6">
+      <h3 class="font-display text-xl text-fg mb-2">Remover foto de perfil?</h3>
+      <p class="text-sm text-muted leading-relaxed mb-5">
+        A imagem será apagada e seu avatar voltará para as iniciais.
+      </p>
+      <div class="flex gap-2 justify-end">
+        <button type="button" id="removePhotoCancel"
+          class="border border-white/20 text-fg text-sm px-4 py-2 rounded-lg hover:bg-secondary transition-colors cursor-pointer">
+          Cancelar
+        </button>
+        <button type="button" id="removePhotoConfirm"
+          class="bg-red-600/90 text-fg font-semibold text-sm px-4 py-2 rounded-lg hover:bg-red-600 transition-colors cursor-pointer">
+          Remover
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ FOOTER (padrão base.html) ============ -->
+  <footer class="border-t border-white/10 bg-surface mt-8 sm:mt-12 lg:mt-16">
+    <div
+      class="max-w-7xl mx-auto px-4 py-6 sm:py-8 lg:py-10 grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
+
+      <div class="xs:col-span-2 lg:col-span-1">
+        <a href="index.html" class="flex items-center mb-2 sm:mb-3 hover:opacity-80 transition-opacity"
+          aria-label="Ir para a página inicial do +Sports">
+          <img src="img/logo.svg" alt="+Sports" class="h-6 sm:h-7 w-auto" />
+        </a>
+        <p class="text-muted text-[10px] sm:text-xs leading-relaxed">
+          Conectando a comunidade de Volta Redonda aos melhores eventos esportivos da região.
+        </p>
+        <div class="flex gap-3 sm:gap-4 mt-3 sm:mt-4 text-muted">
+          <a href="https://www.instagram.com/maissportsvr?igsh=MTBobzRmNHJ2aXJhZw%3D%3D&utm_source=qr" class="hover:text-lime transition-colors" aria-label="Acessar nosso Instagram">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 sm:w-5 sm:h-5">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+            </svg>
+          </a>
+          <a href="#" class="hover:text-lime transition-colors" aria-label="Acessar nosso Facebook">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 sm:w-5 sm:h-5">
+              <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+            </svg>
+          </a>
+          <a href="#" class="hover:text-lime transition-colors" aria-label="Acessar nosso Twitter">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 sm:w-5 sm:h-5">
+              <path
+                d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z">
+              </path>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <div>
+        <h4 class="font-mono text-[10px] sm:text-xs tracking-widest text-muted uppercase mb-2 sm:mb-3">Navegação</h4>
+        <ul class="flex flex-col gap-1.5 sm:gap-2 text-xs sm:text-sm text-fg/70">
+          <li><a href="index.html" class="hover:text-lime transition-colors">Home</a></li>
+          <li><a href="#" class="hover:text-lime transition-colors">Eventos</a></li>
+          <li><a href="jj.html" class="hover:text-lime transition-colors">Joga Junto</a></li>
+          <li><a href="#" class="hover:text-lime transition-colors">Mapa</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="font-mono text-[10px] sm:text-xs tracking-widest text-muted uppercase mb-2 sm:mb-3">Conta</h4>
+        <ul class="flex flex-col gap-1.5 sm:gap-2 text-xs sm:text-sm text-fg/70">
+          <li><a href="login.html" class="hover:text-lime transition-colors">Login</a></li>
+          <li><a href="cadastro.html" class="hover:text-lime transition-colors">Cadastrar</a></li>
+          <li><a href="login.html" class="hover:text-lime transition-colors">Meus Eventos</a></li>
+          <li><a href="ajuda.html" class="hover:text-lime transition-colors">Ajuda</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="font-mono text-[10px] sm:text-xs tracking-widest text-muted uppercase mb-2 sm:mb-3">+Sports</h4>
+        <ul class="flex flex-col gap-1.5 sm:gap-2 text-xs sm:text-sm text-fg/70">
+          <li><a href="#" class="hover:text-lime transition-colors">Sobre Nós</a></li>
+          <li><a href="contato.html" class="hover:text-lime transition-colors">Contato</a></li>
+          <li><a href="#" class="hover:text-lime transition-colors">Política de Privacidade</a></li>
+          <li><a href="termos.html" class="hover:text-lime transition-colors">Termos de Uso</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="border-t border-white/10 text-center py-3 sm:py-4 px-3">
+      <p class="text-muted text-[10px] sm:text-xs font-mono">© 2026 +Sports. Todos os direitos reservados.
+        Desenvolvido por alunos do UniFOA.</p>
+    </div>
+  </footer>
+
+  <script src="js/global.js"></script>
+
+  <script>
+    // ============ Painel +Sports: hambúrguer funcional (mobile e desktop) ============
+    (function () {
+      const toggle = document.getElementById('painelToggle');
+      const items = document.getElementById('painelItems');
+      const chevron = document.getElementById('painelChevron');
+      if (!toggle || !items) return;
+      toggle.addEventListener('click', () => {
+        const open = items.classList.contains('flex');
+        items.classList.toggle('flex', !open);
+        items.classList.toggle('hidden', open);
+        if (chevron) chevron.classList.toggle('rotate-90', !open);
+        toggle.setAttribute('aria-expanded', String(!open));
+      });
+    })();
+
+    // ============ Foto de perfil: upload + remoção (persistência via localStorage) ============
+    (function () {
+      const input = document.getElementById('avatarInput');
+      const display = document.getElementById('avatarDisplay');
+      const initials = document.getElementById('avatarInitials');
+      const modalPreview = document.getElementById('modalAvatarPreview');
+      const modalInitials = document.getElementById('modalAvatarInitials');
+      const removeBtn = document.getElementById('avatarRemove');
+      if (!input || !display) return;
+
+      const saved = localStorage.getItem('avatarDataUrl');
+      if (saved) applyAvatar(saved);
+
+      input.addEventListener('change', (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+          applyAvatar(reader.result);
+          try { localStorage.setItem('avatarDataUrl', reader.result); } catch (_) {}
+        };
+        reader.readAsDataURL(file);
+      });
+
+      if (removeBtn) {
+        const modal = document.getElementById('removePhotoModal');
+        const cancel = document.getElementById('removePhotoCancel');
+        const confirm = document.getElementById('removePhotoConfirm');
+        const open = () => { modal.classList.remove('hidden'); modal.classList.add('flex'); };
+        const close = () => { modal.classList.add('hidden'); modal.classList.remove('flex'); };
+        removeBtn.addEventListener('click', open);
+        cancel && cancel.addEventListener('click', close);
+        modal && modal.addEventListener('click', (e) => { if (e.target === modal) close(); });
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && modal && !modal.classList.contains('hidden')) close();
+        });
+        confirm && confirm.addEventListener('click', () => {
+          clearAvatar();
+          try { localStorage.removeItem('avatarDataUrl'); } catch (_) {}
+          close();
+        });
+      }
+
+      function applyAvatar(url) {
+        display.style.backgroundImage = "url('" + url + "')";
+        if (initials) initials.style.display = 'none';
+        if (modalPreview) { modalPreview.style.backgroundImage = "url('" + url + "')"; }
+        if (modalInitials) modalInitials.style.display = 'none';
+        if (removeBtn) removeBtn.hidden = false;
+      }
+      function clearAvatar() {
+        display.style.backgroundImage = '';
+        if (initials) initials.style.display = '';
+        if (modalPreview) modalPreview.style.backgroundImage = '';
+        if (modalInitials) modalInitials.style.display = '';
+        if (removeBtn) removeBtn.hidden = true;
+        input.value = '';
+      }
+
+      // Expõe função para sincronizar preview do modal ao abrir
+      window._syncModalAvatar = function() {
+        const saved = localStorage.getItem('avatarDataUrl');
+        if (saved) {
+          if (modalPreview) { modalPreview.style.backgroundImage = "url('" + saved + "')"; }
+          if (modalInitials) modalInitials.style.display = 'none';
+          if (removeBtn) removeBtn.hidden = false;
+        } else {
+          if (modalPreview) modalPreview.style.backgroundImage = '';
+          if (modalInitials) modalInitials.style.display = '';
+          if (removeBtn) removeBtn.hidden = true;
+        }
+      };
+    })();
+
+    // ============ Editar perfil (modal) — nome, telefone, CEP, endereço, cidade/UF ============
+    (function () {
+      const editBtn = document.getElementById('editProfileBtn');
+      const modal = document.getElementById('editProfileModal');
+      const closeBtn = document.getElementById('editProfileClose');
+      const cancelBtn = document.getElementById('editProfileCancel');
+      const form = document.getElementById('editProfileForm');
+      const nameInput = document.getElementById('inputName');
+      const phoneInput = document.getElementById('inputPhone');
+      const cepInput = document.getElementById('inputCep');
+      const addressInput = document.getElementById('inputAddress');
+      const numberInput = document.getElementById('inputNumber');
+      const complementInput = document.getElementById('inputComplement');
+      const locInput = document.getElementById('inputLocation');
+      const cepHint = document.getElementById('cepHint');
+      const nameOut = document.getElementById('profileName');
+      const locOut = document.getElementById('profileLocation');
+      const initials = document.getElementById('avatarInitials');
+      if (!editBtn || !modal || !form) return;
+
+      // Carrega dados salvos, se houver
+      let profileData = {};
+      try {
+        profileData = JSON.parse(localStorage.getItem('profileData') || '{}') || {};
+        applyProfile(profileData);
+      } catch (_) {}
+
+      // Máscara simples de CEP: 00000-000
+      if (cepInput) {
+        cepInput.addEventListener('input', () => {
+          const digits = cepInput.value.replace(/\D/g, '').slice(0, 8);
+          cepInput.value = digits.length > 5 ? digits.slice(0, 5) + '-' + digits.slice(5) : digits;
+        });
+
+        // Auto-preenche endereço/cidade via ViaCEP quando o CEP estiver completo
+        const lookup = async () => {
+          const cep = cepInput.value.replace(/\D/g, '');
+          if (cep.length !== 8) return;
+          if (cepHint) cepHint.textContent = 'Buscando endereço…';
+          try {
+            const res = await fetch('https://viacep.com.br/ws/' + cep + '/json/');
+            if (!res.ok) throw new Error('http');
+            const data = await res.json();
+            if (data.erro) { if (cepHint) cepHint.textContent = 'CEP não encontrado.'; return; }
+            const addr = [data.logradouro, data.bairro].filter(Boolean).join(', ');
+            if (addr) addressInput.value = addr;
+            const loc = [data.localidade, data.uf].filter(Boolean).join(' · ');
+            if (loc) locInput.value = loc;
+            if (cepHint) cepHint.textContent = 'Endereço preenchido pelo CEP. Edite se precisar.';
+          } catch (_) {
+            if (cepHint) cepHint.textContent = 'Não foi possível consultar o CEP. Preencha manualmente.';
+          }
+        };
+        cepInput.addEventListener('blur', lookup);
+        cepInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); lookup(); } });
+      }
+
+      // Máscara simples de telefone: (00) 00000-0000
+      if (phoneInput) {
+        phoneInput.addEventListener('input', () => {
+          let d = phoneInput.value.replace(/\D/g, '').slice(0, 11);
+          if (d.length > 10) d = '(' + d.slice(0, 2) + ') ' + d.slice(2, 7) + '-' + d.slice(7);
+          else if (d.length > 6) d = '(' + d.slice(0, 2) + ') ' + d.slice(2, 6) + '-' + d.slice(6);
+          else if (d.length > 2) d = '(' + d.slice(0, 2) + ') ' + d.slice(2);
+          else if (d.length > 0) d = '(' + d;
+          phoneInput.value = d;
+        });
+      }
+
+      function openModal() {
+        nameInput.value = (profileData.name || nameOut.textContent || '').trim();
+        if (phoneInput) phoneInput.value = profileData.phone || '';
+        if (cepInput) cepInput.value = profileData.cep || '';
+        if (addressInput) addressInput.value = profileData.address || '';
+        if (numberInput) numberInput.value = profileData.number || '';
+        if (complementInput) complementInput.value = profileData.complement || '';
+        if (locInput) locInput.value = (profileData.location || locOut.textContent || '').trim();
+        if (cepHint) cepHint.textContent = 'Digite o CEP para preencher endereço automaticamente.';
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        if (typeof window._syncModalAvatar === 'function') window._syncModalAvatar();
+        setTimeout(() => nameInput.focus(), 50);
+      }
+      function closeModal() {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+
+      editBtn.addEventListener('click', openModal);
+      closeBtn.addEventListener('click', closeModal);
+      cancelBtn.addEventListener('click', closeModal);
+      modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal();
+      });
+
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const data = {
+          name: nameInput.value.trim(),
+          phone: phoneInput ? phoneInput.value.trim() : '',
+          cep: cepInput ? cepInput.value.trim() : '',
+          address: addressInput ? addressInput.value.trim() : '',
+          number: numberInput ? numberInput.value.trim() : '',
+          complement: complementInput ? complementInput.value.trim() : '',
+          location: locInput ? locInput.value.trim() : ''
+        };
+        if (!data.name) return;
+        profileData = data;
+        applyProfile(data);
+        try { localStorage.setItem('profileData', JSON.stringify(data)); } catch (_) {}
+        // Sincroniza o nome com sportsUser para o widget da nav ficar atualizado
+        try {
+          const su = JSON.parse(localStorage.getItem('sportsUser') || 'null');
+          if (su) { su.nome = data.name; localStorage.setItem('sportsUser', JSON.stringify(su)); }
+        } catch (_) {}
+        closeModal();
+      });
+
+      function applyProfile(d) {
+        if (d.name) {
+          nameOut.textContent = d.name.toUpperCase();
+          const ini = initialsOf(d.name);
+          if (initials) initials.textContent = ini;
+          const modalIni = document.getElementById('modalAvatarInitials');
+          if (modalIni) modalIni.textContent = ini;
+        }
+        if (d.location) locOut.textContent = d.location;
+      }
+      function initialsOf(name) {
+        const parts = name.trim().split(/\s+/);
+        const a = (parts[0] || '')[0] || '';
+        const b = (parts[1] || '')[0] || '';
+        return (a + b).toUpperCase();
+      }
+    })();
+
+    // ============ Confirmação de Sair (logout) ============
+    (function () {
+      const triggers = [document.getElementById('logoutBtn'), document.getElementById('logoutBtnMobile')].filter(Boolean);
+      const modal = document.getElementById('logoutConfirmModal');
+      const cancel = document.getElementById('logoutCancel');
+      const confirm = document.getElementById('logoutConfirm');
+      if (!triggers.length || !modal) return;
+      let pendingHref = 'login.html';
+      const open = () => { modal.classList.remove('hidden'); modal.classList.add('flex'); };
+      const close = () => { modal.classList.add('hidden'); modal.classList.remove('flex'); };
+      triggers.forEach((el) => {
+        el.addEventListener('click', (e) => {
+          e.preventDefault();
+          pendingHref = el.getAttribute('href') || 'login.html';
+          open();
+        });
+      });
+      cancel && cancel.addEventListener('click', close);
+      modal.addEventListener('click', (e) => { if (e.target === modal) close(); });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !modal.classList.contains('hidden')) close();
+      });
+      confirm && confirm.addEventListener('click', () => {
+        close();
+        window.location.href = pendingHref;
+      });
+    })();
+
+    // ============ Status da Inscrição (modal) ============
+    (function () {
+      const btn = document.getElementById('statusInscBtn');
+      const modal = document.getElementById('statusInscModal');
+      const closeBtn = document.getElementById('statusInscClose');
+      const okBtn = document.getElementById('statusInscOk');
+      if (!btn || !modal) return;
+      const open = () => { modal.classList.remove('hidden'); modal.classList.add('flex'); };
+      const close = () => { modal.classList.add('hidden'); modal.classList.remove('flex'); };
+      btn.addEventListener('click', open);
+      closeBtn && closeBtn.addEventListener('click', close);
+      okBtn && okBtn.addEventListener('click', close);
+      modal.addEventListener('click', (e) => { if (e.target === modal) close(); });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !modal.classList.contains('hidden')) close();
+      });
+    })();
+
+
+    // ============ Resultado da Prova (modal) ============
+    (function () {
+      const modal = document.getElementById('resultModal');
+      const closeBtn = document.getElementById('resultModalClose');
+      const okBtn = document.getElementById('resultModalOk');
+      if (!modal) return;
+
+      function open(tr) {
+        const d = tr.dataset;
+        document.getElementById('rm-id').textContent        = d.id        || '';
+        document.getElementById('rm-evento').textContent    = d.evento    || '';
+        document.getElementById('rm-categoria').textContent = d.categoria || '';
+        document.getElementById('rm-peitoral').textContent  = d.peitoral  || '';
+        document.getElementById('rm-data').textContent      = d.data      || '';
+        document.getElementById('rm-local').textContent     = d.local     || '';
+        document.getElementById('rm-tempo-bruto').textContent = d.tempoBruto || '';
+        document.getElementById('rm-tempo-liq').textContent  = d.tempoLiq  || '';
+        document.getElementById('rm-pace').textContent      = d.pace      || '';
+        document.getElementById('rm-posicao').textContent   = d.posicao   || '';
+        document.getElementById('rm-total').textContent     = d.total     || '';
+        const fotosLink = document.getElementById('rm-fotos-link');
+        if (fotosLink) fotosLink.href = d.fotos || '#';
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      }
+      function close() {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+
+      document.querySelectorAll('tr.open-result-modal').forEach(tr => {
+        tr.addEventListener('click', () => open(tr));
+      });
+
+      closeBtn && closeBtn.addEventListener('click', close);
+      okBtn    && okBtn.addEventListener('click', close);
+      modal.addEventListener('click', (e) => { if (e.target === modal) close(); });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !modal.classList.contains('hidden')) close();
+      });
+    })();
+
+    // ============ Contagem regressiva da próxima largada (data fictícia fixa) ============
+    // Data alvo da Corrida do Guerreiro: 10/Jun/2026 às 06:00 (fictícia, ~12 dias do "hoje" da demo)
+    const targetDate = new Date('2026-06-10T06:00:00');
+
+    function updateTimer() {
+      const now = new Date();
+      const diff = targetDate - now;
+      if (diff <= 0) {
+        document.getElementById('t-days').textContent = '00';
+        document.getElementById('t-hrs').textContent = '00';
+        document.getElementById('t-min').textContent = '00';
+        return;
+      }
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hrs = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      document.getElementById('t-days').textContent = String(days).padStart(2, '0');
+      document.getElementById('t-hrs').textContent = String(hrs).padStart(2, '0');
+      document.getElementById('t-min').textContent = String(mins).padStart(2, '0');
+    }
+    updateTimer();
+    setInterval(updateTimer, 30000);
+  </script>
+  <script src="./js/auth.js"></script>
+
+</body>
+
+</html>
+

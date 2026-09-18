@@ -1,0 +1,46 @@
+﻿<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>+Sports — Pagamento aprovado</title>
+    <link rel="shortcut icon" href="img/favicon.png" type="image/x-icon" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style type="text/tailwindcss">
+      @theme {
+        --color-zinc950: #0c0c0e;
+        --color-surface: #161618;
+        --color-lime: #bef264;
+        --color-fg: #f3f3f3;
+        --color-muted: #9ca39e;
+        --font-display: "Archivo Black", sans-serif;
+        --font-body: "Barlow", sans-serif;
+        --font-mono: "JetBrains Mono", monospace;
+      }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=JetBrains+Mono:wght@500;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet" />
+  </head>
+  <body class="bg-zinc950 text-fg font-body antialiased min-h-screen flex items-center justify-center p-4">
+    <main class="w-full max-w-2xl bg-surface border border-white/10 rounded-3xl p-8 md:p-10 text-center">
+      <div class="w-20 h-20 mx-auto rounded-full border border-lime/40 bg-lime/10 flex items-center justify-center">
+        <svg class="w-10 h-10 text-lime" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+      </div>
+      <p class="mt-5 font-mono text-xs uppercase tracking-[0.28em] text-lime">Pagamento aprovado</p>
+      <h1 class="mt-3 font-display text-3xl md:text-5xl leading-tight">Inscrição confirmada com sucesso</h1>
+      <p class="mt-4 text-muted leading-relaxed">Seu pedido foi registrado e o evento já aparece em <span class="text-fg">Meus Eventos</span></p>
+      <div class="mt-6 grid gap-3 sm:grid-cols-3 text-left">
+        <div class="bg-zinc950/55 border border-white/8 rounded-2xl p-4"><p class="text-muted text-sm">Pedido</p><p class="mt-2 font-mono">#MS2048</p></div>
+        <div class="bg-zinc950/55 border border-white/8 rounded-2xl p-4"><p class="text-muted text-sm">Evento</p><p class="mt-2">Corrida do Guerreiro</p></div>
+        <div class="bg-zinc950/55 border border-white/8 rounded-2xl p-4"><p class="text-muted text-sm">Valor</p><p class="mt-2 text-lime">R$ 138,90</p></div>
+      </div>
+      <div class="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+        <a href="meus-eventos.html" class="inline-flex items-center justify-center bg-lime text-zinc-900 font-display text-sm px-6 py-3.5 rounded-xl hover:brightness-110 transition-all uppercase tracking-wide">Ir para Meus Eventos</a>
+        <a href="evento-base.html" class="inline-flex items-center justify-center border border-white/15 px-6 py-3.5 rounded-xl hover:border-lime hover:text-lime transition-colors">Voltar ao evento</a>
+      </div>
+    </main>
+    <script src="js/global.js"></script>
+  </body>
+</html>
+

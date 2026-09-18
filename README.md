@@ -14,7 +14,7 @@
   <img src="https://img.shields.io/badge/GitHub_Pages-222222?style=for-the-badge&logo=github&logoColor=white" alt="GitHub Pages">
 </p>
 
----
+<!-- --- -->
 
 ## 📌 Sobre o projeto
 

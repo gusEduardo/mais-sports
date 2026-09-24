@@ -1,0 +1,120 @@
+[
+  {
+    "id": 1,
+    "nome": "2ª Corrida do Clube Comercial",
+    "statusInscricao": "abertas",
+    "data": "2027-08-15T07:30:00-03:00",
+    "local": {
+      "nome": "Clube Comercial",
+      "endereco": "Bairro Colina, Volta Redonda, RJ",
+      "latitude": -22.5188,
+      "longitude": -44.1148
+    },
+    "modalidade": "Corrida de rua",
+    "descricao": "Uma manhã de corrida e caminhada em Volta Redonda.",
+    "valorInscricaoCentavos": 7990,
+    "vagas": {
+      "disponiveis": 364,
+      "total": 500
+    },
+    "imagemFundo": "/media/eventos/clube-comercial-banner.jpg",
+    "imagemCard": "/media/eventos/clube-comercial-card.jpg",
+    "imagemAlt": "Imagem do Evento Clube Comercial",
+    "sobre": "A prova começa no Clube Comercial e oferece opções de caminhada e corrida. Aqui entram os detalhes maiores: percurso, estrutura, horários, premiação e informações sobre os valores de cada modalidade.",
+    "organizadorId": 1,
+    "kit": {
+      "itens": [
+        "Camiseta",
+        "Número de peito",
+        "Chip",
+        "Hidratação",
+        "Medalha"
+      ],
+      "diaRetiradaKit": "2027-08-14",
+      "horarioInicioKit": "10:00",
+      "horarioLimiteKit": "18:00"
+    },
+    "modalidades": [
+      {
+        "id": 1,
+        "nome": "Caminhada 3K",
+        "distancia": "3K",
+        "idadeMinima": 0,
+        "precoCentavos": 7990,
+        "detalhes": [
+          "Percurso urbano",
+          "Ideal para iniciantes"
+        ]
+      },
+      {
+        "id": 2,
+        "nome": "Corrida 5K",
+        "distancia": "5K",
+        "idadeMinima": 14,
+        "precoCentavos": 9990,
+        "detalhes": [
+          "Percurso urbano"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "nome": "Corrida 2",
+    "statusInscricao": "abertas",
+    "data": "2026-10-15T07:30:00-03:00",
+    "local": {
+      "nome": "Clube Comercial",
+      "endereco": "Bairro Colina, Volta Redonda, RJ",
+      "latitude": -22.5188,
+      "longitude": -44.1148
+    },
+    "modalidade": "Corrida de rua",
+    "descricao": "Uma manhã de corrida e caminhada em Volta Redonda.",
+    "valorInscricaoCentavos": 7990,
+    "vagas": {
+      "disponiveis": 364,
+      "total": 500
+    },
+    "imagemFundo": "/media/eventos/clube-comercial-banner.jpg",
+    "imagemCard": "/media/eventos/clube-comercial-card.jpg",
+    "imagemAlt": "Imagem do Evento Corrida 2",
+    "sobre": "A prova começa no Clube Comercial e oferece opções de caminhada e corrida. Aqui entram os detalhes maiores: percurso, estrutura, horários, premiação e informações sobre os valores de cada modalidade.",
+    "organizadorId": 1,
+    "kit": {
+      "itens": [
+        "Camiseta",
+        "Número de peito",
+        "Chip",
+        "Hidratação",
+        "Medalha"
+      ],
+      "diaRetiradaKit": "2027-08-14",
+      "horarioInicioKit": "10:00",
+      "horarioLimiteKit": "18:00"
+    },
+    "modalidades": [
+      {
+        "id": 1,
+        "nome": "Caminhada 3K",
+        "distancia": "3K",
+        "idadeMinima": 0,
+        "precoCentavos": 7990,
+        "detalhes": [
+          "Percurso urbano",
+          "Ideal para iniciantes"
+        ]
+      },
+      {
+        "id": 2,
+        "nome": "Corrida 5K",
+        "distancia": "5K",
+        "idadeMinima": 14,
+        "precoCentavos": 9990,
+        "detalhes": [
+          "Percurso urbano"
+        ]
+      }
+    ]
+  }
+]

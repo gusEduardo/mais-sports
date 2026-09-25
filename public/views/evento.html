@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>+Sports - 2ª Corrida do Clube Comercial</title>
+  <title>+Sports - Evento</title>
+  <!-- Mantém os links antigos do menu e de auth.js relativos à pasta views. -->
+  <base href="/views/" />
   <link rel="shortcut icon" href="../media/favicon.png" type="image/x-icon" />
 
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
@@ -76,6 +78,14 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=JetBrains+Mono:wght@500;700&family=Barlow:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+  <style>
+    [hidden] { display: none !important; }
+    a[aria-disabled="true"] { opacity: .6; cursor: not-allowed; }
+    :focus-visible { outline: 2px solid #bef264; outline-offset: 4px; }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; scroll-behavior: auto !important; }
+    }
+  </style>
 </head>
 
 <body class="bg-zinc950 text-fg font-body antialiased">
@@ -88,7 +98,7 @@
 
       <div class="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-6 text-[15px] font-medium text-muted">
         <a href="index.html" class="hover:text-lime transition-colors whitespace-nowrap">Home</a>
-        <a href="eventos.html" class="text-lime transition-colors whitespace-nowrap">Eventos</a>
+        <a href="/eventos" class="text-lime transition-colors whitespace-nowrap">Eventos</a>
         <a href="jj.html" class="hover:text-lime transition-colors whitespace-nowrap">Joga Junto</a>
         <a href="mapa.html" class="hover:text-lime transition-colors whitespace-nowrap">Mapa</a>
       </div>
@@ -108,7 +118,7 @@
 
     <div id="menuMobile" class="hidden md:hidden bg-surface border-b border-white/10 px-4 py-4 flex flex-col gap-3 text-sm font-medium">
       <a href="index.html" class="text-fg hover:text-lime transition-colors">Home</a>
-      <a href="eventos.html" class="text-lime">Eventos</a>
+      <a href="/eventos" class="text-lime">Eventos</a>
       <a href="jj.html" class="text-fg hover:text-lime transition-colors">Joga Junto</a>
       <a href="mapa.html" class="text-fg hover:text-lime transition-colors">Mapa</a>
       <hr class="border-white/10" />
@@ -117,67 +127,51 @@
     </div>
   </header>
 
-  <main class="min-h-[65vh]">
-    <section class="relative left-1/2 right-1/2 w-screen -translate-x-1/2 overflow-hidden fade-up">
-      <img src="../media/eventos/clube-comercial-banner.jpg" alt="2ª Corrida do Clube Comercial" class="absolute inset-0 w-full h-full object-cover" />
-      <div class="absolute inset-0 hero-scrim"></div>
-      <div class="pointer-events-none absolute inset-y-0 left-0 w-20 sm:w-32 lg:w-56 bg-gradient-to-r from-zinc950 via-zinc950/85 to-transparent"></div>
-      <div class="pointer-events-none absolute inset-y-0 right-0 w-20 sm:w-32 lg:w-56 bg-gradient-to-l from-zinc950 via-zinc950/85 to-transparent"></div>
+  <!-- O HTML é o mesmo para todos os eventos. Cada id identifica um destino dos dados. -->
+  <p id="evento-carregando" role="status" class="min-h-[65vh] grid place-items-center text-muted">Carregando evento…</p>
+  <section id="evento-erro" hidden role="alert" class="min-h-[65vh] flex flex-col items-center justify-center text-center px-4 gap-4">
+    <h1 class="font-display text-3xl">Não foi possível carregar o evento</h1>
+    <p id="evento-erro-mensagem"></p>
+    <a href="/eventos" class="text-lime underline">Voltar para os eventos</a>
+  </section>
+  <noscript><p class="p-8 text-center">Ative o JavaScript para visualizar os dados do evento. <a href="/eventos">Ver eventos</a></p></noscript>
 
+  <main id="evento-conteudo" hidden class="min-h-[65vh]">
+    <section class="relative overflow-hidden fade-up">
+      <!-- O JS preenche src e alt juntos, usando imagemFundo e imagemAlt. -->
+      <img id="evento-imagem" alt="" hidden class="absolute inset-0 w-full h-full object-cover" />
+      <div class="absolute inset-0 hero-scrim" aria-hidden="true"></div>
       <div class="relative max-w-[1500px] mx-auto min-h-[620px] px-4 py-8 sm:py-10 lg:py-12 grid gap-6 lg:grid-cols-[minmax(0,1fr)_330px] lg:items-end">
         <div class="max-w-2xl">
-          <span class="inline-flex items-center gap-1.5 text-xs font-mono font-semibold uppercase tracking-widest bg-zinc-950/50 text-lime border border-lime/40 rounded-md px-2.5 py-1 w-fit">
-            <span class="status-dot w-1.5 h-1.5 rounded-full bg-lime"></span>
-            Inscrições abertas
+          <span class="inline-flex items-center gap-1.5 text-xs font-mono font-semibold uppercase tracking-widest bg-zinc-950/50 text-lime border border-lime/40 rounded-md px-2.5 py-1">
+            <span id="evento-status-ponto" aria-hidden="true" class="status-dot w-1.5 h-1.5 rounded-full bg-lime"></span>
+            <span id="evento-status"></span>
           </span>
-          <h1 class="mt-4 font-display text-3xl md:text-5xl text-white leading-tight">2ª Corrida do Clube Comercial</h1>
-          <p class="mt-3 text-sm sm:text-base text-white/75">16 AGO · Volta Redonda, RJ · 5K</p>
-          <p class="mt-4 text-sm sm:text-base text-white/75 max-w-xl leading-relaxed">
-            Uma manhã de corrida com largada e chegada no Clube Comercial, no bairro Colina. Percurso urbano de 5K, estrutura organizada e premiação para os melhores colocados gerais e por faixa etária.
-          </p>
+          <h1 id="evento-nome" class="mt-4 font-display text-3xl md:text-5xl text-white leading-tight"></h1>
+          <p id="evento-resumo" class="mt-3 text-sm sm:text-base text-white/75"></p>
+          <p id="evento-descricao" class="mt-4 text-sm sm:text-base text-white/75 max-w-xl leading-relaxed"></p>
           <div class="mt-6 flex flex-wrap items-center gap-3">
-            <a href="checkout.html" class="bg-lime text-zinc-900 font-display text-sm px-6 py-3 rounded-xl hover:glow-lime transition-all uppercase tracking-wide w-fit inline-flex items-center gap-2">
-              Inscrever-se
-              <span aria-hidden="true">→</span>
-            </a>
-            <a href="#percurso" class="border border-white/20 text-white px-6 py-3 rounded-xl hover:bg-white/5 transition-colors text-sm font-semibold inline-flex items-center gap-2">
-              Ver percurso
-            </a>
+            <a id="evento-inscricao" class="bg-lime text-zinc-900 font-display text-sm px-6 py-3 rounded-xl hover:glow-lime transition-all uppercase tracking-wide">Inscrever-se →</a>
+            <a id="evento-link-modalidades" class="border border-white/20 text-white px-6 py-3 rounded-xl hover:bg-white/5 text-sm font-semibold">Ver modalidades</a>
           </div>
         </div>
-
         <aside class="bg-surface/90 border border-white/10 rounded-2xl p-5 sm:p-6">
-          <p class="text-[10px] text-muted font-mono uppercase tracking-widest">Valor da inscrição</p>
-          <p class="mt-2 font-display text-4xl sm:text-5xl text-fg">R$ 99,90</p>
-
+          <p class="text-[10px] text-muted font-mono uppercase tracking-widest">Inscrição a partir de</p>
+          <p id="evento-preco" class="mt-2 font-display text-4xl sm:text-5xl text-fg"></p>
           <div class="mt-5 pt-4 border-t border-white/10">
-            <p class="text-[10px] text-muted font-mono uppercase tracking-widest">Largada em</p>
+            <p id="evento-contagem-titulo" class="text-[10px] text-muted font-mono uppercase tracking-widest">Largada em</p>
+            <!-- Sem aria-live: não anuncia uma atualização a cada segundo. -->
             <div class="mt-2 grid grid-cols-4 gap-2 font-mono text-lime">
-              <div class="min-w-0 text-center">
-                <span id="event-cd-dias" class="block text-2xl sm:text-3xl lg:text-4xl font-bold tabular-nums leading-none">--</span>
-                <span class="mt-1 block text-[9px] sm:text-[10px] uppercase text-muted tracking-widest">Dias</span>
-              </div>
-              <div class="min-w-0 text-center">
-                <span id="event-cd-hrs" class="block text-2xl sm:text-3xl lg:text-4xl font-bold tabular-nums leading-none">--</span>
-                <span class="mt-1 block text-[9px] sm:text-[10px] uppercase text-muted tracking-widest">Hrs</span>
-              </div>
-              <div class="min-w-0 text-center">
-                <span id="event-cd-min" class="block text-2xl sm:text-3xl lg:text-4xl font-bold tabular-nums leading-none">--</span>
-                <span class="mt-1 block text-[9px] sm:text-[10px] uppercase text-muted tracking-widest">Min</span>
-              </div>
-              <div class="min-w-0 text-center">
-                <span id="event-cd-seg" class="block text-2xl sm:text-3xl lg:text-4xl font-bold tabular-nums leading-none">--</span>
-                <span class="mt-1 block text-[9px] sm:text-[10px] uppercase text-muted tracking-widest">Seg</span>
-              </div>
+              <div class="text-center"><span id="event-cd-dias" class="block text-3xl font-bold tabular-nums">--</span><span class="text-[10px] uppercase text-muted">Dias</span></div>
+              <div class="text-center"><span id="event-cd-hrs" class="block text-3xl font-bold tabular-nums">--</span><span class="text-[10px] uppercase text-muted">Hrs</span></div>
+              <div class="text-center"><span id="event-cd-min" class="block text-3xl font-bold tabular-nums">--</span><span class="text-[10px] uppercase text-muted">Min</span></div>
+              <div class="text-center"><span id="event-cd-seg" class="block text-3xl font-bold tabular-nums">--</span><span class="text-[10px] uppercase text-muted">Seg</span></div>
             </div>
           </div>
-
           <div class="mt-5 pt-4 border-t border-white/10">
             <p class="text-[10px] text-muted font-mono uppercase tracking-widest">Vagas disponíveis</p>
-            <p class="mt-2 text-3xl font-mono text-fg"><span class="text-lime">364</span> / 500</p>
-            <div class="mt-3 h-2 rounded-full bg-white/10 overflow-hidden">
-              <div class="h-full w-[73%] bg-lime"></div>
-            </div>
+            <p class="mt-2 text-3xl font-mono"><span id="evento-vagas-disponiveis" class="text-lime"></span> / <span id="evento-vagas-total"></span></p>
+            <div class="mt-3 h-2 rounded-full bg-white/10 overflow-hidden" aria-hidden="true"><div id="evento-vagas-barra" class="h-full bg-lime"></div></div>
           </div>
         </aside>
       </div>
@@ -186,180 +180,70 @@
     <section class="max-w-[1500px] mx-auto px-4 mt-4 grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_330px] gap-4">
       <div class="space-y-4">
         <article class="bg-surface rounded-2xl border border-white/10 p-5 sm:p-6">
-          <h2 class="font-display text-2xl text-fg leading-tight flex items-center gap-2">
-            <span class="w-1.5 h-1.5 rounded-full bg-lime flex-shrink-0"></span>
-            Sobre o evento
-          </h2>
-          <p class="mt-3 text-fg/80 leading-relaxed">
-            A 2ª Corrida do Clube Comercial acontece em Volta Redonda, com largada e chegada no Clube Comercial, no bairro Colina. A prova tem percurso de 5 km, concentração a partir das 06h30, aquecimento às 07h15 e largada às 07h30.
-          </p>
-          <div class="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
-            <div class="flex items-start gap-2">
-              <svg class="w-5 h-5 text-lime mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4M8 2v4M3 10h18"></path></svg>
-              <div><p class="text-fg">16 de Agosto de 2026</p><p class="text-muted">Domingo</p></div>
-            </div>
-            <div class="flex items-start gap-2">
-              <svg class="w-5 h-5 text-lime mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v6l4 2"></path></svg>
-              <div><p class="text-fg">07:30</p><p class="text-muted">Largada</p></div>
-            </div>
-            <div class="flex items-start gap-2">
-              <svg class="w-5 h-5 text-lime mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s7-5.5 7-12a7 7 0 1 0-14 0c0 6.5 7 12 7 12z"></path><circle cx="12" cy="10" r="2.5"></circle></svg>
-              <div><p class="text-fg">Clube Comercial</p><p class="text-muted">Bairro Colina, Volta Redonda</p></div>
-            </div>
-          </div>
+          <h2 class="font-display text-2xl">Sobre o evento</h2>
+          <p id="evento-sobre" class="mt-3 text-fg/80 leading-relaxed whitespace-pre-line"></p>
+          <dl class="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
+            <div><dt class="text-muted">Data</dt><dd><time id="evento-data"></time><p id="evento-dia-semana" class="text-muted"></p></dd></div>
+            <div><dt class="text-muted">Largada</dt><dd><time id="evento-horario"></time></dd></div>
+            <div><dt class="text-muted">Local</dt><dd><p id="evento-local"></p><p id="evento-endereco" class="text-muted"></p></dd></div>
+          </dl>
+        </article>
+
+        <article id="evento-modalidades-secao" class="bg-surface rounded-2xl border border-white/10 p-5 sm:p-6 scroll-mt-20">
+          <h2 class="font-display text-2xl">Modalidades</h2>
+          <!-- Cada item do array vira um card criado com createElement. -->
+          <div id="evento-modalidades" class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
         </article>
 
         <article class="bg-surface rounded-2xl border border-white/10 p-5 sm:p-6">
-          <h2 class="font-display text-2xl text-fg leading-tight flex items-center gap-2">
-            <span class="w-1.5 h-1.5 rounded-full bg-lime flex-shrink-0"></span>
-            Modalidades
-          </h2>
-          <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div class="bg-secondary rounded-xl p-4 border border-white/5">
-              <p class="font-display text-5xl text-lime leading-none">3K</p>
-              <p class="mt-2 text-lg">Caminhada 3K</p>
-              <ul class="mt-2 text-sm text-muted space-y-1">
-                <li>Percurso urbano</li>
-                <li>Ideal para iniciantes</li>
-              </ul>
-              <p class="mt-3 text-2xl font-mono text-lime">R$ 79,90</p>
-            </div>
-            <div class="bg-secondary rounded-xl p-4 border border-white/5">
-              <p class="font-display text-5xl text-lime leading-none">5K</p>
-              <p class="mt-2 text-lg">Corrida 5K</p>
-              <ul class="mt-2 text-sm text-muted space-y-1">
-                <li>Percurso urbano</li>
-                <li>Idade mínima: 14 anos</li>
-              </ul>
-              <p class="mt-3 text-2xl font-mono text-lime">R$ 99,90</p>
-            </div>
-          </div>
+          <h2 class="font-display text-2xl">Kit do atleta</h2>
+          <p id="evento-kit-mensagem" class="mt-2 text-fg/80"></p>
+          <ul id="evento-kit-itens" class="mt-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3"></ul>
         </article>
 
         <article class="bg-surface rounded-2xl border border-white/10 p-5 sm:p-6">
-          <h2 class="font-display text-2xl text-fg leading-tight flex items-center gap-2">
-            <span class="w-1.5 h-1.5 rounded-full bg-lime flex-shrink-0"></span>
-            Kit do atleta
-          </h2>
-          <p class="mt-2 text-fg/80">Todos os atletas inscritos recebem um kit preparado para o dia da prova.</p>
-          <div class="mt-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-            <div class="bg-secondary rounded-xl p-4 border border-white/5 text-center"><p class="font-mono text-sm text-lime">Camiseta</p></div>
-            <div class="bg-secondary rounded-xl p-4 border border-white/5 text-center"><p class="font-mono text-sm text-lime">Número de peito</p></div>
-            <div class="bg-secondary rounded-xl p-4 border border-white/5 text-center"><p class="font-mono text-sm text-lime">Chip</p></div>
-            <div class="bg-secondary rounded-xl p-4 border border-white/5 text-center"><p class="font-mono text-sm text-lime">Hidratação</p></div>
-            <div class="bg-secondary rounded-xl p-4 border border-white/5 text-center"><p class="font-mono text-sm text-lime">Medalha</p></div>
-          </div>
-        </article>
-
-        <article id="percurso" class="bg-surface rounded-2xl border border-white/10 p-5 sm:p-6 scroll-mt-20">
-          <h2 class="font-display text-2xl text-fg leading-tight flex items-center gap-2">
-            <span class="w-1.5 h-1.5 rounded-full bg-lime flex-shrink-0"></span>
-            Percurso
-          </h2>
-
-          <div class="mt-4 flex gap-2 flex-wrap">
-            <button type="button" data-route-button="3k" class="route-btn font-mono text-xs font-semibold px-4 py-1.5 rounded-full bg-lime text-zinc-900 transition-all">3K</button>
-            <button type="button" data-route-button="5k" class="route-btn font-mono text-xs font-semibold px-4 py-1.5 rounded-full border border-white/20 text-muted hover:border-lime hover:text-lime transition-all">5K</button>
-          </div>
-
-          <div class="mt-4 space-y-4">
-            <div data-route-panel="3k" class="route-panel min-h-[356px] sm:min-h-[332px]">
-              <div class="bg-secondary rounded-xl p-4 border border-white/5 overflow-hidden">
-                <svg viewBox="0 0 600 220" class="w-full h-auto">
-                  <rect x="0" y="0" width="600" height="220" fill="#111216"></rect>
-                  <path d="M40 140 L95 92 L160 78 L245 112 L300 70 L380 128 L470 102 L560 150" fill="none" stroke="#bef264" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></path>
-                  <circle cx="160" cy="78" r="14" fill="#bef264"></circle>
-                  <circle cx="300" cy="70" r="14" fill="#bef264"></circle>
-                  <circle cx="470" cy="102" r="14" fill="#bef264"></circle>
-                </svg>
-              </div>
-              <div class="mt-3 grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
-                <div><p class="text-fg">3,10 km</p><p class="text-muted">Distância</p></div>
-                <div><p class="text-fg">28 m</p><p class="text-muted">Ganho de elevação</p></div>
-                <div><p class="text-fg">Asfalto</p><p class="text-muted">Tipo de terreno</p></div>
-                <a href="#" class="text-lime hover:text-lime-hover transition-colors self-center">Ver mapa completo →</a>
-              </div>
-            </div>
-
-            <div data-route-panel="5k" class="route-panel hidden min-h-[356px] sm:min-h-[332px]">
-              <div class="bg-secondary rounded-xl p-4 border border-white/5 overflow-hidden">
-                <svg viewBox="0 0 600 220" class="w-full h-auto">
-                  <rect x="0" y="0" width="600" height="220" fill="#111216"></rect>
-                  <path d="M35 150 L86 104 L170 84 L244 120 L310 54 L392 98 L458 82 L566 140" fill="none" stroke="#bef264" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></path>
-                  <circle cx="170" cy="84" r="14" fill="#bef264"></circle>
-                  <circle cx="310" cy="54" r="14" fill="#bef264"></circle>
-                  <circle cx="458" cy="82" r="14" fill="#bef264"></circle>
-                </svg>
-              </div>
-              <div class="mt-3 grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
-                <div><p class="text-fg">5,00 km</p><p class="text-muted">Distância</p></div>
-                <div><p class="text-fg">42 m</p><p class="text-muted">Ganho de elevação</p></div>
-                <div><p class="text-fg">Asfalto</p><p class="text-muted">Tipo de terreno</p></div>
-                <a href="#" class="text-lime hover:text-lime-hover transition-colors self-center">Ver mapa completo →</a>
-              </div>
-            </div>
-          </div>
+          <h2 class="font-display text-2xl">Percurso</h2>
+          <p class="mt-3 text-muted">O mapa do percurso ainda não foi informado pelo organizador.</p>
         </article>
       </div>
 
       <aside class="space-y-4">
         <article class="bg-surface rounded-2xl border border-white/10 p-5 sm:p-6">
-          <h2 class="font-display text-2xl text-fg leading-tight flex items-center gap-2">
-            <span class="w-1.5 h-1.5 rounded-full bg-lime flex-shrink-0"></span>
-            Organizador
-          </h2>
-          <div class="mt-4 flex items-center gap-4">
-            <img src="../media/eventos/clube-comercial-card.jpg" alt="Clube Comercial" class="w-16 h-16 rounded-full object-cover border border-white/15 bg-zinc-950/70" />
-            <div>
-              <p class="text-xl font-semibold">Clube Comercial</p>
-              <p class="text-muted">Organizador esportivo</p>
-            </div>
+          <h2 class="font-display text-2xl">Organizador</h2>
+          <div class="mt-4 flex items-center gap-3">
+            <img id="organizador-imagem" alt="" hidden class="w-14 h-14 rounded-full object-cover border border-white/10" />
+            <div><p id="organizador-nome" class="font-semibold"></p><p id="organizador-cargo" class="text-sm text-muted"></p></div>
           </div>
-          <div class="mt-4 flex items-center gap-3 text-muted">
-            <a href="#" class="w-9 h-9 rounded-lg border border-white/15 flex items-center justify-center hover:text-lime hover:border-lime/40 transition-colors" aria-label="Instagram do organizador">
-              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="18" cy="6" r="1"></circle></svg>
-            </a>
-            <a href="#" class="w-9 h-9 rounded-lg border border-white/15 flex items-center justify-center hover:text-lime hover:border-lime/40 transition-colors" aria-label="Site do organizador">
-              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M2 12h20"></path><path d="M12 2a15 15 0 0 1 0 20"></path><path d="M12 2a15 15 0 0 0 0 20"></path></svg>
-            </a>
+          <div class="mt-4 flex gap-3 text-lime">
+            <a id="organizador-instagram" hidden target="_blank" rel="noopener noreferrer">Instagram ↗</a>
+            <a id="organizador-site" hidden target="_blank" rel="noopener noreferrer">Site ↗</a>
           </div>
         </article>
 
         <article class="bg-surface rounded-2xl border border-white/10 p-5 sm:p-6">
-          <h2 class="font-display text-2xl text-fg leading-tight flex items-center gap-2">
-            <span class="w-1.5 h-1.5 rounded-full bg-lime flex-shrink-0"></span>
-            Localização
-          </h2>
-          <p class="mt-3 text-fg">Clube Comercial</p>
-          <p class="text-muted">Bairro Colina, Volta Redonda, RJ</p>
-          <div class="mt-4 bg-secondary rounded-xl p-3 border border-white/5">
-            <div id="event-location-map" class="w-full rounded-lg overflow-hidden"></div>
+          <h2 class="font-display text-2xl">Localização</h2>
+          <!-- O mesmo dado aparece duas vezes, mas cada elemento tem um id único. -->
+          <p id="evento-local-mapa" class="mt-3"></p>
+          <p id="evento-endereco-mapa" class="text-muted"></p>
+          <div id="evento-mapa-container" hidden class="mt-4 bg-secondary rounded-xl p-3 border border-white/5">
+            <div id="event-location-map" role="region" aria-label="Mapa da localização do evento" class="w-full rounded-lg overflow-hidden"></div>
           </div>
-          <a href="https://www.google.com/maps/search/?api=1&query=Clube%20Comercial%20Volta%20Redonda%20RJ" target="_blank" rel="noreferrer" class="mt-3 inline-flex text-lime hover:text-lime-hover transition-colors">Ver no Google Maps →</a>
+          <a id="evento-google-maps" hidden target="_blank" rel="noopener noreferrer" class="mt-3 inline-flex text-lime hover:text-lime-hover">Ver no Google Maps →</a>
         </article>
 
         <article class="bg-surface rounded-2xl border border-white/10 p-5 sm:p-6">
-          <h2 class="font-display text-2xl text-fg leading-tight flex items-center gap-2">
-            <span class="w-1.5 h-1.5 rounded-full bg-lime flex-shrink-0"></span>
-            Informações do evento
-          </h2>
-          <ul class="mt-4 space-y-3 text-sm">
-            <li class="flex justify-between gap-3"><span class="text-muted">Data</span><span>16 de Agosto de 2026</span></li>
-            <li class="flex justify-between gap-3"><span class="text-muted">Concentração</span><span>06:30</span></li>
-            <li class="flex justify-between gap-3"><span class="text-muted">Largada</span><span>07:30</span></li>
-            <li class="flex justify-between gap-3"><span class="text-muted">Chegada estimada</span><span>Até 09:00</span></li>
-            <li class="flex justify-between gap-3"><span class="text-muted">Retirada de kit</span><span>15/08 das 10h às 18h</span></li>
-            <li class="flex justify-between gap-3"><span class="text-muted">Idade mínima</span><span>5K: 14 anos</span></li>
-            <li class="flex justify-between gap-3"><span class="text-muted">Contato</span><span>(24) 99999-9999</span></li>
-          </ul>
+          <h2 class="font-display text-2xl">Informações do evento</h2>
+          <dl class="mt-4 space-y-3 text-sm">
+            <div><dt class="text-muted">Data</dt><dd><time id="evento-info-data"></time></dd></div>
+            <div><dt class="text-muted">Largada</dt><dd><time id="evento-info-horario"></time></dd></div>
+            <div><dt class="text-muted">Retirada de kit</dt><dd id="evento-retirada-kit"></dd></div>
+            <div><dt class="text-muted">Idade mínima por modalidade</dt><dd><ul id="evento-idades"></ul></dd></div>
+            <div><dt class="text-muted">Contato</dt><dd><ul id="organizador-contatos"></ul></dd></div>
+          </dl>
         </article>
-
         <article class="bg-surface rounded-2xl border border-white/10 p-5 sm:p-6">
-          <p class="text-center text-fg/80">Garanta sua vaga agora</p>
-          <a href="checkout.html" class="mt-4 w-full inline-flex items-center justify-center bg-lime text-zinc-900 font-display text-sm px-6 py-3.5 rounded-xl hover:glow-lime transition-all uppercase tracking-wide">
-            Inscrever-se agora →
-          </a>
-          <p class="mt-3 text-center text-sm text-muted">Pagamento 100% seguro</p>
+          <p id="evento-inscricao-mensagem" class="text-center text-fg/80"></p>
+          <a id="evento-inscricao-final" class="mt-4 w-full inline-flex items-center justify-center bg-lime text-zinc-900 font-display text-sm px-6 py-3.5 rounded-xl hover:glow-lime transition-all uppercase tracking-wide">Inscrever-se →</a>
         </article>
       </aside>
     </section>
@@ -399,7 +283,7 @@
         <h4 class="font-mono text-xs tracking-widest text-muted uppercase mb-3">Navegação</h4>
         <ul class="flex flex-col gap-2 text-sm text-fg/70">
           <li><a href="index.html" class="hover:text-lime transition-colors">Home</a></li>
-          <li><a href="eventos.html" class="hover:text-lime transition-colors">Eventos</a></li>
+          <li><a href="/eventos" class="hover:text-lime transition-colors">Eventos</a></li>
           <li><a href="jj.html" class="hover:text-lime transition-colors">Joga Junto</a></li>
         </ul>
       </div>
@@ -432,87 +316,11 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 
-  <script>
-    (() => {
-      const routeButtons = Array.from(document.querySelectorAll("[data-route-button]"));
-      const routePanels = Array.from(document.querySelectorAll("[data-route-panel]"));
-      const countdownTarget = new Date("2026-08-16T07:30:00-03:00");
-      const countdownEls = {
-        dias: document.getElementById("event-cd-dias"),
-        hrs: document.getElementById("event-cd-hrs"),
-        min: document.getElementById("event-cd-min"),
-        seg: document.getElementById("event-cd-seg"),
-      };
 
-      const updateCountdown = () => {
-        const diff = countdownTarget - new Date();
-        const safeDiff = Math.max(diff, 0);
-        const days = Math.floor(safeDiff / 86400000);
-        const hours = Math.floor((safeDiff % 86400000) / 3600000);
-        const minutes = Math.floor((safeDiff % 3600000) / 60000);
-        const seconds = Math.floor((safeDiff % 60000) / 1000);
-
-        if (countdownEls.dias) countdownEls.dias.textContent = String(days).padStart(2, "0");
-        if (countdownEls.hrs) countdownEls.hrs.textContent = String(hours).padStart(2, "0");
-        if (countdownEls.min) countdownEls.min.textContent = String(minutes).padStart(2, "0");
-        if (countdownEls.seg) countdownEls.seg.textContent = String(seconds).padStart(2, "0");
-      };
-
-      const setRoute = (route) => {
-        routeButtons.forEach((btn) => {
-          const active = btn.dataset.routeButton === route;
-          btn.classList.toggle("bg-lime", active);
-          btn.classList.toggle("text-zinc-900", active);
-          btn.classList.toggle("border", !active);
-          btn.classList.toggle("border-white/20", !active);
-          btn.classList.toggle("text-muted", !active);
-          btn.classList.toggle("hover:border-lime", !active);
-          btn.classList.toggle("hover:text-lime", !active);
-        });
-        routePanels.forEach((panel) => {
-          panel.classList.toggle("hidden", panel.dataset.routePanel !== route);
-        });
-      };
-
-      routeButtons.forEach((btn) => {
-        btn.addEventListener("click", () => setRoute(btn.dataset.routeButton));
-      });
-
-      updateCountdown();
-      setInterval(updateCountdown, 1000);
-
-      const mapElement = document.getElementById("event-location-map");
-      if (mapElement && window.L) {
-        const clubeComercialCoords = [-22.5188, -44.1148];
-        const eventMap = L.map(mapElement, {
-          zoomControl: false,
-          dragging: false,
-          scrollWheelZoom: false,
-          doubleClickZoom: false,
-          attributionControl: false,
-        }).setView(clubeComercialCoords, 15);
-
-        L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
-          maxZoom: 19,
-        }).addTo(eventMap);
-
-        L.marker(clubeComercialCoords, {
-          icon: L.divIcon({
-            html: '<span class="event-map-pin"></span>',
-            className: "event-map-marker",
-            iconSize: [32, 44],
-            iconAnchor: [16, 32],
-          }),
-          interactive: false,
-        }).addTo(eventMap);
-
-        setTimeout(() => eventMap.invalidateSize(), 0);
-      }
-    })();
-  </script>
 
   <script src="../js/global.js"></script>
   <script src="../js/auth.js"></script>
+  <script src="/js/evento.js"></script>
 </body>
 </html>
 

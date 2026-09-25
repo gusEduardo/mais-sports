@@ -11,14 +11,13 @@
   <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwindcss&logoColor=white" alt="Tailwind CSS">
   <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" alt="CSS3">
   <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" alt="JavaScript">
-  <img src="https://img.shields.io/badge/GitHub_Pages-222222?style=for-the-badge&logo=github&logoColor=white" alt="GitHub Pages">
 </p>
 
 <!-- --- -->
 
 ## 📌 Sobre o projeto
 
-O **+Sports** é uma aplicação Web que conecta a comunidade aos espaços esportivos públicos da cidade, facilitando tanto a localização de quadras e praças disponíveis quanto a organização de partidas, treinos e eventos esportivos entre os próprios moradores. A proposta nasceu da dificuldade de encontrar informações sobre a infraestrutura esportiva local e de montar grupos para a prática de atividades físicas, que hoje depende quase inteiramente do boca a boca.
+O **+Sports** é uma aplicação Web que conecta a comunidade ao esporte na cidade, facilitando tanto a localização de quadras e praças disponíveis quanto a organização de partidas, treinos e eventos esportivos entre os próprios moradores. A proposta nasceu da dificuldade de encontrar informações sobre a infraestrutura esportiva local e de montar grupos para a prática de atividades físicas.
 
 O projeto foi desenvolvido como trabalho acadêmico do curso de **Sistemas de Informação (UniFOA)**, seguindo a metodologia de Design Thinking, com etapas de pesquisa com usuários reais e testes de usabilidade.
 
@@ -40,7 +39,7 @@ O projeto foi desenvolvido como trabalho acadêmico do curso de **Sistemas de In
 
 ## 🛠️ Tecnologias utilizadas
 
-Por se tratar, na fase atual, de uma aplicação inteiramente front-end:
+O projeto combina páginas HTML com um servidor Node.js/Express para consultar os eventos por ID:
 
 | Tecnologia | Uso no projeto |
 |---|---|
@@ -48,6 +47,7 @@ Por se tratar, na fase atual, de uma aplicação inteiramente front-end:
 | **Tailwind CSS v4** (via Play CDN) | Estilização e layout responsivo |
 | **CSS3** | Animações e microinterações |
 | **JavaScript (ES6+)** | Mapa customizado, cronômetros, controle de sessão, etc... |
+| **Node.js / Express** | Rotas, controllers, middlewares e consulta de eventos em JSON |
 | **Figma** | Prototipagem |
 | **Git & GitHub** | Versionamento e trabalho colaborativo |
 | **GitHub Pages** | Hospedagem e publicação do site |

@@ -1,0 +1,18 @@
+{
+  "name": "mais-sports",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Portal +Sports com páginas de eventos dinâmicas",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}

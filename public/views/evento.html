@@ -1,0 +1,326 @@
+﻿<!doctype html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>+Sports - Evento</title>
+  <!-- Mantém os links antigos do menu e de auth.js relativos à pasta views. -->
+  <base href="/views/" />
+  <link rel="shortcut icon" href="../media/favicon.png" type="image/x-icon" />
+
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+  <style type="text/tailwindcss">
+    @theme {
+      --color-zinc950:    #0c0c0e;
+      --color-surface:    #161618;
+      --color-secondary:  #1f2024;
+      --color-lime:       #bef264;
+      --color-lime-hover: #d9f99d;
+      --color-fg:         #f3f3f3;
+      --color-muted:      #9ca39e;
+
+      --font-display: "Archivo Black", sans-serif;
+      --font-body: "Barlow", sans-serif;
+      --font-mono: "JetBrains Mono", monospace;
+    }
+
+    .glow-lime { box-shadow: 0 0 24px #bef264; }
+    .glow-lime-sm { box-shadow: 0 0 12px rgba(190, 242, 100, 0.6); }
+
+    .hero-scrim {
+      background:
+        linear-gradient(90deg, #0c0c0e 0%, rgba(12, 12, 14, 0.96) 6%, rgba(12, 12, 14, 0.78) 18%, rgba(12, 12, 14, 0.42) 40%, rgba(12, 12, 14, 0.38) 62%, rgba(12, 12, 14, 0.82) 84%, #0c0c0e 100%),
+        linear-gradient(180deg, rgba(12, 12, 14, 0.08) 0%, rgba(12, 12, 14, 0.45) 60%, #0c0c0e 100%);
+    }
+    .status-dot {
+      animation: pulse-lime 2s infinite;
+    }
+    @keyframes pulse-lime {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(190, 242, 100, 0.7); }
+      50% { box-shadow: 0 0 0 10px rgba(190, 242, 100, 0); }
+    }
+    .fade-up {
+      animation: fadeUp 420ms ease-out both;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    #event-location-map {
+      height: 180px;
+    }
+    .event-map-marker {
+      background: transparent;
+      border: 0;
+    }
+    .event-map-pin {
+      position: relative;
+      display: block;
+      width: 32px;
+      height: 32px;
+      border-radius: 50% 50% 50% 0;
+      background: #bef264;
+      border: 3px solid #111315;
+      box-shadow: 0 10px 18px rgba(0, 0, 0, 0.42);
+      transform: rotate(-45deg);
+    }
+    .event-map-pin::after {
+      content: "";
+      position: absolute;
+      inset: 8px;
+      border-radius: 999px;
+      background: #111315;
+    }
+  </style>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=JetBrains+Mono:wght@500;700&family=Barlow:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+  <style>
+    [hidden] { display: none !important; }
+    a[aria-disabled="true"] { opacity: .6; cursor: not-allowed; }
+    :focus-visible { outline: 2px solid #bef264; outline-offset: 4px; }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; scroll-behavior: auto !important; }
+    }
+  </style>
+</head>
+
+<body class="bg-zinc950 text-fg font-body antialiased">
+
+  <header class="sticky top-0 z-50 bg-zinc950/90 backdrop-blur border-b border-white/10">
+    <nav class="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between gap-4 relative">
+      <a href="index.html" class="flex items-center hover:opacity-80 transition-opacity z-10" aria-label="Ir para a página inicial do +Sports">
+        <img src="../media/logo.svg" alt="+Sports" class="h-6 w-auto" />
+      </a>
+
+      <div class="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-6 text-[15px] font-medium text-muted">
+        <a href="index.html" class="hover:text-lime transition-colors whitespace-nowrap">Home</a>
+        <a href="/eventos" class="text-lime transition-colors whitespace-nowrap">Eventos</a>
+        <a href="jj.html" class="hover:text-lime transition-colors whitespace-nowrap">Joga Junto</a>
+        <a href="mapa.html" class="hover:text-lime transition-colors whitespace-nowrap">Mapa</a>
+      </div>
+
+      <div class="flex items-center gap-2 ml-auto z-10">
+        <input
+          type="text"
+          placeholder="Pesquisar..."
+          class="hidden lg:block bg-surface border border-white/10 rounded-lg text-sm text-fg placeholder-muted px-3 py-1.5 w-44 focus:outline-none focus:border-lime/50 transition-colors"
+        />
+        <a href="login.html" class="hidden md:block text-sm border border-white/20 text-fg px-3 py-1.5 rounded-lg hover:bg-surface transition-colors whitespace-nowrap">Entrar</a>
+        <a href="cadastro.html" class="hidden md:block text-sm bg-lime text-zinc-900 font-semibold px-3 py-1.5 rounded-lg hover:glow-lime-sm transition-all whitespace-nowrap">Criar Conta</a>
+
+        <button id="btnMenu" class="md:hidden text-fg text-xl w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-lg hover:bg-surface transition-colors" aria-label="Abrir menu">&#9776;</button>
+      </div>
+    </nav>
+
+    <div id="menuMobile" class="hidden md:hidden bg-surface border-b border-white/10 px-4 py-4 flex flex-col gap-3 text-sm font-medium">
+      <a href="index.html" class="text-fg hover:text-lime transition-colors">Home</a>
+      <a href="/eventos" class="text-lime">Eventos</a>
+      <a href="jj.html" class="text-fg hover:text-lime transition-colors">Joga Junto</a>
+      <a href="mapa.html" class="text-fg hover:text-lime transition-colors">Mapa</a>
+      <hr class="border-white/10" />
+      <a href="login.html" class="text-muted hover:text-fg transition-colors">Login</a>
+      <a href="cadastro.html" class="bg-lime text-zinc-900 font-semibold px-4 py-2 rounded-lg text-center">Criar Conta</a>
+    </div>
+  </header>
+
+  <!-- O HTML é o mesmo para todos os eventos. Cada id identifica um destino dos dados. -->
+  <p id="evento-carregando" role="status" class="min-h-[65vh] grid place-items-center text-muted">Carregando evento…</p>
+  <section id="evento-erro" hidden role="alert" class="min-h-[65vh] flex flex-col items-center justify-center text-center px-4 gap-4">
+    <h1 class="font-display text-3xl">Não foi possível carregar o evento</h1>
+    <p id="evento-erro-mensagem"></p>
+    <a href="/eventos" class="text-lime underline">Voltar para os eventos</a>
+  </section>
+  <noscript><p class="p-8 text-center">Ative o JavaScript para visualizar os dados do evento. <a href="/eventos">Ver eventos</a></p></noscript>
+
+  <main id="evento-conteudo" hidden class="min-h-[65vh]">
+    <section class="relative overflow-hidden fade-up">
+      <!-- O JS preenche src e alt juntos, usando imagemFundo e imagemAlt. -->
+      <img id="evento-imagem" alt="" hidden class="absolute inset-0 w-full h-full object-cover" />
+      <div class="absolute inset-0 hero-scrim" aria-hidden="true"></div>
+      <div class="relative max-w-[1500px] mx-auto min-h-[620px] px-4 py-8 sm:py-10 lg:py-12 grid gap-6 lg:grid-cols-[minmax(0,1fr)_330px] lg:items-end">
+        <div class="max-w-2xl">
+          <span class="inline-flex items-center gap-1.5 text-xs font-mono font-semibold uppercase tracking-widest bg-zinc-950/50 text-lime border border-lime/40 rounded-md px-2.5 py-1">
+            <span id="evento-status-ponto" aria-hidden="true" class="status-dot w-1.5 h-1.5 rounded-full bg-lime"></span>
+            <span id="evento-status"></span>
+          </span>
+          <h1 id="evento-nome" class="mt-4 font-display text-3xl md:text-5xl text-white leading-tight"></h1>
+          <p id="evento-resumo" class="mt-3 text-sm sm:text-base text-white/75"></p>
+          <p id="evento-descricao" class="mt-4 text-sm sm:text-base text-white/75 max-w-xl leading-relaxed"></p>
+          <div class="mt-6 flex flex-wrap items-center gap-3">
+            <a id="evento-inscricao" class="bg-lime text-zinc-900 font-display text-sm px-6 py-3 rounded-xl hover:glow-lime transition-all uppercase tracking-wide">Inscrever-se →</a>
+            <a id="evento-link-modalidades" class="border border-white/20 text-white px-6 py-3 rounded-xl hover:bg-white/5 text-sm font-semibold">Ver modalidades</a>
+          </div>
+        </div>
+        <aside class="bg-surface/90 border border-white/10 rounded-2xl p-5 sm:p-6">
+          <p class="text-[10px] text-muted font-mono uppercase tracking-widest">Inscrição a partir de</p>
+          <p id="evento-preco" class="mt-2 font-display text-4xl sm:text-5xl text-fg"></p>
+          <div class="mt-5 pt-4 border-t border-white/10">
+            <p id="evento-contagem-titulo" class="text-[10px] text-muted font-mono uppercase tracking-widest">Largada em</p>
+            <!-- Sem aria-live: não anuncia uma atualização a cada segundo. -->
+            <div class="mt-2 grid grid-cols-4 gap-2 font-mono text-lime">
+              <div class="text-center"><span id="event-cd-dias" class="block text-3xl font-bold tabular-nums">--</span><span class="text-[10px] uppercase text-muted">Dias</span></div>
+              <div class="text-center"><span id="event-cd-hrs" class="block text-3xl font-bold tabular-nums">--</span><span class="text-[10px] uppercase text-muted">Hrs</span></div>
+              <div class="text-center"><span id="event-cd-min" class="block text-3xl font-bold tabular-nums">--</span><span class="text-[10px] uppercase text-muted">Min</span></div>
+              <div class="text-center"><span id="event-cd-seg" class="block text-3xl font-bold tabular-nums">--</span><span class="text-[10px] uppercase text-muted">Seg</span></div>
+            </div>
+          </div>
+          <div class="mt-5 pt-4 border-t border-white/10">
+            <p class="text-[10px] text-muted font-mono uppercase tracking-widest">Vagas disponíveis</p>
+            <p class="mt-2 text-3xl font-mono"><span id="evento-vagas-disponiveis" class="text-lime"></span> / <span id="evento-vagas-total"></span></p>
+            <div class="mt-3 h-2 rounded-full bg-white/10 overflow-hidden" aria-hidden="true"><div id="evento-vagas-barra" class="h-full bg-lime"></div></div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="max-w-[1500px] mx-auto px-4 mt-4 grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_330px] gap-4">
+      <div class="space-y-4">
+        <article class="bg-surface rounded-2xl border border-white/10 p-5 sm:p-6">
+          <h2 class="font-display text-2xl">Sobre o evento</h2>
+          <p id="evento-sobre" class="mt-3 text-fg/80 leading-relaxed whitespace-pre-line"></p>
+          <dl class="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
+            <div><dt class="text-muted">Data</dt><dd><time id="evento-data"></time><p id="evento-dia-semana" class="text-muted"></p></dd></div>
+            <div><dt class="text-muted">Largada</dt><dd><time id="evento-horario"></time></dd></div>
+            <div><dt class="text-muted">Local</dt><dd><p id="evento-local"></p><p id="evento-endereco" class="text-muted"></p></dd></div>
+          </dl>
+        </article>
+
+        <article id="evento-modalidades-secao" class="bg-surface rounded-2xl border border-white/10 p-5 sm:p-6 scroll-mt-20">
+          <h2 class="font-display text-2xl">Modalidades</h2>
+          <!-- Cada item do array vira um card criado com createElement. -->
+          <div id="evento-modalidades" class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+        </article>
+
+        <article class="bg-surface rounded-2xl border border-white/10 p-5 sm:p-6">
+          <h2 class="font-display text-2xl">Kit do atleta</h2>
+          <p id="evento-kit-mensagem" class="mt-2 text-fg/80"></p>
+          <ul id="evento-kit-itens" class="mt-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3"></ul>
+        </article>
+
+        <article class="bg-surface rounded-2xl border border-white/10 p-5 sm:p-6">
+          <h2 class="font-display text-2xl">Percurso</h2>
+          <p class="mt-3 text-muted">O mapa do percurso ainda não foi informado pelo organizador.</p>
+        </article>
+      </div>
+
+      <aside class="space-y-4">
+        <article class="bg-surface rounded-2xl border border-white/10 p-5 sm:p-6">
+          <h2 class="font-display text-2xl">Organizador</h2>
+          <div class="mt-4 flex items-center gap-3">
+            <img id="organizador-imagem" alt="" hidden class="w-14 h-14 rounded-full object-cover border border-white/10" />
+            <div><p id="organizador-nome" class="font-semibold"></p><p id="organizador-cargo" class="text-sm text-muted"></p></div>
+          </div>
+          <div class="mt-4 flex gap-3 text-lime">
+            <a id="organizador-instagram" hidden target="_blank" rel="noopener noreferrer">Instagram ↗</a>
+            <a id="organizador-site" hidden target="_blank" rel="noopener noreferrer">Site ↗</a>
+          </div>
+        </article>
+
+        <article class="bg-surface rounded-2xl border border-white/10 p-5 sm:p-6">
+          <h2 class="font-display text-2xl">Localização</h2>
+          <!-- O mesmo dado aparece duas vezes, mas cada elemento tem um id único. -->
+          <p id="evento-local-mapa" class="mt-3"></p>
+          <p id="evento-endereco-mapa" class="text-muted"></p>
+          <div id="evento-mapa-container" hidden class="mt-4 bg-secondary rounded-xl p-3 border border-white/5">
+            <div id="event-location-map" role="region" aria-label="Mapa da localização do evento" class="w-full rounded-lg overflow-hidden"></div>
+          </div>
+          <a id="evento-google-maps" hidden target="_blank" rel="noopener noreferrer" class="mt-3 inline-flex text-lime hover:text-lime-hover">Ver no Google Maps →</a>
+        </article>
+
+        <article class="bg-surface rounded-2xl border border-white/10 p-5 sm:p-6">
+          <h2 class="font-display text-2xl">Informações do evento</h2>
+          <dl class="mt-4 space-y-3 text-sm">
+            <div><dt class="text-muted">Data</dt><dd><time id="evento-info-data"></time></dd></div>
+            <div><dt class="text-muted">Largada</dt><dd><time id="evento-info-horario"></time></dd></div>
+            <div><dt class="text-muted">Retirada de kit</dt><dd id="evento-retirada-kit"></dd></div>
+            <div><dt class="text-muted">Idade mínima por modalidade</dt><dd><ul id="evento-idades"></ul></dd></div>
+            <div><dt class="text-muted">Contato</dt><dd><ul id="organizador-contatos"></ul></dd></div>
+          </dl>
+        </article>
+        <article class="bg-surface rounded-2xl border border-white/10 p-5 sm:p-6">
+          <p id="evento-inscricao-mensagem" class="text-center text-fg/80"></p>
+          <a id="evento-inscricao-final" class="mt-4 w-full inline-flex items-center justify-center bg-lime text-zinc-900 font-display text-sm px-6 py-3.5 rounded-xl hover:glow-lime transition-all uppercase tracking-wide">Inscrever-se →</a>
+        </article>
+      </aside>
+    </section>
+  </main>
+
+  <footer class="border-t border-white/10 bg-surface mt-16">
+    <div class="max-w-7xl mx-auto px-4 py-10 grid grid-cols-2 md:grid-cols-4 gap-8">
+      <div class="col-span-2 md:col-span-1">
+        <a href="index.html" class="flex items-center mb-3 hover:opacity-80 transition-opacity" aria-label="Ir para a página inicial do +Sports">
+          <img src="../media/logo.svg" alt="+Sports" class="h-7 w-auto" />
+        </a>
+        <p class="text-muted text-xs leading-relaxed">
+          Conectando a comunidade de Volta Redonda aos melhores eventos esportivos da região.
+        </p>
+        <div class="flex gap-4 mt-4 text-muted">
+          <a href="https://www.instagram.com/maissportsvr?igsh=MTBobzRmNHJ2aXJhZw%3D%3D&utm_source=qr" class="hover:text-lime transition-colors" aria-label="Acessar nosso Instagram">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+            </svg>
+          </a>
+          <a href="#" class="hover:text-lime transition-colors" aria-label="Acessar nosso Facebook">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5">
+              <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+            </svg>
+          </a>
+          <a href="#" class="hover:text-lime transition-colors" aria-label="Acessar nosso Twitter">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5">
+              <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <div>
+        <h4 class="font-mono text-xs tracking-widest text-muted uppercase mb-3">Navegação</h4>
+        <ul class="flex flex-col gap-2 text-sm text-fg/70">
+          <li><a href="index.html" class="hover:text-lime transition-colors">Home</a></li>
+          <li><a href="/eventos" class="hover:text-lime transition-colors">Eventos</a></li>
+          <li><a href="jj.html" class="hover:text-lime transition-colors">Joga Junto</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="font-mono text-xs tracking-widest text-muted uppercase mb-3">Conta</h4>
+        <ul class="flex flex-col gap-2 text-sm text-fg/70">
+          <li><a href="login.html" class="hover:text-lime transition-colors">Login</a></li>
+          <li><a href="cadastro.html" class="hover:text-lime transition-colors">Cadastrar</a></li>
+          <li><a href="meus-eventos.html" class="hover:text-lime transition-colors">Meus Eventos</a></li>
+          <li><a href="ajuda.html" class="hover:text-lime transition-colors">Ajuda</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="font-mono text-xs tracking-widest text-muted uppercase mb-3">+Sports</h4>
+        <ul class="flex flex-col gap-2 text-sm text-fg/70">
+          <li><a href="sobre.html" class="hover:text-lime transition-colors">Sobre Nós</a></li>
+          <li><a href="contato.html" class="hover:text-lime transition-colors">Contato</a></li>
+          <li><a href="privacidade.html" class="hover:text-lime transition-colors">Política de Privacidade</a></li>
+          <li><a href="termos.html" class="hover:text-lime transition-colors">Termos de Uso</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="border-t border-white/10 text-center py-4">
+      <p class="text-muted text-xs font-mono">&copy; 2026 +Sports. Todos os direitos reservados. Desenvolvido por alunos do UniFOA.</p>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+
+
+
+  <script src="../js/global.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="/js/evento.js"></script>
+</body>
+</html>
+

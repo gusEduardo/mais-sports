@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "nome": "Clube Comercial",
+    "cargo": "Organizador esportivo",
+    "imagem": "/media/eventos/clube-comercial-card.jpg",
+    "contato": {
+      "telefone": null,
+      "email": null
+    },
+    "redesSociais": {
+      "instagram": null,
+      "site": null
+    }
+  }
+]

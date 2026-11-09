@@ -47,10 +47,29 @@ O projeto combina páginas HTML com um servidor Node.js/Express para consultar o
 | **Tailwind CSS v4** (via Play CDN) | Estilização e layout responsivo |
 | **CSS3** | Animações e microinterações |
 | **JavaScript (ES6+)** | Mapa customizado, cronômetros, controle de sessão, etc... |
-| **Node.js / Express** | Rotas, controllers, middlewares e consulta de eventos em JSON |
+| **Node.js / Express** | Rotas, controllers, middlewares e API de eventos |
+| **Neon Postgres** | Persistência de eventos e organizadores |
 | **Figma** | Prototipagem |
 | **Git & GitHub** | Versionamento e trabalho colaborativo |
 | **GitHub Pages** | Hospedagem e publicação do site |
+
+## 🗄️ Banco de dados
+
+O servidor Express consulta eventos e organizadores no Neon Postgres. Configure
+as variáveis `DATABASE_URL` (pool de conexões para a aplicação) e
+`DATABASE_URL_UNPOOLED` (conexão direta usada pela migração), por exemplo com
+`neon env pull`.
+
+Depois, prepare o schema e carregue os dados iniciais dos arquivos JSON:
+
+```bash
+npm run db:migrate
+npm run build
+npm start
+```
+
+A migração é segura para executar novamente: ela cria as tabelas se necessário
+e insere os registros iniciais sem substituir registros que já existam.
 
 ## 👥 Equipe
 

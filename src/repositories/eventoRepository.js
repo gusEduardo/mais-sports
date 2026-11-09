@@ -1,5 +1,9 @@
-import eventos from '../databases/eventos.json' with { type: 'json' }
+import { pool } from '../db/pool.js'
 
-export function findById(id) {
-    return eventos.find(evento => evento.id === id)
+export async function findById(id) {
+    const { rows } = await pool.query(
+        'SELECT data FROM sports_events WHERE id = $1',
+        [id]
+    )
+    return rows[0]?.data
 }

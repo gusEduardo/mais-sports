@@ -4,8 +4,8 @@ import { findById as findOrganizadorById } from '../repositories/organizadorRepo
 
 const viewsPath = fileURLToPath(new URL('../../public/views/', import.meta.url))
 
-function buscarEvento(id) {
-    const evento = findById(id)
+async function buscarEvento(id) {
+    const evento = await findById(id)
 
     if (!evento) {
         const erro = new Error('Desculpe :( Este evento não está no nosso banco de dados.')
@@ -17,15 +17,15 @@ function buscarEvento(id) {
 }
 
 // /evento/1: valida a existência antes de enviar o mesmo HTML para todo evento.
-export function mostrarPagina(req, res) {
-    buscarEvento(req.eventoId)
+export async function mostrarPagina(req, res) {
+    await buscarEvento(req.eventoId)
     return res.sendFile('evento.html', { root: viewsPath })
 }
 
 // /api/eventos/1: entrega os dados que o JavaScript colocará no HTML.
-export function getById(req, res) {
-    const evento = buscarEvento(req.eventoId)
-    const organizador = findOrganizadorById(evento.organizadorId)
+export async function getById(req, res) {
+    const evento = await buscarEvento(req.eventoId)
+    const organizador = await findOrganizadorById(evento.organizadorId)
 
     return res.status(200).json({ ...evento, organizador: organizador ?? null })
 }

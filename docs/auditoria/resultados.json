@@ -1,0 +1,1163 @@
+{
+  "auditDate": "2026-11-16",
+  "branch": "feature/verificacao-crud",
+  "sourceCommit": "5e7c30930cca7f3ef7ee8257b768e451d6bed00e",
+  "baseMainCommit": "2c23c1cd879b9638a856e3f695f88004b55c598c",
+  "productionCodeChanged": false,
+  "build": {
+    "status": "pass",
+    "command": "npm run build"
+  },
+  "api": {
+    "summary": {
+      "total": 64,
+      "passed": 31,
+      "failed": 33
+    },
+    "command": "npm run test:coverage",
+    "coverage": {
+      "linesPercent": 100,
+      "branchesPercent": 100,
+      "functionsPercent": 100,
+      "scope": "Loaded backend modules only; server.js, migrate.js and unused repositories/auth.js are excluded. pool.query delegates to isolated PGlite, not Neon."
+    },
+    "results": [
+      {
+        "name": "BUG-01: migração de um banco novo precisa criar usuarios",
+        "status": "fail",
+        "durationMs": 7979.0443
+      },
+      {
+        "name": "BUG-02 / RF-001: backend deve rejeitar nome vazio com JSON 400",
+        "status": "fail",
+        "durationMs": 133.2569
+      },
+      {
+        "name": "BUG-02 / RF-001: backend deve rejeitar e-mail inválido com JSON 400",
+        "status": "fail",
+        "durationMs": 64.6733
+      },
+      {
+        "name": "BUG-02 / RF-001: backend deve rejeitar senha curta com JSON 400",
+        "status": "fail",
+        "durationMs": 62.9299
+      },
+      {
+        "name": "BUG-02 / RF-001: backend deve rejeitar CPF inválido com JSON 400",
+        "status": "fail",
+        "durationMs": 65.1923
+      },
+      {
+        "name": "BUG-02 / RF-001: backend deve rejeitar UF inexistente com JSON 400",
+        "status": "fail",
+        "durationMs": 65.1385
+      },
+      {
+        "name": "BUG-02 / RF-001: backend deve rejeitar termos não aceitos com JSON 400",
+        "status": "fail",
+        "durationMs": 76.7957
+      },
+      {
+        "name": "BUG-02 / RF-001: backend deve rejeitar termos ausentes com JSON 400",
+        "status": "fail",
+        "durationMs": 68.7202
+      },
+      {
+        "name": "BUG-02 / RF-001: backend deve rejeitar senha ausente com JSON 400",
+        "status": "fail",
+        "durationMs": 36.6144
+      },
+      {
+        "name": "BUG-02 / RF-001: backend deve rejeitar senha de tipo inválido com JSON 400",
+        "status": "fail",
+        "durationMs": 18.8
+      },
+      {
+        "name": "BUG-02 / RF-001: backend deve rejeitar nome ausente com JSON 400",
+        "status": "fail",
+        "durationMs": 83.1071
+      },
+      {
+        "name": "BUG-02 / RF-001: backend deve rejeitar corpo ausente com JSON 400",
+        "status": "fail",
+        "durationMs": 31.8904
+      },
+      {
+        "name": "BUG-03 / RF-001: email duplicado deve gerar JSON 409",
+        "status": "fail",
+        "durationMs": 152.5191
+      },
+      {
+        "name": "BUG-03 / RF-001: cpf duplicado deve gerar JSON 409",
+        "status": "fail",
+        "durationMs": 132.4543
+      },
+      {
+        "name": "BUG-03: e-mail duplicado no PUT deve gerar JSON 409 sem alterar o registro",
+        "status": "fail",
+        "durationMs": 133.0193
+      },
+      {
+        "name": "BUG-03: cadastros concorrentes do mesmo e-mail devem produzir 201 e 409",
+        "status": "fail",
+        "durationMs": 100.3741
+      },
+      {
+        "name": "BUG-02: PUT deve rejeitar dados vazios antes de alterar o banco",
+        "status": "fail",
+        "durationMs": 113.7085
+      },
+      {
+        "name": "BUG-04: ID de usuário inválido abc deve gerar JSON 400",
+        "status": "fail",
+        "durationMs": 42.8256
+      },
+      {
+        "name": "BUG-04: ID de usuário inválido 0 deve gerar JSON 400",
+        "status": "fail",
+        "durationMs": 19.4276
+      },
+      {
+        "name": "BUG-04: ID de usuário inválido -1 deve gerar JSON 400",
+        "status": "fail",
+        "durationMs": 14.7685
+      },
+      {
+        "name": "BUG-04: ID de usuário inválido 1abc deve gerar JSON 400",
+        "status": "fail",
+        "durationMs": 38.4473
+      },
+      {
+        "name": "BUG-04: ID de usuário inválido 9007199254740992 deve gerar JSON 400",
+        "status": "fail",
+        "durationMs": 64.8839
+      },
+      {
+        "name": "BUG-05 / RF-003: visitante não deve listar usuários",
+        "status": "fail",
+        "durationMs": 133.3699
+      },
+      {
+        "name": "BUG-05 / RF-003: visitante não deve alterar usuários",
+        "status": "fail",
+        "durationMs": 78.8848
+      },
+      {
+        "name": "BUG-05 / RF-003: visitante não deve remover usuários",
+        "status": "fail",
+        "durationMs": 66.3726
+      },
+      {
+        "name": "BUG-06: JSON malformado precisa ser respondido em JSON 400",
+        "status": "fail",
+        "durationMs": 17.753
+      },
+      {
+        "name": "BUG-06: falha de banco em POST /usuarios deve gerar JSON 500",
+        "status": "fail",
+        "durationMs": 69.5552
+      },
+      {
+        "name": "BUG-06: falha de banco em POST /usuarios/login deve gerar JSON 500",
+        "status": "fail",
+        "durationMs": 15.1515
+      },
+      {
+        "name": "BUG-06: falha de banco em GET /usuarios deve gerar JSON 500",
+        "status": "fail",
+        "durationMs": 13.4073
+      },
+      {
+        "name": "BUG-06: falha de banco em PUT /usuarios/1 deve gerar JSON 500",
+        "status": "fail",
+        "durationMs": 8.3727
+      },
+      {
+        "name": "BUG-06: falha de banco em DELETE /usuarios/1 deve gerar JSON 500",
+        "status": "fail",
+        "durationMs": 13.3295
+      },
+      {
+        "name": "BUG-07 / RF-003: login precisa estabelecer sessão verificável no servidor",
+        "status": "fail",
+        "durationMs": 118.8522
+      },
+      {
+        "name": "BUG-08 / RF-003: tentativas inválidas repetidas devem ser limitadas",
+        "status": "fail",
+        "durationMs": 161.7955
+      },
+      {
+        "name": "CRUD: cadastro grava hash bcrypt e nunca devolve a senha",
+        "status": "pass",
+        "durationMs": 6485.8084
+      },
+      {
+        "name": "CRUD: login correto retorna o usuário sem senha e permite espaços em volta do e-mail",
+        "status": "pass",
+        "durationMs": 131.9499
+      },
+      {
+        "name": "CRUD: login recusa senha incorreta com JSON 401",
+        "status": "pass",
+        "durationMs": 123.6367
+      },
+      {
+        "name": "CRUD: login recusa e-mail inexistente com JSON 401",
+        "status": "pass",
+        "durationMs": 78.5443
+      },
+      {
+        "name": "CRUD: login recusa campos ausentes com JSON 401",
+        "status": "pass",
+        "durationMs": 68.2865
+      },
+      {
+        "name": "CRUD: login recusa e-mail de tipo inválido com JSON 401",
+        "status": "pass",
+        "durationMs": 66.667
+      },
+      {
+        "name": "CRUD: login recusa senha de tipo inválido com JSON 401",
+        "status": "pass",
+        "durationMs": 75.1803
+      },
+      {
+        "name": "CRUD: login recusa e-mail em branco com JSON 401",
+        "status": "pass",
+        "durationMs": 69.7547
+      },
+      {
+        "name": "CRUD: login recusa senha em branco com JSON 401",
+        "status": "pass",
+        "durationMs": 65.8298
+      },
+      {
+        "name": "CRUD: login recusa tentativa de injeção SQL com JSON 401",
+        "status": "pass",
+        "durationMs": 73.2184
+      },
+      {
+        "name": "CRUD: listagem vazia e ordenação por ID decrescente sem hashes",
+        "status": "pass",
+        "durationMs": 135.3807
+      },
+      {
+        "name": "CRUD: PUT persiste nome/e-mail/UF e mantém CPF e hash",
+        "status": "pass",
+        "durationMs": 153.4361
+      },
+      {
+        "name": "CRUD: DELETE remove, repetir dá 404 e conta removida não autentica",
+        "status": "pass",
+        "durationMs": 76.1254
+      },
+      {
+        "name": "CRUD: PUT de usuário inexistente devolve JSON 404",
+        "status": "pass",
+        "durationMs": 8.0254
+      },
+      {
+        "name": "CRUD: strings com sintaxe SQL são persistidas como dados",
+        "status": "pass",
+        "durationMs": 63.4042
+      },
+      {
+        "name": "Eventos: API e página do evento 1 funcionam com SQL real",
+        "status": "pass",
+        "durationMs": 6049.5063
+      },
+      {
+        "name": "Eventos: API e página do evento 2 funcionam com SQL real",
+        "status": "pass",
+        "durationMs": 14.6093
+      },
+      {
+        "name": "Eventos: API e página do evento 3 funcionam com SQL real",
+        "status": "pass",
+        "durationMs": 14.6169
+      },
+      {
+        "name": "Eventos: API e página do evento 4 funcionam com SQL real",
+        "status": "pass",
+        "durationMs": 12.1478
+      },
+      {
+        "name": "Eventos: ID inválido 0 retorna JSON 400 na API e HTML 400 na página",
+        "status": "pass",
+        "durationMs": 32.1187
+      },
+      {
+        "name": "Eventos: ID inválido -1 retorna JSON 400 na API e HTML 400 na página",
+        "status": "pass",
+        "durationMs": 9.1703
+      },
+      {
+        "name": "Eventos: ID inválido abc retorna JSON 400 na API e HTML 400 na página",
+        "status": "pass",
+        "durationMs": 8.5634
+      },
+      {
+        "name": "Eventos: ID inválido 1abc retorna JSON 400 na API e HTML 400 na página",
+        "status": "pass",
+        "durationMs": 7.429
+      },
+      {
+        "name": "Eventos: ID inválido 01 retorna JSON 400 na API e HTML 400 na página",
+        "status": "pass",
+        "durationMs": 8.1447
+      },
+      {
+        "name": "Eventos: ID inválido 1.5 retorna JSON 400 na API e HTML 400 na página",
+        "status": "pass",
+        "durationMs": 7.3187
+      },
+      {
+        "name": "Eventos: ID inválido 9007199254740992 retorna JSON 400 na API e HTML 400 na página",
+        "status": "pass",
+        "durationMs": 4.1407
+      },
+      {
+        "name": "Eventos: ausente retorna 404 nas duas rotas",
+        "status": "pass",
+        "durationMs": 13.6713
+      },
+      {
+        "name": "Eventos: organizador ausente retorna null sem derrubar a consulta",
+        "status": "pass",
+        "durationMs": 14.9035
+      },
+      {
+        "name": "Eventos: falha de banco retorna JSON 500 na API e HTML 500 na página",
+        "status": "pass",
+        "durationMs": 42.2163
+      },
+      {
+        "name": "Servidor: lista, home e arquivos públicos funcionam; arquivos privados não são servidos",
+        "status": "pass",
+        "durationMs": 133.1512
+      },
+      {
+        "name": "Middleware: erro depois de enviar cabeçalhos é delegado sem enviar outra resposta",
+        "status": "pass",
+        "durationMs": 0.5021
+      }
+    ]
+  },
+  "browsers": [
+    {
+      "summary": {
+        "engine": "chromium",
+        "total": 52,
+        "passed": 35,
+        "failed": 17
+      },
+      "conditions": {
+        "database": "PGlite isolado, fixture usuarios separada do schema de produção",
+        "externalResources": "Tailwind e Leaflet reais em cache; fontes, imagens e tiles externos bloqueados",
+        "apiOrigin": "http://localhost:3000",
+        "browserClock": "2026-11-16T15:00:00Z"
+      },
+      "results": [
+        {
+          "id": "B01",
+          "name": "Cadastro vazio mostra validações e não chama a API",
+          "viewport": "1440x1000",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B02",
+          "name": "Cadastro bloqueia nome inválido",
+          "viewport": "1440x1000",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B03",
+          "name": "Cadastro bloqueia telefone inválido",
+          "viewport": "1440x1000",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B04",
+          "name": "Cadastro bloqueia email inválido",
+          "viewport": "1440x1000",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B05",
+          "name": "Cadastro bloqueia cpf inválido",
+          "viewport": "1440x1000",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B06",
+          "name": "Cadastro bloqueia senha inválido",
+          "viewport": "1440x1000",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B07",
+          "name": "Cadastro bloqueia confirmar inválido",
+          "viewport": "1440x1000",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B08",
+          "name": "Cadastro exige termos",
+          "viewport": "1440x1000",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B09",
+          "name": "Cadastro completo usa o backend, abre confirmação e salva sessão local",
+          "viewport": "1440x1000",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B10",
+          "name": "Cadastro completo usa o backend, abre confirmação e salva sessão local",
+          "viewport": "390x844",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B11",
+          "name": "BUG-09 / RF-001: telefone, interesses e aceite devem ser enviados e persistidos",
+          "viewport": "1440x1000",
+          "status": "fail",
+          "error": "Payload contém apenas: nome, email, senha, cpf, uf",
+          "pageErrors": []
+        },
+        {
+          "id": "B12",
+          "name": "Cadastro com API indisponível mostra erro e reabilita botão",
+          "viewport": "1440x1000",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B13",
+          "name": "BUG-06: cadastro duplicado deve mostrar uma mensagem legível",
+          "viewport": "1440x1000",
+          "status": "fail",
+          "error": "Página HTML inteira é exibida dentro do erro do cadastro",
+          "pageErrors": []
+        },
+        {
+          "id": "B14",
+          "name": "Login vazio mostra erros sem enviar requisição",
+          "viewport": "1440x1000",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B15",
+          "name": "Login incorreto mostra resposta 401 e não cria sessão",
+          "viewport": "1440x1000",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B16",
+          "name": "Login correto abre perfil com nome real e sobrevive ao recarregamento",
+          "viewport": "1440x1000",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B17",
+          "name": "Login correto abre perfil com nome real e sobrevive ao recarregamento",
+          "viewport": "390x844",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B18",
+          "name": "Login com API fora do ar mostra erro e reabilita botão",
+          "viewport": "1440x1000",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B19",
+          "name": "Mostrar e ocultar senha funciona no login e cadastro",
+          "viewport": "1440x1000",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B20",
+          "name": "BUG-10: /login.html deve usar a origem atual ao acessar a API",
+          "viewport": "1440x1000",
+          "status": "fail",
+          "error": "API chamada em: http://localhost:3000/usuarios/login",
+          "pageErrors": []
+        },
+        {
+          "id": "B21",
+          "name": "BUG-10: /cadastro.html deve usar a origem atual ao acessar a API",
+          "viewport": "1440x1000",
+          "status": "fail",
+          "error": "API chamada em: http://localhost:3000/usuarios",
+          "pageErrors": []
+        },
+        {
+          "id": "B22",
+          "name": "BUG-11 / RF-006: visitante em /telaPerfil.html deve ir ao login",
+          "viewport": "1440x1000",
+          "status": "fail",
+          "error": "The input did not match the regular expression /login\\.html$/. Input:\n\n'/telaPerfil.html'\n",
+          "pageErrors": []
+        },
+        {
+          "id": "B23",
+          "name": "BUG-11 / RF-006: visitante em /meus-eventos.html deve ir ao login",
+          "viewport": "1440x1000",
+          "status": "fail",
+          "error": "The input did not match the regular expression /login\\.html$/. Input:\n\n'/meus-eventos.html'\n",
+          "pageErrors": []
+        },
+        {
+          "id": "B24",
+          "name": "Logout pelo botão global limpa sportsUser e volta à Home",
+          "viewport": "1440x1000",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B25",
+          "name": "BUG-12 / RF-006: Encerrar Sessão do menu móvel do perfil deve limpar sportsUser",
+          "viewport": "390x844",
+          "status": "fail",
+          "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ '{\"id\":1,\"nome\":\"Ana Souza\",\"email\":\"ana@example.test\"}'\n- null\n",
+          "pageErrors": []
+        },
+        {
+          "id": "B26",
+          "name": "BUG-13 / RF-007: edição do perfil precisa chegar ao banco",
+          "viewport": "1440x1000",
+          "status": "fail",
+          "error": "A edição fica apenas no localStorage\n+ actual - expected\n\n+ 'Ana Souza'\n- 'Ana Atualizada'\n       ^\n",
+          "pageErrors": []
+        },
+        {
+          "id": "B27",
+          "name": "BUG-14: logout deve impedir vazamento de profileData entre duas contas",
+          "viewport": "1440x1000",
+          "status": "fail",
+          "error": "Telefone da conta anterior aparece na nova conta\n\n'24999990000' !== ''\n",
+          "pageErrors": []
+        },
+        {
+          "id": "B28",
+          "name": "Auth tolera JSON inválido no armazenamento sem erro JavaScript",
+          "viewport": "1440x1000",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B29",
+          "name": "Eventos: carregar mais e carregar menos alteram a lista",
+          "viewport": "1440x1000",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B30",
+          "name": "RF-017: clique e teclado abrem a página dinâmica do evento",
+          "viewport": "1440x1000",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B31",
+          "name": "RF-017: inscrição bloqueada para esgotadas, vagas=0, data=2027-11-30T20:00:00-03:00",
+          "viewport": "1440x1000",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B32",
+          "name": "RF-017: inscrição bloqueada para encerradas, vagas=10, data=2027-11-30T20:00:00-03:00",
+          "viewport": "1440x1000",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B33",
+          "name": "RF-017: inscrição bloqueada para em_breve, vagas=10, data=2027-11-30T20:00:00-03:00",
+          "viewport": "1440x1000",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B34",
+          "name": "RF-017: inscrição bloqueada para canceladas, vagas=10, data=2027-11-30T20:00:00-03:00",
+          "viewport": "1440x1000",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B35",
+          "name": "RF-017: inscrição bloqueada para abertas, vagas=10, data=2020-01-01T10:00:00-03:00",
+          "viewport": "1440x1000",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B36",
+          "name": "BUG-15 / RF-016: filtro de modalidade deve alterar os cards",
+          "viewport": "1440x1000",
+          "status": "fail",
+          "error": "O filtro só troca a aparência do botão",
+          "pageErrors": []
+        },
+        {
+          "id": "B37",
+          "name": "BUG-16 / RF-021: pesquisa inexistente deve informar ausência de resultados",
+          "viewport": "1440x1000",
+          "status": "fail",
+          "error": "The input did not match the regular expression /nenhum|não encontrad|sem resultado/i. Input:\n\n'Eventos esportivos (15)\\n' +\n  'Compartilhar\\n' +\n  'Filtros\\n' +\n  'Ordenar por\\n' +\n  'Modalidade\\n' +\n  'Corrida\\n' +\n  '42\\n' +\n  'Futebol\\n' +\n  '28\\n' +\n  'Padel\\n' +\n  '16\\n' +\n  'Kart\\n' +\n  '12\\n' +\n  'Beach Tennis\\n' +\n  '9\\n' +\n  'Futvôlei\\n' +\n  '8\\n' +\n  'Grátis\\n' +\n  '18\\n' +\n  'Data\\n' +\n  'Este fim de semana\\n' +\n  '24\\n' +\n  'Próximos 7 dias\\n' +\n  '36\\n' +\n  'Próximos 30 dias\\n' +\n  '84\\n' +\n  'Escolher data\\n' +\n  'Local\\n' +\n  'Preço\\n' +\n  'Status\\n' +\n  'INSCRIÇÕES ABERTAS\\n' +\n  '♡\\n' +\n  '15\\n' +\n  'OUT\\n' +\n  'Boltz Run 5K\\n' +\n  '\\n' +\n  '5K - Volta Redonda, RJ\\n' +\n  '\\n' +\n  'R$ 39,90\\n' +\n  '\\n' +\n  '326 / 1000 vagas\\n' +\n  '\\n' +\n  'VAGAS LIMITADAS\\n' +\n  '♡\\n' +\n  '30\\n' +\n  'SET\\n' +\n  'Corrida do Malte 2ª Edição\\n' +\n  '\\n' +\n  'Volta Redonda, RJ\\n' +\n  '\\n' +\n  'R$ 39,90\\n' +\n  '\\n' +\n  '689 / 800 vagas\\n' +\n  '\\n' +\n  'INSCRIÇÕES ABERTAS\\n' +\n  '♡\\n' +\n  '30\\n' +\n  'NOV\\n' +\n  'Royal Night Run Resende\\n' +\n  '\\n' +\n  '5K/10K - Volta Redonda, RJ\\n' +\n  '\\n' +\n  'R$ 49,90\\n' +\n  '\\n' +\n  '597 / 2500 vagas\\n' +\n  '\\n' +\n  'INSCRIÇÕES ABERTAS\\n' +\n  '♡\\n' +\n  '01\\n' +\n  'NOV\\n' +\n  '2ª Corrida do Clube Comercial\\n' +\n  '\\n' +\n  '5K - Volta Redonda, RJ\\n' +\n  '\\n' +\n  'R$ 79,90\\n' +\n  '\\n' +\n  '364 / 500 vagas\\n' +\n  '\\n' +\n  'INSCRIÇÕES ABERTAS\\n' +\n  '♡\\n' +\n  '10\\n' +\n  'OUT\\n' +\n  'Copa PS de Volleyball\\n' +\n  '\\n' +\n  'Torneio - Volta Redonda, SP\\n' +\n  '\\n' +\n  'Grátis\\n' +\n  '\\n' +\n  'Vagas limitadas\\n' +\n  '\\n' +\n  'ENCERRADO\\n' +\n  '♡\\n' +\n  '21\\n' +\n  'ABR\\n' +\n  'Corrida do Guerreiro\\n' +\n  '\\n' +\n  '3K e 5K - Volta Redonda, RJ\\n' +\n  '\\n' +\n  'R$ 130,90\\n' +\n  '\\n' +\n  '500 participantes\\n' +\n  '\\n' +\n  'ENCERRADO\\n' +\n  '♡\\n' +\n  '25\\n' +\n  'ABR\\n' +\n  'Falcões de Aço 2026\\n' +\n  '\\n' +\n  'Futebol Society - Volta Redonda, RJ\\n' +\n  '\\n' +\n  'R$ 250,00\\n' +\n  '\\n' +\n  '32 participantes\\n' +\n  '\\n' +\n  'ENCERRADO\\n' +\n  '♡\\n' +\n  '19\\n' +\n  'MAI\\n' +\n  'Desafio MTB Aço\\n' +\n  '\\n' +\n  'MTB - Volta Redonda, RJ\\n' +\n  '\\n' +\n  '--\\n' +\n  '\\n' +\n  '120 participantes\\n' +\n  '\\n' +\n  'ENCERRADO\\n' +\n  '♡\\n' +\n  '10\\n' +\n  'MAI\\n' +\n  'Festival Esportivo Sul Fluminense\\n' +\n  '\\n' +\n  'Multiesportivo - Volta Redonda, RJ\\n' +\n  '\\n' +\n  'Grátis\\n' +\n  '\\n' +\n  '200 participantes\\n' +\n  '\\n' +\n  'Carregar mais'\n",
+          "pageErrors": []
+        },
+        {
+          "id": "B38",
+          "name": "Mapa: biblioteca real renderiza marcadores e filtra por modalidade",
+          "viewport": "1440x1000",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B39",
+          "name": "RF-026: mapa indisponível preserva menu e navegação às outras páginas",
+          "viewport": "1440x1000",
+          "status": "pass",
+          "pageErrors": [
+            "L is not defined"
+          ]
+        },
+        {
+          "id": "B40",
+          "name": "RF-028: FAQ abre respostas e oferece Contato",
+          "viewport": "1440x1000",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B41",
+          "name": "RF-024: Termos e Política são acessíveis pelo cadastro",
+          "viewport": "1440x1000",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B42",
+          "name": "BUG-17 / RF-029: Contato deve validar campos obrigatórios",
+          "viewport": "1440x1000",
+          "status": "fail",
+          "error": "Nenhum dos quatro campos é obrigatório no HTML\n\n0 !== 4\n",
+          "pageErrors": []
+        },
+        {
+          "id": "B43",
+          "name": "BUG-18 / RF-004: checkout precisa usar o evento selecionado",
+          "viewport": "1440x1000",
+          "status": "fail",
+          "error": "The input did not match the regular expression /Royal Night Run/. Input:\n\n'INSCRIÇÃO\\n' +\n  '\\n' +\n  'Checkout\\n' +\n  'Dados do participante\\n' +\n  'Nome completo\\n' +\n  'E-mail\\n' +\n  'CPF\\n' +\n  'Telefone\\n' +\n  'Método de pagamento\\n' +\n  '\\n' +\n  'Pix\\n' +\n  '\\n' +\n  'Confirmação rápida\\n' +\n  '\\n' +\n  'Cartão\\n' +\n  '\\n' +\n  'Crédito ou débito\\n' +\n  '\\n' +\n  'Boleto\\n' +\n  '\\n' +\n  'Compensação posterior\\n' +\n  '\\n' +\n  'Termos e confirmação\\n' +\n  'Li e concordo com os Termos de Uso.\\n' +\n  'Li a Política de Privacidade.\\n' +\n  '\\n' +\n  'RESUMO DO PEDIDO\\n' +\n  '\\n' +\n  'Corrida do Guerreiro\\n' +\n  '\\n' +\n  'Modalidade 5K • 21 abr • Volta Redonda, RJ\\n' +\n  '\\n' +\n  'Lote atual\\n' +\n  '2º lote\\n' +\n  'Inscrição\\n' +\n  'R$ 130,90\\n' +\n  'Taxa de serviço\\n' +\n  'R$ 8,00\\n' +\n  'Total\\n' +\n  'R$ 138,90\\n' +\n  'CONFIRMAR INSCRIÇÃO\\n' +\n  'Simular pendente\\n' +\n  'Simular falha'\n",
+          "pageErrors": []
+        },
+        {
+          "id": "B44",
+          "name": "Navegação da página dinâmica retorna à lista de eventos",
+          "viewport": "1440x1000",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B45",
+          "name": "Responsividade: /login.html sem rolagem horizontal em 390px",
+          "viewport": "390x844",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B46",
+          "name": "Responsividade: /cadastro.html sem rolagem horizontal em 390px",
+          "viewport": "390x844",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B47",
+          "name": "Responsividade: /telaPerfil.html sem rolagem horizontal em 390px",
+          "viewport": "390x844",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B48",
+          "name": "Responsividade: /eventos.html sem rolagem horizontal em 390px",
+          "viewport": "390x844",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B49",
+          "name": "BUG-19 / RF-008: favoritar evento precisa persistir a escolha",
+          "viewport": "1440x1000",
+          "status": "fail",
+          "error": "Favoritar não chama API nem grava a seleção",
+          "pageErrors": []
+        },
+        {
+          "id": "B50",
+          "name": "BUG-20 / RF-020: calendário deve navegar entre meses",
+          "viewport": "1440x1000",
+          "status": "fail",
+          "error": "Calendário permanece em Junho 2026",
+          "pageErrors": []
+        },
+        {
+          "id": "B51",
+          "name": "BUG-21 / RF-029: Contato preenchido precisa enviar mensagem",
+          "viewport": "1440x1000",
+          "status": "fail",
+          "error": "Botão sem envio para o servidor",
+          "pageErrors": []
+        },
+        {
+          "id": "B52",
+          "name": "BUG-22 / RF-018: conta nova não pode receber inscrições de exemplo",
+          "viewport": "1440x1000",
+          "status": "fail",
+          "error": "Histórico mostra inscrição fixa para uma conta sem inscrições",
+          "pageErrors": []
+        }
+      ]
+    },
+    {
+      "summary": {
+        "engine": "webkit",
+        "total": 52,
+        "passed": 35,
+        "failed": 17
+      },
+      "conditions": {
+        "database": "PGlite isolado, fixture usuarios separada do schema de produção",
+        "externalResources": "Tailwind e Leaflet reais em cache; fontes, imagens e tiles externos bloqueados",
+        "apiOrigin": "http://localhost:3000",
+        "browserClock": "2026-11-16T15:00:00Z"
+      },
+      "results": [
+        {
+          "id": "B01",
+          "name": "Cadastro vazio mostra validações e não chama a API",
+          "viewport": "1440x1000",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B02",
+          "name": "Cadastro bloqueia nome inválido",
+          "viewport": "1440x1000",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B03",
+          "name": "Cadastro bloqueia telefone inválido",
+          "viewport": "1440x1000",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B04",
+          "name": "Cadastro bloqueia email inválido",
+          "viewport": "1440x1000",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B05",
+          "name": "Cadastro bloqueia cpf inválido",
+          "viewport": "1440x1000",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B06",
+          "name": "Cadastro bloqueia senha inválido",
+          "viewport": "1440x1000",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B07",
+          "name": "Cadastro bloqueia confirmar inválido",
+          "viewport": "1440x1000",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B08",
+          "name": "Cadastro exige termos",
+          "viewport": "1440x1000",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B09",
+          "name": "Cadastro completo usa o backend, abre confirmação e salva sessão local",
+          "viewport": "1440x1000",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B10",
+          "name": "Cadastro completo usa o backend, abre confirmação e salva sessão local",
+          "viewport": "390x844",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B11",
+          "name": "BUG-09 / RF-001: telefone, interesses e aceite devem ser enviados e persistidos",
+          "viewport": "1440x1000",
+          "status": "fail",
+          "error": "Payload contém apenas: nome, email, senha, cpf, uf",
+          "pageErrors": []
+        },
+        {
+          "id": "B12",
+          "name": "Cadastro com API indisponível mostra erro e reabilita botão",
+          "viewport": "1440x1000",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B13",
+          "name": "BUG-06: cadastro duplicado deve mostrar uma mensagem legível",
+          "viewport": "1440x1000",
+          "status": "fail",
+          "error": "Página HTML inteira é exibida dentro do erro do cadastro",
+          "pageErrors": []
+        },
+        {
+          "id": "B14",
+          "name": "Login vazio mostra erros sem enviar requisição",
+          "viewport": "1440x1000",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B15",
+          "name": "Login incorreto mostra resposta 401 e não cria sessão",
+          "viewport": "1440x1000",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B16",
+          "name": "Login correto abre perfil com nome real e sobrevive ao recarregamento",
+          "viewport": "1440x1000",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B17",
+          "name": "Login correto abre perfil com nome real e sobrevive ao recarregamento",
+          "viewport": "390x844",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B18",
+          "name": "Login com API fora do ar mostra erro e reabilita botão",
+          "viewport": "1440x1000",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B19",
+          "name": "Mostrar e ocultar senha funciona no login e cadastro",
+          "viewport": "1440x1000",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B20",
+          "name": "BUG-10: /login.html deve usar a origem atual ao acessar a API",
+          "viewport": "1440x1000",
+          "status": "fail",
+          "error": "API chamada em: http://localhost:3000/usuarios/login",
+          "pageErrors": [
+            "/localhost:3000/usuarios/login due to access control checks."
+          ]
+        },
+        {
+          "id": "B21",
+          "name": "BUG-10: /cadastro.html deve usar a origem atual ao acessar a API",
+          "viewport": "1440x1000",
+          "status": "fail",
+          "error": "API chamada em: http://localhost:3000/usuarios",
+          "pageErrors": [
+            "/localhost:3000/usuarios due to access control checks."
+          ]
+        },
+        {
+          "id": "B22",
+          "name": "BUG-11 / RF-006: visitante em /telaPerfil.html deve ir ao login",
+          "viewport": "1440x1000",
+          "status": "fail",
+          "error": "The input did not match the regular expression /login\\.html$/. Input:\n\n'/telaPerfil.html'\n",
+          "pageErrors": []
+        },
+        {
+          "id": "B23",
+          "name": "BUG-11 / RF-006: visitante em /meus-eventos.html deve ir ao login",
+          "viewport": "1440x1000",
+          "status": "fail",
+          "error": "The input did not match the regular expression /login\\.html$/. Input:\n\n'/meus-eventos.html'\n",
+          "pageErrors": []
+        },
+        {
+          "id": "B24",
+          "name": "Logout pelo botão global limpa sportsUser e volta à Home",
+          "viewport": "1440x1000",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B25",
+          "name": "BUG-12 / RF-006: Encerrar Sessão do menu móvel do perfil deve limpar sportsUser",
+          "viewport": "390x844",
+          "status": "fail",
+          "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ '{\"id\":1,\"nome\":\"Ana Souza\",\"email\":\"ana@example.test\"}'\n- null\n",
+          "pageErrors": []
+        },
+        {
+          "id": "B26",
+          "name": "BUG-13 / RF-007: edição do perfil precisa chegar ao banco",
+          "viewport": "1440x1000",
+          "status": "fail",
+          "error": "A edição fica apenas no localStorage\n+ actual - expected\n\n+ 'Ana Souza'\n- 'Ana Atualizada'\n       ^\n",
+          "pageErrors": []
+        },
+        {
+          "id": "B27",
+          "name": "BUG-14: logout deve impedir vazamento de profileData entre duas contas",
+          "viewport": "1440x1000",
+          "status": "fail",
+          "error": "Telefone da conta anterior aparece na nova conta\n\n'24999990000' !== ''\n",
+          "pageErrors": []
+        },
+        {
+          "id": "B28",
+          "name": "Auth tolera JSON inválido no armazenamento sem erro JavaScript",
+          "viewport": "1440x1000",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B29",
+          "name": "Eventos: carregar mais e carregar menos alteram a lista",
+          "viewport": "1440x1000",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B30",
+          "name": "RF-017: clique e teclado abrem a página dinâmica do evento",
+          "viewport": "1440x1000",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B31",
+          "name": "RF-017: inscrição bloqueada para esgotadas, vagas=0, data=2027-11-30T20:00:00-03:00",
+          "viewport": "1440x1000",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B32",
+          "name": "RF-017: inscrição bloqueada para encerradas, vagas=10, data=2027-11-30T20:00:00-03:00",
+          "viewport": "1440x1000",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B33",
+          "name": "RF-017: inscrição bloqueada para em_breve, vagas=10, data=2027-11-30T20:00:00-03:00",
+          "viewport": "1440x1000",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B34",
+          "name": "RF-017: inscrição bloqueada para canceladas, vagas=10, data=2027-11-30T20:00:00-03:00",
+          "viewport": "1440x1000",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B35",
+          "name": "RF-017: inscrição bloqueada para abertas, vagas=10, data=2020-01-01T10:00:00-03:00",
+          "viewport": "1440x1000",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B36",
+          "name": "BUG-15 / RF-016: filtro de modalidade deve alterar os cards",
+          "viewport": "1440x1000",
+          "status": "fail",
+          "error": "O filtro só troca a aparência do botão",
+          "pageErrors": []
+        },
+        {
+          "id": "B37",
+          "name": "BUG-16 / RF-021: pesquisa inexistente deve informar ausência de resultados",
+          "viewport": "1440x1000",
+          "status": "fail",
+          "error": "The input did not match the regular expression /nenhum|não encontrad|sem resultado/i. Input:\n\n'Eventos esportivos (15)\\n' +\n  'Compartilhar\\n' +\n  'Filtros\\n' +\n  '\\n' +\n  'Ordenar por\\n' +\n  'Modalidade\\n' +\n  'Corrida\\n' +\n  '42\\n' +\n  'Futebol\\n' +\n  '28\\n' +\n  'Padel\\n' +\n  '16\\n' +\n  'Kart\\n' +\n  '12\\n' +\n  'Beach Tennis\\n' +\n  '9\\n' +\n  'Futvôlei\\n' +\n  '8\\n' +\n  'Grátis\\n' +\n  '18\\n' +\n  'Data\\n' +\n  'Este fim de semana\\n' +\n  '24\\n' +\n  'Próximos 7 dias\\n' +\n  '36\\n' +\n  'Próximos 30 dias\\n' +\n  '84\\n' +\n  'Escolher data\\n' +\n  'Local\\n' +\n  'Preço\\n' +\n  'Status\\n' +\n  'INSCRIÇÕES ABERTAS♡\\n' +\n  '15\\n' +\n  'OUT\\n' +\n  'Boltz Run 5K\\n' +\n  '\\n' +\n  '5K - Volta Redonda, RJ\\n' +\n  '\\n' +\n  'R$ 39,90\\n' +\n  '\\n' +\n  '326 / 1000 vagas\\n' +\n  '\\n' +\n  'VAGAS LIMITADAS♡\\n' +\n  '30\\n' +\n  'SET\\n' +\n  'Corrida do Malte 2ª Edição\\n' +\n  '\\n' +\n  'Volta Redonda, RJ\\n' +\n  '\\n' +\n  'R$ 39,90\\n' +\n  '\\n' +\n  '689 / 800 vagas\\n' +\n  '\\n' +\n  'INSCRIÇÕES ABERTAS♡\\n' +\n  '30\\n' +\n  'NOV\\n' +\n  'Royal Night Run Resende\\n' +\n  '\\n' +\n  '5K/10K - Volta Redonda, RJ\\n' +\n  '\\n' +\n  'R$ 49,90\\n' +\n  '\\n' +\n  '597 / 2500 vagas\\n' +\n  '\\n' +\n  'INSCRIÇÕES ABERTAS♡\\n' +\n  '01\\n' +\n  'NOV\\n' +\n  '2ª Corrida do Clube Comercial\\n' +\n  '\\n' +\n  '5K - Volta Redonda, RJ\\n' +\n  '\\n' +\n  'R$ 79,90\\n' +\n  '\\n' +\n  '364 / 500 vagas\\n' +\n  '\\n' +\n  'INSCRIÇÕES ABERTAS♡\\n' +\n  '10\\n' +\n  'OUT\\n' +\n  'Copa PS de Volleyball\\n' +\n  '\\n' +\n  'Torneio - Volta Redonda, SP\\n' +\n  '\\n' +\n  'Grátis\\n' +\n  '\\n' +\n  'Vagas limitadas\\n' +\n  '\\n' +\n  'ENCERRADO♡\\n' +\n  '21\\n' +\n  'ABR\\n' +\n  'Corrida do Guerreiro\\n' +\n  '\\n' +\n  '3K e 5K - Volta Redonda, RJ\\n' +\n  '\\n' +\n  'R$ 130,90\\n' +\n  '\\n' +\n  '500 participantes\\n' +\n  '\\n' +\n  'ENCERRADO♡\\n' +\n  '25\\n' +\n  'ABR\\n' +\n  'Falcões de Aço 2026\\n' +\n  '\\n' +\n  'Futebol Society - Volta Redonda, RJ\\n' +\n  '\\n' +\n  'R$ 250,00\\n' +\n  '\\n' +\n  '32 participantes\\n' +\n  '\\n' +\n  'ENCERRADO♡\\n' +\n  '19\\n' +\n  'MAI\\n' +\n  'Desafio MTB Aço\\n' +\n  '\\n' +\n  'MTB - Volta Redonda, RJ\\n' +\n  '\\n' +\n  '--\\n' +\n  '\\n' +\n  '120 participantes\\n' +\n  '\\n' +\n  'ENCERRADO♡\\n' +\n  '10\\n' +\n  'MAI\\n' +\n  'Festival Esportivo Sul Fluminense\\n' +\n  '\\n' +\n  'Multiesportivo - Volta Redonda, RJ\\n' +\n  '\\n' +\n  'Grátis\\n' +\n  '\\n' +\n  '200 participantes\\n' +\n  '\\n' +\n  'Carregar mais'\n",
+          "pageErrors": []
+        },
+        {
+          "id": "B38",
+          "name": "Mapa: biblioteca real renderiza marcadores e filtra por modalidade",
+          "viewport": "1440x1000",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B39",
+          "name": "RF-026: mapa indisponível preserva menu e navegação às outras páginas",
+          "viewport": "1440x1000",
+          "status": "pass",
+          "pageErrors": [
+            "Can't find variable: L"
+          ]
+        },
+        {
+          "id": "B40",
+          "name": "RF-028: FAQ abre respostas e oferece Contato",
+          "viewport": "1440x1000",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B41",
+          "name": "RF-024: Termos e Política são acessíveis pelo cadastro",
+          "viewport": "1440x1000",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B42",
+          "name": "BUG-17 / RF-029: Contato deve validar campos obrigatórios",
+          "viewport": "1440x1000",
+          "status": "fail",
+          "error": "Nenhum dos quatro campos é obrigatório no HTML\n\n0 !== 4\n",
+          "pageErrors": []
+        },
+        {
+          "id": "B43",
+          "name": "BUG-18 / RF-004: checkout precisa usar o evento selecionado",
+          "viewport": "1440x1000",
+          "status": "fail",
+          "error": "The input did not match the regular expression /Royal Night Run/. Input:\n\n'INSCRIÇÃO\\n' +\n  '\\n' +\n  'Checkout\\n' +\n  'Dados do participante\\n' +\n  'Nome completo\\n' +\n  '\\n' +\n  'E-mail\\n' +\n  '\\n' +\n  'CPF\\n' +\n  '\\n' +\n  'Telefone\\n' +\n  '\\n' +\n  'Método de pagamento\\n' +\n  '\\n' +\n  'Pix\\n' +\n  '\\n' +\n  'Confirmação rápida\\n' +\n  '\\n' +\n  'Cartão\\n' +\n  '\\n' +\n  'Crédito ou débito\\n' +\n  '\\n' +\n  'Boleto\\n' +\n  '\\n' +\n  'Compensação posterior\\n' +\n  '\\n' +\n  'Termos e confirmação\\n' +\n  'Li e concordo com os Termos de Uso.\\n' +\n  'Li a Política de Privacidade.\\n' +\n  '\\n' +\n  'RESUMO DO PEDIDO\\n' +\n  '\\n' +\n  'Corrida do Guerreiro\\n' +\n  '\\n' +\n  'Modalidade 5K • 21 abr • Volta Redonda, RJ\\n' +\n  '\\n' +\n  'Lote atual\\n' +\n  '2º lote\\n' +\n  'Inscrição\\n' +\n  'R$ 130,90\\n' +\n  'Taxa de serviço\\n' +\n  'R$ 8,00\\n' +\n  'Total\\n' +\n  'R$ 138,90\\n' +\n  'CONFIRMAR INSCRIÇÃO\\n' +\n  'Simular pendente\\n' +\n  'Simular falha'\n",
+          "pageErrors": []
+        },
+        {
+          "id": "B44",
+          "name": "Navegação da página dinâmica retorna à lista de eventos",
+          "viewport": "1440x1000",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B45",
+          "name": "Responsividade: /login.html sem rolagem horizontal em 390px",
+          "viewport": "390x844",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B46",
+          "name": "Responsividade: /cadastro.html sem rolagem horizontal em 390px",
+          "viewport": "390x844",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B47",
+          "name": "Responsividade: /telaPerfil.html sem rolagem horizontal em 390px",
+          "viewport": "390x844",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B48",
+          "name": "Responsividade: /eventos.html sem rolagem horizontal em 390px",
+          "viewport": "390x844",
+          "status": "pass",
+          "pageErrors": []
+        },
+        {
+          "id": "B49",
+          "name": "BUG-19 / RF-008: favoritar evento precisa persistir a escolha",
+          "viewport": "1440x1000",
+          "status": "fail",
+          "error": "Favoritar não chama API nem grava a seleção",
+          "pageErrors": []
+        },
+        {
+          "id": "B50",
+          "name": "BUG-20 / RF-020: calendário deve navegar entre meses",
+          "viewport": "1440x1000",
+          "status": "fail",
+          "error": "Calendário permanece em Junho 2026",
+          "pageErrors": []
+        },
+        {
+          "id": "B51",
+          "name": "BUG-21 / RF-029: Contato preenchido precisa enviar mensagem",
+          "viewport": "1440x1000",
+          "status": "fail",
+          "error": "Botão sem envio para o servidor",
+          "pageErrors": []
+        },
+        {
+          "id": "B52",
+          "name": "BUG-22 / RF-018: conta nova não pode receber inscrições de exemplo",
+          "viewport": "1440x1000",
+          "status": "fail",
+          "error": "Histórico mostra inscrição fixa para uma conta sem inscrições",
+          "pageErrors": []
+        }
+      ]
+    }
+  ],
+  "requirements": {
+    "total": 28,
+    "implementedLocally": 1,
+    "partial": 19,
+    "absent": 8,
+    "missingIdentifier": "RF-023"
+  },
+  "totals": {
+    "executions": 168,
+    "passed": 101,
+    "failed": 67
+  }
+}

@@ -90,3 +90,15 @@ incluindo rotas, fluxo com Neon, sessão no navegador e pré-requisitos do banco
 ## 📄 Licença
 
 Este projeto está sob os termos definidos no arquivo [LICENSE](./LICENSE).
+
+## Auditoria da branch CRUD
+
+A verificação de 16/11/2026 está no [relatório de testes](./docs/auditoria/relatorio-crud.md),
+com a [matriz dos 28 requisitos funcionais](./docs/auditoria/requisitos-funcionais.md)
+e a [lista de funcionalidades pendentes](./docs/auditoria/pendencias-funcionais.md).
+
+Use `npm test` para API/SQL, `npm run test:coverage` para cobertura e
+`npm run test:browser` / `npm run test:browser -- webkit` para os navegadores.
+Antes dos navegadores, execute `npm run browser:install` e deixe a porta 3000 livre.
+Os testes usam PostgreSQL isolado e não precisam de credenciais do Neon.
+As suítes retornam falha enquanto os defeitos documentados permanecerem no produto.

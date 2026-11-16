@@ -110,7 +110,7 @@
           <div class="relative inline-block mb-4">
             <div id="avatarDisplay"
               class="block w-20 h-20 rounded-xl bg-secondary border-2 border-lime flex items-center justify-center transition-all overflow-hidden bg-cover bg-center">
-              <span id="avatarInitials" class="font-display text-3xl text-lime">BA</span>
+              <span id="avatarInitials" class="font-display text-3xl text-lime">U</span>
             </div>
 
             <!-- Botão pequeno EDITAR PERFIL (canto superior direito) — lápis -->
@@ -130,7 +130,7 @@
           </div>
 
           <div>
-            <div id="profileName" class="font-display text-2xl text-fg leading-none">BRUNO ALVES</div>
+            <div id="profileName" class="font-display text-2xl text-fg leading-none">Usuário</div>
             <div class="flex items-center gap-1.5 mt-2 text-muted">
               <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
@@ -608,7 +608,7 @@
         <div class="flex items-center gap-4 p-3 bg-secondary rounded-xl border border-white/10">
           <div id="modalAvatarPreview"
             class="w-16 h-16 rounded-xl bg-zinc950 border-2 border-lime flex items-center justify-center flex-shrink-0 overflow-hidden bg-cover bg-center">
-            <span id="modalAvatarInitials" class="font-display text-2xl text-lime">BA</span>
+            <span id="modalAvatarInitials" class="font-display text-2xl text-lime">U</span>
           </div>
           <div class="flex flex-col gap-2 flex-1">
             <span class="text-[10px] font-bold tracking-widest text-muted/70 uppercase">Foto de Perfil</span>
@@ -993,6 +993,9 @@
       let profileData = {};
       try {
         profileData = JSON.parse(localStorage.getItem('profileData') || '{}') || {};
+        const user = JSON.parse(localStorage.getItem('sportsUser') || 'null');
+        const userName = typeof user?.nome === 'string' ? user.nome.trim() : '';
+        profileData.name = userName || profileData.name || '';
         applyProfile(profileData);
       } catch (_) {}
 
@@ -1099,9 +1102,9 @@
         if (d.location) locOut.textContent = d.location;
       }
       function initialsOf(name) {
-        const parts = name.trim().split(/\s+/);
+        const parts = name.trim().split(/\s+/).filter(Boolean);
         const a = (parts[0] || '')[0] || '';
-        const b = (parts[1] || '')[0] || '';
+        const b = (parts.length > 1 ? parts[parts.length - 1] : '')[0] || '';
         return (a + b).toUpperCase();
       }
     })();

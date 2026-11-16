@@ -375,6 +375,59 @@
     });
   };
 
+  const initAuthNavigation = () => {
+    let user = null;
+    try {
+      user = window.SportsAuth?.getUser?.() || JSON.parse(localStorage.getItem('sportsUser') || 'null');
+    } catch {
+      return;
+    }
+
+    if (!user || typeof user !== 'object') return;
+
+    const authContainer = Array.from(document.querySelectorAll('header nav div.flex.items-center'))
+      .find(container => container.querySelector(
+        'a[href="login.html"], a[href="./login.html"], a[href="cadastro.html"], a[href="./cadastro.html"], a[href="telaPerfil.html"], a[href="./telaPerfil.html"], #logoutBtn'
+      ));
+
+    if (!authContainer || authContainer.querySelector('[data-sports-auth-controls]')) return;
+
+    const authLinks = Array.from(authContainer.querySelectorAll('a')).filter(link =>
+      /^(?:\.\/)?(?:login|cadastro|telaPerfil)\.html$/.test(link.getAttribute('href') || '') ||
+      link.id === 'logoutBtn'
+    );
+    if (!authLinks.length) return;
+
+    const displayName = String(user.nome || user.name || '').trim();
+    const firstName = displayName ? displayName.split(/\s+/)[0] : 'Perfil';
+    const controls = document.createElement('div');
+    controls.dataset.sportsAuthControls = 'true';
+    controls.className = 'flex items-center gap-2';
+
+    const profileLink = document.createElement('a');
+    profileLink.href = 'telaPerfil.html';
+    profileLink.className = 'text-sm border border-white/20 text-fg px-3 py-1.5 rounded-lg hover:bg-surface transition-colors whitespace-nowrap';
+    profileLink.textContent = firstName;
+
+    const logoutButton = document.createElement('button');
+    logoutButton.type = 'button';
+    logoutButton.className = 'text-sm border border-white/20 text-fg px-3 py-1.5 rounded-lg hover:bg-surface transition-colors whitespace-nowrap';
+    logoutButton.textContent = 'Sair';
+    logoutButton.addEventListener('click', () => {
+      if (typeof window.SportsAuth?.clearUser === 'function') {
+        window.SportsAuth.clearUser();
+      } else {
+        localStorage.removeItem('sportsUser');
+      }
+      window.location.href = 'index.html';
+    });
+
+    const insertionPoint = authLinks[0];
+    insertionPoint.parentElement.insertBefore(controls, insertionPoint);
+    controls.append(profileLink, logoutButton);
+    authLinks.forEach(link => link.remove());
+  };
+
   const initEventLinks = () => {
     document.querySelectorAll(eventLinkSelector).forEach(surface => {
       if (surface.dataset.eventLinkBound === 'true') return;
@@ -409,6 +462,7 @@
     ensureThemeToggle();
     updateThemeLogos(document.documentElement.dataset.theme || DARK);
     initMobileMenu();
+    initAuthNavigation();
     initEventLinks();
   });
 })();

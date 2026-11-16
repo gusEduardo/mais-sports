@@ -1,14 +1,11 @@
-import { Pool } from 'pg'
+import pkg from "pg";
+const { Pool } = pkg;
 
-const connectionString = process.env.DATABASE_URL
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false,
+  },
+});
 
-if (!connectionString) {
-    throw new Error('DATABASE_URL is required to connect to Neon Postgres.')
-}
-
-export const pool = new Pool({
-    connectionString,
-    max: 10,
-    connectionTimeoutMillis: 10_000,
-    idleTimeoutMillis: 30_000,
-})
+export default pool;

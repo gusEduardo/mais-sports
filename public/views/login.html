@@ -261,7 +261,7 @@
       });
 
       // Validação básica
-      document.getElementById('formLogin').addEventListener('submit', function (e) {
+      document.getElementById('formLogin').addEventListener('submit', async function (e) {
         e.preventDefault();
         const email = document.getElementById('email');
         const senha = document.getElementById('senha');
@@ -289,20 +289,54 @@
         }
 
         if (valid) {
-          document.getElementById('btnLoginText').textContent = 'Entrando...';
-          document.getElementById('btnLoginSpinner').classList.remove('hidden');
-          // Simula loading — substituir por fetch real
-          setTimeout(() => {
-            // Deriva nome de exibição a partir do e-mail
-            var nomeDerived = email.value.split('@')[0]
-              .replace(/[._\-+]/g, ' ')
-              .replace(/\b\w/g, function(c) { return c.toUpperCase(); })
-              .trim() || 'Usuário';
+          const btnText = document.getElementById('btnLoginText');
+          const btnSpinner = document.getElementById('btnLoginSpinner');
+          const submitButton = document.querySelector('#formLogin button[type="submit"]');
+          btnText.textContent = 'Entrando...';
+          btnSpinner.classList.remove('hidden');
+          submitButton.disabled = true;
+
+          try {
+            const response = await fetch('http://localhost:3000/usuarios/login', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                email: email.value.trim(),
+                senha: senha.value
+              })
+            });
+            const responseText = await response.text();
+            let resultado = {};
+            if (responseText) {
+              try {
+                resultado = JSON.parse(responseText);
+              } catch {
+                resultado = {};
+              }
+            }
+
+            if (response.status !== 200) {
+              throw new Error(resultado.message || resultado.error || `Não foi possível entrar (HTTP ${response.status}).`);
+            }
+
+            const usuario = resultado.usuario || resultado.user;
+            if (!usuario || !usuario.nome || !usuario.email) {
+              throw new Error('O servidor retornou dados de usuário inválidos.');
+            }
+
             window.SportsAuth
-              ? window.SportsAuth.setUser({ nome: nomeDerived, email: email.value })
-              : localStorage.setItem('sportsUser', JSON.stringify({ nome: nomeDerived, email: email.value }));
+              ? window.SportsAuth.setUser(usuario)
+              : localStorage.setItem('sportsUser', JSON.stringify(usuario));
             window.location.href = 'telaPerfil.html';
-          }, 1200);
+          } catch (error) {
+            errSenha.textContent = error.message || 'Não foi possível entrar. Tente novamente.';
+            errSenha.classList.remove('hidden');
+            senha.style.borderColor = 'rgba(248,113,113,0.6)';
+          } finally {
+            btnText.textContent = 'Entrar';
+            btnSpinner.classList.add('hidden');
+            submitButton.disabled = false;
+          }
         }
       });
     </script>

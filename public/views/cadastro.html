@@ -346,6 +346,23 @@
                 <p class="text-red-400 text-xs mt-1 hidden" id="err-email">Insira um e-mail válido.</p>
               </div>
 
+              <!-- CPF temporário, exigido pela API de cadastro -->
+              <div class="mb-5">
+                <label for="cpf" class="block text-sm font-medium text-fg mb-1.5">CPF</label>
+                <input
+                  type="text"
+                  id="cpf"
+                  name="cpf"
+                  class="input-field"
+                  placeholder="000.000.000-00"
+                  autocomplete="off"
+                  inputmode="numeric"
+                  maxlength="14"
+                  required
+                />
+                <p class="text-red-400 text-xs mt-1 hidden" id="err-cpf">Insira um CPF com 11 dígitos.</p>
+              </div>
+
               <!-- Localização -->
               <div class="mb-5">
                 <p class="text-sm font-medium text-fg mb-3">
@@ -467,6 +484,7 @@
                 </label>
               </div>
               <p class="text-red-400 text-xs -mt-4 mb-5 hidden" id="err-termos">Você precisa aceitar os termos.</p>
+              <p class="text-red-400 text-sm mb-5 hidden" id="err-cadastro" role="alert"></p>
 
               <!-- Botão criar conta -->
               <button
@@ -581,12 +599,14 @@
       }
 
       // ── Envio do formulário ───────────────────────────────────────────────────
-      document.getElementById('formCadastro').addEventListener('submit', function (e) {
+      document.getElementById('formCadastro').addEventListener('submit', async function (e) {
         e.preventDefault();
 
         const nome      = document.getElementById('nome');
         const telefone  = document.getElementById('telefone');
         const email     = document.getElementById('email');
+        const cpf       = document.getElementById('cpf');
+        const estado    = document.getElementById('estado');
         const senha     = document.getElementById('senha');
         const confirmar = document.getElementById('confirmar');
         const termos    = document.getElementById('termos');
@@ -615,6 +635,13 @@
           setError(email, 'err-email', false);
         }
 
+        const cpfVal = cpf.value.replace(/\D/g, '');
+        if (cpfVal.length !== 11) {
+          setError(cpf, 'err-cpf', true); valid = false;
+        } else {
+          setError(cpf, 'err-cpf', false);
+        }
+
         // Senha
         if (!senha.value || senha.value.length < 8) {
           setError(senha, 'err-senha', true); valid = false;
@@ -641,20 +668,57 @@
         // Loading
         const btnText    = document.getElementById('btnCadastroText');
         const btnSpinner = document.getElementById('btnCadastroSpinner');
+        const btnCadastro = document.querySelector('#formCadastro button[type="submit"]');
+        const cadastroError = document.getElementById('err-cadastro');
+        cadastroError.textContent = '';
+        cadastroError.classList.add('hidden');
         btnText.textContent = 'Criando conta...';
         btnSpinner.classList.remove('hidden');
+        btnCadastro.disabled = true;
 
-        // Simula requisição — substituir por fetch real
-        setTimeout(() => {
+        try {
+          const response = await fetch('http://localhost:3000/usuarios', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              nome: nomeVal,
+              email: email.value.trim(),
+              senha: senha.value,
+              cpf: cpfVal,
+              uf: estado.value
+            })
+          });
+          const responseText = await response.text();
+          let resultado = {};
+          if (responseText) {
+            try {
+              resultado = JSON.parse(responseText);
+            } catch {
+              resultado = { message: responseText };
+            }
+          }
+
+          if (response.status !== 201) {
+            throw new Error(resultado.message || resultado.error || `Não foi possível criar a conta (HTTP ${response.status}).`);
+          }
+
+          const usuario = {
+            id: resultado.id,
+            nome: resultado.nome || nomeVal,
+            email: resultado.email || email.value.trim()
+          };
+          window.SportsAuth
+            ? window.SportsAuth.setUser(usuario)
+            : localStorage.setItem('sportsUser', JSON.stringify(usuario));
+          showSuccessModal(usuario.nome.split(/\s+/)[0]);
+        } catch (error) {
+          cadastroError.textContent = error.message || 'Não foi possível criar a conta. Tente novamente.';
+          cadastroError.classList.remove('hidden');
+        } finally {
           btnText.textContent = 'Criar Conta Grátis';
           btnSpinner.classList.add('hidden');
-          // Salva sessão no localStorage
-          const emailVal = document.getElementById('email').value;
-          window.SportsAuth
-            ? window.SportsAuth.setUser({ nome: nomeVal, email: emailVal })
-            : localStorage.setItem('sportsUser', JSON.stringify({ nome: nomeVal, email: emailVal }));
-          showSuccessModal(nomeVal.split(/\s+/)[0]);
-        }, 1400);
+          btnCadastro.disabled = false;
+        }
       });
 
       // ── Modal de confirmação ──────────────────────────────────────────────────

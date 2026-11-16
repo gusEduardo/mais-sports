@@ -71,6 +71,12 @@ npm start
 A migração é segura para executar novamente: ela cria as tabelas se necessário
 e insere os registros iniciais sem substituir registros que já existam.
 
+## 🔐 Autenticação e usuários
+
+O cadastro, login e endpoints CRUD de usuários são descritos no
+[guia técnico de autenticação e usuários](./docs/autenticacao-e-usuarios.md),
+incluindo rotas, fluxo com Neon, sessão no navegador e pré-requisitos do banco.
+
 ## 👥 Equipe
 
 | Integrante |

@@ -91,6 +91,14 @@ incluindo rotas, fluxo com Neon, sessão no navegador e pré-requisitos do banco
 
 Este projeto está sob os termos definidos no arquivo [LICENSE](./LICENSE).
 
+## Design e arquitetura
+
+O [tópico 11 do resumo técnico](./docs/design-arquitetura/topico-11-design-arquitetura.md)
+documenta a identidade visual, as principais telas, o fluxo de navegação e a
+organização dos componentes. Inclui 11 figuras numeradas e está disponível em
+[PDF](./output/pdf/topico-11-design-arquitetura.pdf), com as capturas e os diagramas
+na pasta `docs/design-arquitetura/figuras/`.
+
 ## Auditoria da branch CRUD
 
 A verificação de 16/11/2026 está no [relatório de testes](./docs/auditoria/relatorio-crud.md),

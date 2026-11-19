@@ -194,11 +194,16 @@
             <button class="filter-chip" data-filter="natacao">🏊 Natação</button>
             <button class="filter-chip" data-filter="ciclismo">🚴 Ciclismo</button>
           </div>
+          <button id="addPlaceButton" type="button" class="hidden mt-3 w-full rounded-lg bg-lime px-3 py-2 text-sm font-semibold text-zinc-900 hover:glow-lime-sm transition-all">
+            Adicionar quadra
+          </button>
+          <p id="placeSelectionHint" class="hidden mt-2 text-xs text-lime" role="status">Clique no mapa para marcar a localização. Clique em “Cancelar” para sair.</p>
         </div>
 
         <!-- Contagem de resultados -->
         <div class="px-4 py-2 border-b border-white/10 flex-shrink-0">
           <p class="font-mono text-[10px] text-muted"><span id="resultCount">13</span> locais encontrados</p>
+          <p id="mapNotice" class="hidden mt-2 text-xs text-yellow-300" role="status"></p>
         </div>
 
         <!-- Lista de locais -->
@@ -238,6 +243,59 @@
           </div>
         </div>
       </div>
+
+      <div id="addPlaceModal" class="hidden fixed inset-0 z-[1000] items-center justify-center bg-black/70 p-4" role="dialog" aria-modal="true" aria-labelledby="addPlaceTitle">
+        <form id="addPlaceForm" class="w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-2xl border border-white/10 bg-surface p-6 shadow-2xl">
+          <h2 id="addPlaceTitle" class="font-display text-xl text-fg">Adicionar quadra</h2>
+          <p class="mt-1 text-sm text-muted">A localização foi marcada no mapa. Complete os dados do local.</p>
+          <p id="selectedCoordinates" class="mt-2 font-mono text-xs text-lime"></p>
+          <input id="placeLatitude" name="latitude" type="hidden" required />
+          <input id="placeLongitude" name="longitude" type="hidden" required />
+
+          <div class="mt-5 grid gap-4 sm:grid-cols-2">
+            <label class="text-sm text-muted sm:col-span-2">
+              Nome da quadra
+              <input name="title" maxlength="120" required class="mt-1 w-full rounded-lg border border-white/10 bg-zinc950 px-3 py-2 text-fg" />
+            </label>
+            <label class="text-sm text-muted">
+              Esporte
+              <select name="sport" required class="mt-1 w-full rounded-lg border border-white/10 bg-zinc950 px-3 py-2 text-fg">
+                <option value="society">Futebol society</option>
+                <option value="futebol">Futebol</option>
+                <option value="volei">Vôlei</option>
+                <option value="basquete">Basquete</option>
+                <option value="tenis">Tênis</option>
+                <option value="raquete">Padel</option>
+                <option value="corrida">Corrida</option>
+                <option value="natacao">Natação</option>
+                <option value="ciclismo">Ciclismo</option>
+              </select>
+            </label>
+            <label class="text-sm text-muted">
+              Tipo de local
+              <input name="type" maxlength="80" required placeholder="Ex.: Quadra coberta" class="mt-1 w-full rounded-lg border border-white/10 bg-zinc950 px-3 py-2 text-fg" />
+            </label>
+            <label class="text-sm text-muted">
+              Status
+              <select name="status" required class="mt-1 w-full rounded-lg border border-white/10 bg-zinc950 px-3 py-2 text-fg">
+                <option value="available">Disponível</option>
+                <option value="reserve">Reserva</option>
+                <option value="unavailable">Completo</option>
+              </select>
+            </label>
+            <label class="text-sm text-muted">
+              Endereço ou bairro
+              <input name="address" maxlength="240" required class="mt-1 w-full rounded-lg border border-white/10 bg-zinc950 px-3 py-2 text-fg" />
+            </label>
+          </div>
+
+          <p id="addPlaceError" class="hidden mt-4 text-sm text-red-400" role="alert"></p>
+          <div class="mt-6 flex justify-end gap-3">
+            <button id="cancelAddPlace" type="button" class="rounded-lg border border-white/15 px-4 py-2 text-sm text-fg hover:bg-secondary">Cancelar</button>
+            <button id="submitAddPlace" type="submit" class="rounded-lg bg-lime px-4 py-2 text-sm font-semibold text-zinc-900 hover:glow-lime-sm">Salvar quadra</button>
+          </div>
+        </form>
+      </div>
     </main>
 
     <!-- Leaflet JS -->
@@ -245,10 +303,11 @@
 
     <!-- global.js para hamburger mobile -->
     <script src="../js/global.js"></script>
+    <script src="../js/auth.js"></script>
 
     <script>
       // ── Dados dos locais ────────────────────────────────────────────────────────
-      const PLACES = [
+      let PLACES = [
         {
           id: 1,
           title: 'Campo Society Aterrado',
@@ -399,6 +458,17 @@
       const STATUS_LABELS = { available: 'Disponível', reserve: 'Reserva', unavailable: 'Completo' };
       const STATUS_COLORS = { available: 'text-lime', reserve: 'text-yellow-400', unavailable: 'text-zinc-400' };
       const STATUS_DOT    = { available: 'bg-lime', reserve: 'bg-yellow-400', unavailable: 'bg-zinc-400' };
+      const SPORT_ICONS = {
+        society: '../media/pins/pin-society.svg',
+        futebol: '../media/pins/pin-futebol.svg',
+        volei: '../media/pins/pin-volei.svg',
+        basquete: '../media/pins/pin-basquete.svg',
+        tenis: '../media/pins/pin-tenis.svg',
+        raquete: '../media/pins/pin-raquete.svg',
+        corrida: '../media/pins/pin-corrida.svg',
+        natacao: '../media/pins/pin-natacao.svg',
+        ciclismo: '../media/pins/pin-bicicleta.svg',
+      };
 
       // ── Mapa Leaflet ────────────────────────────────────────────────────────────
       const map = L.map('mapa-principal', {
@@ -406,7 +476,11 @@
         attributionControl: false,
       }).setView([-22.512, -44.087], 13);
 
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(map);
+      L.control.attribution({ position: 'topright' }).addTo(map);
+      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      }).addTo(map);
 
       L.control.zoom({ position: 'bottomleft' }).addTo(map);
 
@@ -433,11 +507,12 @@
 
       // Cria markers
       const markerMap = {};
-      PLACES.forEach(place => {
+      function addPlaceMarker(place) {
         const marker = L.marker(place.coords, { icon: makePinIcon(place), riseOnHover: true }).addTo(map);
         marker.on('click', () => selectPlace(place.id));
         markerMap[place.id] = marker;
-      });
+      }
+      PLACES.forEach(addPlaceMarker);
 
       // ── Estado ─────────────────────────────────────────────────────────────────
       let activeFilter = 'all';
@@ -453,7 +528,7 @@
         });
         // Atualiza cards
         document.querySelectorAll('.place-card').forEach(card => {
-          card.classList.toggle('is-active', Number(card.dataset.id) === id);
+          card.classList.toggle('is-active', card.dataset.id === String(id));
         });
         // Scroll para o card
         const card = document.querySelector(`.place-card[data-id="${id}"]`);
@@ -492,21 +567,21 @@
         visible.forEach(place => {
           const card = document.createElement('div');
           card.className = 'place-card bg-secondary border border-white/8 rounded-xl p-3';
-          card.dataset.id = place.id;
+          card.dataset.id = String(place.id);
           card.innerHTML = `
             <div class="flex items-start gap-3">
               <div class="w-9 h-9 rounded-lg bg-zinc950 border border-white/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                <img src="${place.icon}" alt="${escAttr(place.sportKey)}" class="w-5 h-5" style="filter:brightness(0) invert(1);opacity:0.85;" />
+                <img src="${escAttr(place.icon)}" alt="${escAttr(place.sportKey)}" class="w-5 h-5" style="filter:brightness(0) invert(1);opacity:0.85;" />
               </div>
               <div class="flex-1 min-w-0">
-                <p class="text-sm font-semibold text-fg leading-tight truncate">${place.title}</p>
-                <p class="text-xs text-muted mt-0.5 truncate">${place.type}</p>
+                <p class="text-sm font-semibold text-fg leading-tight truncate">${escAttr(place.title)}</p>
+                <p class="text-xs text-muted mt-0.5 truncate">${escAttr(place.type)}</p>
                 <p class="text-[10px] text-muted/70 mt-0.5 truncate flex items-center gap-1">
                   <svg class="w-3 h-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                   </svg>
-                  ${place.address}
+                  ${escAttr(place.address)}
                 </p>
               </div>
               <span class="flex-shrink-0 flex items-center gap-1 font-mono text-[10px] font-bold ${STATUS_COLORS[place.status]}">
@@ -519,18 +594,23 @@
         });
 
         // Re-seleciona o card ativo se ainda visível
-        if (selectedId && visible.find(p => p.id === selectedId)) {
+        if (selectedId && visible.find(p => String(p.id) === String(selectedId))) {
           document.querySelector(`.place-card[data-id="${selectedId}"]`)?.classList.add('is-active');
         }
       }
 
       // ── Filtros ────────────────────────────────────────────────────────────────
+      function activateFilter(filter) {
+        document.querySelectorAll('.filter-chip').forEach(chip => {
+          chip.classList.toggle('active', chip.dataset.filter === filter);
+        });
+        activeFilter = filter;
+        renderCards(activeFilter);
+      }
+
       document.querySelectorAll('.filter-chip').forEach(chip => {
         chip.addEventListener('click', () => {
-          document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-          chip.classList.add('active');
-          activeFilter = chip.dataset.filter;
-          renderCards(activeFilter);
+          activateFilter(chip.dataset.filter);
         });
       });
 
@@ -555,8 +635,140 @@
       // ── Init ───────────────────────────────────────────────────────────────────
       renderCards('all');
       selectPlace(1);
+
+      const addPlaceButton = document.getElementById('addPlaceButton');
+      const placeSelectionHint = document.getElementById('placeSelectionHint');
+      const addPlaceModal = document.getElementById('addPlaceModal');
+      const addPlaceForm = document.getElementById('addPlaceForm');
+      const addPlaceError = document.getElementById('addPlaceError');
+      const mapNotice = document.getElementById('mapNotice');
+      const placeLatitude = document.getElementById('placeLatitude');
+      const placeLongitude = document.getElementById('placeLongitude');
+      const submitAddPlace = document.getElementById('submitAddPlace');
+      const currentUser = window.SportsAuth?.getUser();
+      let selectingPlaceLocation = false;
+
+      if (currentUser?.acesso === 'admin' && window.SportsAuth?.getToken()) {
+        addPlaceButton.classList.remove('hidden');
+      }
+
+      function showMapNotice(message) {
+        mapNotice.textContent = message;
+        mapNotice.classList.remove('hidden');
+      }
+
+      function stopSelectingLocation() {
+        selectingPlaceLocation = false;
+        placeSelectionHint.classList.add('hidden');
+        addPlaceButton.textContent = 'Adicionar quadra';
+        map.getContainer().style.cursor = '';
+      }
+
+      addPlaceButton.addEventListener('click', () => {
+        if (selectingPlaceLocation) {
+          stopSelectingLocation();
+          return;
+        }
+        selectingPlaceLocation = true;
+        placeSelectionHint.classList.remove('hidden');
+        addPlaceButton.textContent = 'Cancelar';
+        map.getContainer().style.cursor = 'crosshair';
+      });
+
+      map.on('click', event => {
+        if (!selectingPlaceLocation) return;
+        placeLatitude.value = event.latlng.lat.toFixed(6);
+        placeLongitude.value = event.latlng.lng.toFixed(6);
+        document.getElementById('selectedCoordinates').textContent =
+          `Localização: ${placeLatitude.value}, ${placeLongitude.value}`;
+        stopSelectingLocation();
+        addPlaceError.classList.add('hidden');
+        addPlaceModal.classList.remove('hidden');
+        addPlaceModal.classList.add('flex');
+        addPlaceForm.elements.title.focus();
+      });
+
+      function closeAddPlaceModal() {
+        addPlaceModal.classList.add('hidden');
+        addPlaceModal.classList.remove('flex');
+        addPlaceForm.reset();
+        addPlaceError.classList.add('hidden');
+      }
+
+      document.getElementById('cancelAddPlace').addEventListener('click', closeAddPlaceModal);
+      addPlaceModal.addEventListener('click', event => {
+        if (event.target === addPlaceModal) closeAddPlaceModal();
+      });
+
+      addPlaceForm.addEventListener('submit', async event => {
+        event.preventDefault();
+        addPlaceError.classList.add('hidden');
+        if (!addPlaceForm.reportValidity()) return;
+
+        const formData = new FormData(addPlaceForm);
+        const payload = {
+          title: formData.get('title'),
+          sport: formData.get('sport'),
+          type: formData.get('type'),
+          status: formData.get('status'),
+          address: formData.get('address'),
+          latitude: Number(placeLatitude.value),
+          longitude: Number(placeLongitude.value),
+        };
+        submitAddPlace.disabled = true;
+
+        try {
+          const response = await window.SportsAuth.fetchWithAuth('/api/quadras', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          });
+          const result = await response.json();
+          if (!response.ok) throw new Error(result.message || `Erro HTTP ${response.status}.`);
+
+          const place = {
+            ...result,
+            icon: SPORT_ICONS[result.sportKey] || '../media/pins/pin-base.svg',
+          };
+          PLACES.push(place);
+          addPlaceMarker(place);
+          closeAddPlaceModal();
+          activateFilter('all');
+          selectPlace(place.id);
+          showMapNotice('Quadra adicionada ao mapa.');
+        } catch (error) {
+          addPlaceError.textContent = error.message || 'Não foi possível adicionar a quadra.';
+          addPlaceError.classList.remove('hidden');
+        } finally {
+          submitAddPlace.disabled = false;
+        }
+      });
+
+      async function loadCustomPlaces() {
+        try {
+          const response = await fetch('/api/quadras');
+          if (!response.ok) throw new Error(`Erro HTTP ${response.status}.`);
+          const places = await response.json();
+          if (!Array.isArray(places)) throw new Error('Resposta inválida da API de quadras.');
+
+          places.forEach(place => {
+            const normalizedPlace = {
+              ...place,
+              icon: SPORT_ICONS[place.sportKey] || '../media/pins/pin-base.svg',
+            };
+            if (markerMap[normalizedPlace.id]) return;
+            PLACES.push(normalizedPlace);
+            addPlaceMarker(normalizedPlace);
+          });
+          renderCards(activeFilter);
+        } catch (error) {
+          console.error('Não foi possível carregar as quadras cadastradas.', error);
+          showMapNotice('Não foi possível carregar as quadras cadastradas. Os locais existentes continuam visíveis.');
+        }
+      }
+
+      loadCustomPlaces();
     </script>
-    <script src="../js/auth.js"></script>
   </body>
 </html>
 

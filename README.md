@@ -48,7 +48,7 @@ O projeto combina páginas HTML com um servidor Node.js/Express para consultar o
 | **CSS3** | Animações e microinterações |
 | **JavaScript (ES6+)** | Mapa customizado, cronômetros, controle de sessão, etc... |
 | **Node.js / Express** | Rotas, controllers, middlewares e API de eventos |
-| **Neon Postgres** | Persistência de eventos e organizadores |
+| **Neon Postgres** | Persistência de eventos, organizadores e quadras adicionadas |
 | **Figma** | Prototipagem |
 | **Git & GitHub** | Versionamento e trabalho colaborativo |
 | **GitHub Pages** | Hospedagem e publicação do site |
@@ -70,6 +70,100 @@ npm start
 
 A migração é segura para executar novamente: ela cria as tabelas se necessário
 e insere os registros iniciais sem substituir registros que já existam.
+
+## 📍 Cadastro de quadras no mapa
+
+### Por que essa adição foi feita
+
+Antes, os locais do mapa eram mantidos diretamente no código da página. Para
+cadastrar uma quadra, era necessário alterar os arquivos e publicar uma nova
+versão. Agora, um administrador pode incluir o local pela própria interface;
+os novos pins ficam no banco e aparecem para quem abrir o mapa depois.
+
+Os pins iniciais de demonstração continuam definidos no código. Esta função
+acrescenta novos locais persistidos no banco; ela ainda não edita nem remove os
+locais existentes.
+
+### Como funciona
+
+1. O administrador entra na conta e abre **Mapa**.
+2. Na lateral, clica em **Adicionar quadra** e depois clica no ponto desejado
+   do mapa. O clique fornece latitude e longitude.
+3. Preenche nome, esporte, tipo de local, status e endereço e salva.
+4. O navegador envia os dados para `POST /api/quadras`, junto com o token da
+   sessão. O servidor valida os campos e exige o perfil `admin` antes de
+   gravar.
+5. O local é salvo na tabela `sports_map_places` do Postgres e aparece no mapa.
+   Nas próximas visitas, a página consulta `GET /api/quadras` para carregar os
+   pins cadastrados.
+
+O mapa aceita esportes de futebol society, futebol, vôlei, basquete, tênis,
+padel, corrida, natação e ciclismo. Os status disponíveis são **Disponível**,
+**Reserva** e **Completo**.
+
+### Permissões
+
+O perfil de administrador é definido no servidor pelos e-mails configurados
+em `JWT_ADMIN_EMAILS`, separados por vírgula. A conta precisa existir e o
+administrador deve entrar normalmente para receber um token. Como o cadastro
+público não permite registrar um e-mail dessa lista, a conta admin deve ser
+provisionada previamente. O botão da interface é exibido para essa sessão,
+mas a permissão também é verificada pela API; alterar o `localStorage` no
+navegador não concede acesso.
+
+As rotas são:
+
+| Método e rota | Acesso | Uso |
+|---|---|---|
+| `GET /api/quadras` | Público | Lista os pins cadastrados |
+| `POST /api/quadras` | Administrador autenticado | Cria um pin |
+
+O corpo do `POST` contém `title`, `sport`, `type`, `status`, `address`,
+`latitude` e `longitude`. As coordenadas devem ser números válidos. A rota de
+criação responde `401` sem token e `403` para uma conta que não seja admin.
+
+### Como testar localmente
+
+1. Configure um arquivo `.env` local, que não deve ser enviado ao Git, com:
+   - `DATABASE_URL`: conexão Postgres para a aplicação;
+   - `DATABASE_URL_UNPOOLED`: conexão direta usada para migrações;
+   - `JWT_SECRET`: segredo com pelo menos 32 bytes;
+   - `JWT_ADMIN_EMAILS`: e-mail da conta que será administradora.
+
+   Para um projeto Neon já conectado, `neon env pull` pode preencher as
+   variáveis de banco. Configure `JWT_SECRET` e `JWT_ADMIN_EMAILS` conforme o
+   ambiente. Não compartilhe nem comite valores secretos.
+
+2. Crie a tabela no banco:
+
+   ```bash
+   npm run db:migrate
+   ```
+
+   A migração cria `sports_map_places` se ela ainda não existir e pode ser
+   executada novamente.
+
+3. Inicie o servidor e abra a página:
+
+   ```bash
+   npm run dev
+   ```
+
+   Acesse `http://localhost:3000/mapa.html`, entre com a conta admin e siga o
+   fluxo de cadastro descrito acima. Atualize a página para confirmar que o
+   pin continua visível.
+
+4. Rode as verificações automatizadas:
+
+   ```bash
+   npm test
+   npm run build
+   ```
+
+Se a página informar que não conseguiu carregar os pins, confira se o servidor
+está usando `DATABASE_URL` e se `npm run db:migrate` foi executado. A API e o
+banco precisam estar disponíveis no servidor Express; uma hospedagem somente
+estática, como GitHub Pages, não executa essas rotas.
 
 ## 🔐 Autenticação e usuários
 

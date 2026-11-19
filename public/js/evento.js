@@ -224,7 +224,7 @@ function preencherLocal(local) {
 
         window.L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(mapa)
         window.L.marker([latitude, longitude], { interactive: false, keyboard: false, icon: window.L.divIcon({
             html: '<span class="event-map-pin"></span>', className: 'event-map-marker', iconSize: [32, 44], iconAnchor: [16, 32]

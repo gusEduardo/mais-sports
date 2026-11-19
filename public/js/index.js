@@ -243,11 +243,11 @@ document.addEventListener('DOMContentLoaded', () => {
       dragging:          false,
       scrollWheelZoom:   false,
       doubleClickZoom:   false,
-      attributionControl: false,
     }).setView([-22.508, -44.092], 13);
 
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(miniMap);
 
     mapPlaces.forEach(place => {
@@ -263,11 +263,11 @@ document.addEventListener('DOMContentLoaded', () => {
   if (document.getElementById('joga-map')) {
     const jogaMap = L.map('joga-map', {
       zoomControl:        false,
-      attributionControl: false,
     }).setView([-22.508, -44.092], 13);
 
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(jogaMap);
 
     const markerEntries = mapPlaces.map(place => ({

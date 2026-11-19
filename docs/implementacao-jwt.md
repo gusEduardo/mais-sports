@@ -37,7 +37,7 @@ novo middleware de autenticação.
 
 ### Middleware JWT
 
-[`src/midwares/authMiddleware.js`](../src/midwares/authMiddleware.js) reúne as
+[`src/middlewares/authMiddleware.js`](../src/middlewares/authMiddleware.js) reúne as
 responsabilidades de autenticação:
 
 - `getJwtSecret()` lê `JWT_SECRET` do ambiente e rejeita segredo ausente ou

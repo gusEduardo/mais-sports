@@ -25,7 +25,7 @@ porta `3000` quando executada localmente.
 - **`src/controllers/usuarioController.js`**: hash e comparação de senha,
   emissão do JWT, respostas HTTP e tratamento de erros.
 - **`src/routes/usuarioRoute.js`**: rotas REST de usuários.
-- **`src/midwares/authMiddleware.js`**: validação Bearer JWT e autorização
+- **`src/middlewares/authMiddleware.js`**: validação Bearer JWT e autorização
   por perfil/titularidade.
 - **`src/app.js`**: configura `express.json()` antes das rotas e registra
   `usuarioRoute`.

@@ -1,6 +1,6 @@
 import usuarioRepository from "../repositories/usuarioRepository.js";
 import bcrypt from "bcrypt";
-import { createAccessToken, getJwtSecret } from "../midwares/authMiddleware.js";
+import { createAccessToken, getJwtSecret } from "../middlewares/authMiddleware.js";
 
 function isAdminEmail(email) {
   if (typeof email !== "string") {

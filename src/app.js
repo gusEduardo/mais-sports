@@ -2,7 +2,7 @@ import express from "express";
 import { fileURLToPath } from "node:url";
 import eventoRoute from "./routes/eventoRoute.js";
 import usuarioRoute from "./routes/usuarioRoute.js"; // 1. Importa a rota de usuários
-import { erroMiddleware } from "./midwares/erroMiddleware.js";
+import { erroMiddleware } from "./middlewares/erroMiddleware.js";
 
 const app = express();
 const publicPath = fileURLToPath(new URL("../public/", import.meta.url));

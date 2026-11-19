@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { mostrarPagina, getById, mostrarLista } from '../controllers/eventoController.js'
-import { validarId } from '../midwares/eventoMiddleware.js'
+import { validarId } from '../middlewares/eventoMiddleware.js'
 
 const eventoRoute = Router()
 

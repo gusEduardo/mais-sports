@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node --env-file-if-exists=.env --env-file-if-exists=.env.local src/server.js",
     "dev": "node --env-file-if-exists=.env --env-file-if-exists=.env.local --watch src/server.js",
-    "build": "node --check src/server.js && node --check src/app.js && node --check src/controllers/eventoController.js && node --check src/midwares/erroMiddleware.js && node --check src/midwares/eventoMiddleware.js && node --check src/midwares/authMiddleware.js && node --check src/repositories/eventoRepository.js && node --check src/repositories/organizadorRepository.js && node --check src/routes/eventoRoute.js && node --check src/db/pool.js && node --check src/db/migrate.js",
+    "build": "node --check src/server.js && node --check src/app.js && node --check src/controllers/eventoController.js && node --check src/middlewares/erroMiddleware.js && node --check src/middlewares/eventoMiddleware.js && node --check src/middlewares/authMiddleware.js && node --check src/repositories/eventoRepository.js && node --check src/repositories/organizadorRepository.js && node --check src/routes/eventoRoute.js && node --check src/db/pool.js && node --check src/db/migrate.js",
     "db:migrate": "node --env-file-if-exists=.env --env-file-if-exists=.env.local src/db/migrate.js",
     "test": "node --test"
   },

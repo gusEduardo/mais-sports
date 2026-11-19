@@ -6,5 +6,6 @@ const router = Router();
 
 router.get("/api/quadras", mapPlaceController.listar);
 router.post("/api/quadras", auth, authAdmin, mapPlaceController.criar);
+router.put("/api/quadras/:id", auth, authAdmin, mapPlaceController.atualizar);
 
 export default router;

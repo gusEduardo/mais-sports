@@ -40,8 +40,15 @@ export function validarQuadra(body) {
   }
 
   return {
-    value: { title, sport, type, status, address, latitude, longitude },
+    value: { title, sport, sportKey: sport, type, status, address, latitude, longitude },
   };
+}
+
+function getPlaceId(value) {
+  const match = /^db-(\d+)$/.exec(value);
+  if (!match) return null;
+  const id = Number(match[1]);
+  return Number.isSafeInteger(id) && id > 0 ? id : null;
 }
 
 const mapPlaceController = {
@@ -62,6 +69,28 @@ const mapPlaceController = {
     try {
       const place = await mapPlaceRepository.criar(validated.value);
       return res.status(201).json(place);
+    } catch (error) {
+      return next(error);
+    }
+  },
+
+  async atualizar(req, res, next) {
+    const id = getPlaceId(req.params.id);
+    if (id === null) {
+      return res.status(400).json({ message: "Identificador da quadra inválido." });
+    }
+
+    const validated = validarQuadra(req.body);
+    if (validated.error) {
+      return res.status(400).json({ message: validated.error });
+    }
+
+    try {
+      const place = await mapPlaceRepository.atualizar(id, validated.value);
+      if (!place) {
+        return res.status(404).json({ message: "Quadra não encontrada." });
+      }
+      return res.json(place);
     } catch (error) {
       return next(error);
     }

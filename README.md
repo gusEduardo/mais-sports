@@ -80,9 +80,9 @@ cadastrar uma quadra, era necessário alterar os arquivos e publicar uma nova
 versão. Agora, um administrador pode incluir o local pela própria interface;
 os novos pins ficam no banco e aparecem para quem abrir o mapa depois.
 
-Os pins iniciais de demonstração continuam definidos no código. Esta função
-acrescenta novos locais persistidos no banco; ela ainda não edita nem remove os
-locais existentes.
+Os pins iniciais de demonstração são carregados para a mesma tabela pela
+migração. Assim, administradores podem editar tanto esses locais quanto os
+adicionados posteriormente. A função ainda não remove pins.
 
 ### Como funciona
 
@@ -96,6 +96,9 @@ locais existentes.
 5. O local é salvo na tabela `sports_map_places` do Postgres e aparece no mapa.
    Nas próximas visitas, a página consulta `GET /api/quadras` para carregar os
    pins cadastrados.
+6. Para editar, o administrador clica em **Editar** no cartão da quadra,
+   altera os campos e salva. Também pode escolher outro ponto no mapa. A API
+   atualiza o registro com `PUT /api/quadras/:id`.
 
 O mapa aceita esportes de futebol society, futebol, vôlei, basquete, tênis,
 padel, corrida, natação e ciclismo. Os status disponíveis são **Disponível**,
@@ -117,6 +120,7 @@ As rotas são:
 |---|---|---|
 | `GET /api/quadras` | Público | Lista os pins cadastrados |
 | `POST /api/quadras` | Administrador autenticado | Cria um pin |
+| `PUT /api/quadras/:id` | Administrador autenticado | Edita um pin |
 
 O corpo do `POST` contém `title`, `sport`, `type`, `status`, `address`,
 `latitude` e `longitude`. As coordenadas devem ser números válidos. A rota de
@@ -150,8 +154,8 @@ criação responde `401` sem token e `403` para uma conta que não seja admin.
    ```
 
    Acesse `http://localhost:3000/mapa.html`, entre com a conta admin e siga o
-   fluxo de cadastro descrito acima. Atualize a página para confirmar que o
-   pin continua visível.
+   fluxo de cadastro descrito acima. Edite um cartão existente e atualize a
+   página para confirmar que as alterações continuam salvas.
 
 4. Rode as verificações automatizadas:
 

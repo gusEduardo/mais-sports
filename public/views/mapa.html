@@ -197,7 +197,7 @@
           <button id="addPlaceButton" type="button" class="hidden mt-3 w-full rounded-lg bg-lime px-3 py-2 text-sm font-semibold text-zinc-900 hover:glow-lime-sm transition-all">
             Adicionar quadra
           </button>
-          <p id="placeSelectionHint" class="hidden mt-2 text-xs text-lime" role="status">Clique no mapa para marcar a localização. Clique em “Cancelar” para sair.</p>
+          <p id="placeSelectionHint" class="hidden mt-2 text-xs text-lime" role="status"></p>
         </div>
 
         <!-- Contagem de resultados -->
@@ -247,10 +247,11 @@
       <div id="addPlaceModal" class="hidden fixed inset-0 z-[1000] items-center justify-center bg-black/70 p-4" role="dialog" aria-modal="true" aria-labelledby="addPlaceTitle">
         <form id="addPlaceForm" class="w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-2xl border border-white/10 bg-surface p-6 shadow-2xl">
           <h2 id="addPlaceTitle" class="font-display text-xl text-fg">Adicionar quadra</h2>
-          <p class="mt-1 text-sm text-muted">A localização foi marcada no mapa. Complete os dados do local.</p>
+          <p id="addPlaceDescription" class="mt-1 text-sm text-muted">A localização foi marcada no mapa. Complete os dados do local.</p>
           <p id="selectedCoordinates" class="mt-2 font-mono text-xs text-lime"></p>
           <input id="placeLatitude" name="latitude" type="hidden" required />
           <input id="placeLongitude" name="longitude" type="hidden" required />
+          <button id="choosePlaceLocation" type="button" class="hidden mt-2 text-sm text-lime underline underline-offset-2">Escolher outro ponto no mapa</button>
 
           <div class="mt-5 grid gap-4 sm:grid-cols-2">
             <label class="text-sm text-muted sm:col-span-2">
@@ -310,6 +311,7 @@
       let PLACES = [
         {
           id: 1,
+          sourceKey: 'campo-society-aterrado',
           title: 'Campo Society Aterrado',
           sport: 'futebol',
           sportKey: 'society',
@@ -321,6 +323,7 @@
         },
         {
           id: 2,
+          sourceKey: 'arena-jardim-belvedere',
           title: 'Arena Jardim Belvedere',
           sport: 'futebol',
           sportKey: 'society',
@@ -332,6 +335,7 @@
         },
         {
           id: 3,
+          sourceKey: 'campo-municipal-vila-mury',
           title: 'Campo Municipal Vila Mury',
           sport: 'futebol',
           sportKey: 'futebol',
@@ -343,6 +347,7 @@
         },
         {
           id: 4,
+          sourceKey: 'quadra-volei-aterrado',
           title: 'Quadra de Vôlei do Aterrado',
           sport: 'volei',
           sportKey: 'volei',
@@ -354,6 +359,7 @@
         },
         {
           id: 5,
+          sourceKey: 'quadra-volei-areia-393',
           title: 'Quadra Vôlei de Areia — 393',
           sport: 'volei',
           sportKey: 'volei',
@@ -365,6 +371,7 @@
         },
         {
           id: 6,
+          sourceKey: 'quadra-basquete',
           title: 'Quadra de Basquete',
           sport: 'basquete',
           sportKey: 'basquete',
@@ -377,6 +384,7 @@
 
         {
           id: 8,
+          sourceKey: 'clube-tenis-vr',
           title: 'Clube de Tênis VR',
           sport: 'tenis',
           sportKey: 'tenis',
@@ -388,6 +396,7 @@
         },
         {
           id: 9,
+          sourceKey: 'centro-padel-vila-santa-cecilia',
           title: 'Centro de Padel Vila Santa Cecília',
           sport: 'tenis',
           sportKey: 'raquete',
@@ -399,6 +408,7 @@
         },
         {
           id: 10,
+          sourceKey: 'corrida-aterrado',
           title: 'Corrida — Aterrado',
           sport: 'corrida',
           sportKey: 'corrida',
@@ -410,6 +420,7 @@
         },
         {
           id: 11,
+          sourceKey: 'pista-atletismo-municipal',
           title: 'Pista de Atletismo Municipal',
           sport: 'corrida',
           sportKey: 'corrida',
@@ -421,6 +432,7 @@
         },
         {
           id: 12,
+          sourceKey: 'piscina-municipal-vr',
           title: 'Piscina Municipal VR',
           sport: 'natacao',
           sportKey: 'natacao',
@@ -432,6 +444,7 @@
         },
         {
           id: 13,
+          sourceKey: 'ciclovia-rio-paraiba',
           title: 'Ciclovia do Rio Paraíba',
           sport: 'ciclismo',
           sportKey: 'ciclismo',
@@ -458,6 +471,8 @@
       const STATUS_LABELS = { available: 'Disponível', reserve: 'Reserva', unavailable: 'Completo' };
       const STATUS_COLORS = { available: 'text-lime', reserve: 'text-yellow-400', unavailable: 'text-zinc-400' };
       const STATUS_DOT    = { available: 'bg-lime', reserve: 'bg-yellow-400', unavailable: 'bg-zinc-400' };
+      const currentUser = window.SportsAuth?.getUser();
+      const isAdmin = currentUser?.acesso === 'admin' && Boolean(window.SportsAuth?.getToken());
       const SPORT_ICONS = {
         society: '../media/pins/pin-society.svg',
         futebol: '../media/pins/pin-futebol.svg',
@@ -590,6 +605,17 @@
               </span>
             </div>`;
           card.addEventListener('click', () => selectPlace(place.id));
+          if (isAdmin && place.persisted) {
+            const editButton = document.createElement('button');
+            editButton.type = 'button';
+            editButton.className = 'mt-2 text-xs font-semibold text-lime hover:underline';
+            editButton.textContent = 'Editar';
+            editButton.addEventListener('click', event => {
+              event.stopPropagation();
+              openEditPlace(place);
+            });
+            card.appendChild(editButton);
+          }
           list.appendChild(card);
         });
 
@@ -645,10 +671,15 @@
       const placeLatitude = document.getElementById('placeLatitude');
       const placeLongitude = document.getElementById('placeLongitude');
       const submitAddPlace = document.getElementById('submitAddPlace');
-      const currentUser = window.SportsAuth?.getUser();
+      const addPlaceTitle = document.getElementById('addPlaceTitle');
+      const addPlaceDescription = document.getElementById('addPlaceDescription');
+      const selectedCoordinates = document.getElementById('selectedCoordinates');
+      const choosePlaceLocation = document.getElementById('choosePlaceLocation');
       let selectingPlaceLocation = false;
+      let selectionMode = null;
+      let editingPlace = null;
 
-      if (currentUser?.acesso === 'admin' && window.SportsAuth?.getToken()) {
+      if (isAdmin) {
         addPlaceButton.classList.remove('hidden');
       }
 
@@ -659,33 +690,84 @@
 
       function stopSelectingLocation() {
         selectingPlaceLocation = false;
+        selectionMode = null;
         placeSelectionHint.classList.add('hidden');
         addPlaceButton.textContent = 'Adicionar quadra';
         map.getContainer().style.cursor = '';
       }
 
+      function startSelectingLocation(mode) {
+        selectingPlaceLocation = true;
+        selectionMode = mode;
+        placeSelectionHint.textContent = mode === 'edit'
+          ? 'Clique no mapa para atualizar a localização. Cancelar mantém a localização atual.'
+          : 'Clique no mapa para marcar a localização. Clique em “Cancelar” para sair.';
+        placeSelectionHint.classList.remove('hidden');
+        addPlaceButton.textContent = 'Cancelar seleção';
+        map.getContainer().style.cursor = 'crosshair';
+      }
+
+      function showPlaceModal() {
+        addPlaceModal.classList.remove('hidden');
+        addPlaceModal.classList.add('flex');
+      }
+
+      function openNewPlace(coords) {
+        editingPlace = null;
+        addPlaceForm.reset();
+        placeLatitude.value = coords[0];
+        placeLongitude.value = coords[1];
+        addPlaceTitle.textContent = 'Adicionar quadra';
+        addPlaceDescription.textContent = 'A localização foi marcada no mapa. Complete os dados do local.';
+        selectedCoordinates.textContent = `Localização: ${coords[0]}, ${coords[1]}`;
+        choosePlaceLocation.classList.add('hidden');
+        submitAddPlace.textContent = 'Salvar quadra';
+        showPlaceModal();
+        addPlaceForm.elements.title.focus();
+      }
+
+      function openEditPlace(place) {
+        editingPlace = place;
+        addPlaceForm.elements.title.value = place.title;
+        addPlaceForm.elements.sport.value = place.sportKey;
+        addPlaceForm.elements.type.value = place.type;
+        addPlaceForm.elements.status.value = place.status;
+        addPlaceForm.elements.address.value = place.address;
+        placeLatitude.value = place.coords[0];
+        placeLongitude.value = place.coords[1];
+        addPlaceTitle.textContent = 'Editar quadra';
+        addPlaceDescription.textContent = 'Altere os dados e salve para atualizar o pin no mapa.';
+        selectedCoordinates.textContent = `Localização: ${place.coords[0]}, ${place.coords[1]}`;
+        choosePlaceLocation.classList.remove('hidden');
+        submitAddPlace.textContent = 'Salvar alterações';
+        addPlaceError.classList.add('hidden');
+        showPlaceModal();
+        addPlaceForm.elements.title.focus();
+      }
+
       addPlaceButton.addEventListener('click', () => {
         if (selectingPlaceLocation) {
+          const mode = selectionMode;
           stopSelectingLocation();
+          if (mode === 'edit') showPlaceModal();
           return;
         }
-        selectingPlaceLocation = true;
-        placeSelectionHint.classList.remove('hidden');
-        addPlaceButton.textContent = 'Cancelar';
-        map.getContainer().style.cursor = 'crosshair';
+        startSelectingLocation('create');
       });
 
       map.on('click', event => {
         if (!selectingPlaceLocation) return;
-        placeLatitude.value = event.latlng.lat.toFixed(6);
-        placeLongitude.value = event.latlng.lng.toFixed(6);
-        document.getElementById('selectedCoordinates').textContent =
-          `Localização: ${placeLatitude.value}, ${placeLongitude.value}`;
+        const mode = selectionMode;
+        const coords = [event.latlng.lat.toFixed(6), event.latlng.lng.toFixed(6)];
         stopSelectingLocation();
-        addPlaceError.classList.add('hidden');
-        addPlaceModal.classList.remove('hidden');
-        addPlaceModal.classList.add('flex');
-        addPlaceForm.elements.title.focus();
+        if (mode === 'create') {
+          openNewPlace(coords);
+        } else if (mode === 'edit' && editingPlace) {
+          placeLatitude.value = coords[0];
+          placeLongitude.value = coords[1];
+          selectedCoordinates.textContent = `Localização: ${coords[0]}, ${coords[1]}`;
+          showPlaceModal();
+        }
       });
 
       function closeAddPlaceModal() {
@@ -693,9 +775,19 @@
         addPlaceModal.classList.remove('flex');
         addPlaceForm.reset();
         addPlaceError.classList.add('hidden');
+        editingPlace = null;
+        addPlaceTitle.textContent = 'Adicionar quadra';
+        addPlaceDescription.textContent = 'A localização foi marcada no mapa. Complete os dados do local.';
+        choosePlaceLocation.classList.add('hidden');
+        submitAddPlace.textContent = 'Salvar quadra';
       }
 
       document.getElementById('cancelAddPlace').addEventListener('click', closeAddPlaceModal);
+      choosePlaceLocation.addEventListener('click', () => {
+        addPlaceModal.classList.add('hidden');
+        addPlaceModal.classList.remove('flex');
+        startSelectingLocation('edit');
+      });
       addPlaceModal.addEventListener('click', event => {
         if (event.target === addPlaceModal) closeAddPlaceModal();
       });
@@ -715,11 +807,16 @@
           latitude: Number(placeLatitude.value),
           longitude: Number(placeLongitude.value),
         };
+        const placeBeingEdited = editingPlace;
+        const isEditing = Boolean(placeBeingEdited);
         submitAddPlace.disabled = true;
 
         try {
-          const response = await window.SportsAuth.fetchWithAuth('/api/quadras', {
-            method: 'POST',
+          const endpoint = isEditing
+            ? `/api/quadras/${encodeURIComponent(placeBeingEdited.id)}`
+            : '/api/quadras';
+          const response = await window.SportsAuth.fetchWithAuth(endpoint, {
+            method: isEditing ? 'PUT' : 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload),
           });
@@ -728,14 +825,29 @@
 
           const place = {
             ...result,
+            persisted: true,
             icon: SPORT_ICONS[result.sportKey] || '../media/pins/pin-base.svg',
           };
-          PLACES.push(place);
-          addPlaceMarker(place);
+          if (isEditing) {
+            const placeIndex = PLACES.findIndex(item => String(item.id) === String(placeBeingEdited.id));
+            if (placeIndex === -1) throw new Error('A quadra não está mais disponível para edição.');
+            PLACES[placeIndex] = place;
+            const marker = markerMap[placeBeingEdited.id];
+            marker.setLatLng(place.coords);
+            marker.setIcon(makePinIcon(place));
+            markerMap[place.id] = marker;
+            if (String(placeBeingEdited.id) !== String(place.id)) {
+              delete markerMap[placeBeingEdited.id];
+            }
+            if (String(selectedId) === String(placeBeingEdited.id)) selectedId = place.id;
+          } else {
+            PLACES.push(place);
+            addPlaceMarker(place);
+          }
           closeAddPlaceModal();
           activateFilter('all');
           selectPlace(place.id);
-          showMapNotice('Quadra adicionada ao mapa.');
+          showMapNotice(isEditing ? 'Quadra atualizada.' : 'Quadra adicionada ao mapa.');
         } catch (error) {
           addPlaceError.textContent = error.message || 'Não foi possível adicionar a quadra.';
           addPlaceError.classList.remove('hidden');
@@ -754,13 +866,27 @@
           places.forEach(place => {
             const normalizedPlace = {
               ...place,
+              persisted: true,
               icon: SPORT_ICONS[place.sportKey] || '../media/pins/pin-base.svg',
             };
+            const fallbackIndex = PLACES.findIndex(item => item.sourceKey
+              && item.sourceKey === normalizedPlace.sourceKey);
+            if (fallbackIndex !== -1) {
+              const fallbackPlace = PLACES[fallbackIndex];
+              const fallbackMarker = markerMap[fallbackPlace.id];
+              if (fallbackMarker) map.removeLayer(fallbackMarker);
+              delete markerMap[fallbackPlace.id];
+              PLACES[fallbackIndex] = normalizedPlace;
+              if (String(selectedId) === String(fallbackPlace.id)) selectedId = normalizedPlace.id;
+              addPlaceMarker(normalizedPlace);
+              return;
+            }
             if (markerMap[normalizedPlace.id]) return;
             PLACES.push(normalizedPlace);
             addPlaceMarker(normalizedPlace);
           });
           renderCards(activeFilter);
+          if (selectedId) selectPlace(selectedId);
         } catch (error) {
           console.error('Não foi possível carregar as quadras cadastradas.', error);
           showMapNotice('Não foi possível carregar as quadras cadastradas. Os locais existentes continuam visíveis.');

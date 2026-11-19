@@ -1,0 +1,134 @@
+[
+  {
+    "sourceKey": "campo-society-aterrado",
+    "title": "Campo Society Aterrado",
+    "sport": "futebol",
+    "sportKey": "society",
+    "type": "Campo Society",
+    "status": "available",
+    "address": "Av. Paulo de Frontin, Aterrado",
+    "latitude": -22.505,
+    "longitude": -44.092
+  },
+  {
+    "sourceKey": "arena-jardim-belvedere",
+    "title": "Arena Jardim Belvedere",
+    "sport": "futebol",
+    "sportKey": "society",
+    "type": "Campo Society",
+    "status": "available",
+    "address": "R. Dep. Cupertino, Jardim Belvedere",
+    "latitude": -22.537,
+    "longitude": -44.079
+  },
+  {
+    "sourceKey": "campo-municipal-vila-mury",
+    "title": "Campo Municipal Vila Mury",
+    "sport": "futebol",
+    "sportKey": "futebol",
+    "type": "Campo de Futebol",
+    "status": "reserve",
+    "address": "Vila Mury, Volta Redonda",
+    "latitude": -22.501,
+    "longitude": -44.102
+  },
+  {
+    "sourceKey": "quadra-volei-aterrado",
+    "title": "Quadra de Vôlei do Aterrado",
+    "sport": "volei",
+    "sportKey": "volei",
+    "type": "Quadra de Vôlei",
+    "status": "available",
+    "address": "Aterrado, Volta Redonda",
+    "latitude": -22.511,
+    "longitude": -44.098
+  },
+  {
+    "sourceKey": "quadra-volei-areia-393",
+    "title": "Quadra Vôlei de Areia — 393",
+    "sport": "volei",
+    "sportKey": "volei",
+    "type": "Quadra de Areia",
+    "status": "reserve",
+    "address": "Água Limpa, Volta Redonda",
+    "latitude": -22.505,
+    "longitude": -44.074
+  },
+  {
+    "sourceKey": "quadra-basquete",
+    "title": "Quadra de Basquete",
+    "sport": "basquete",
+    "sportKey": "basquete",
+    "type": "Quadra de Basquete",
+    "status": "available",
+    "address": "Jardim Amalia, Volta Redonda",
+    "latitude": -22.510,
+    "longitude": -44.075
+  },
+  {
+    "sourceKey": "clube-tenis-vr",
+    "title": "Clube de Tênis VR",
+    "sport": "tenis",
+    "sportKey": "tenis",
+    "type": "Clube de Tênis",
+    "status": "available",
+    "address": "Conforto, Volta Redonda",
+    "latitude": -22.524,
+    "longitude": -44.120
+  },
+  {
+    "sourceKey": "centro-padel-vila-santa-cecilia",
+    "title": "Centro de Padel Vila Santa Cecília",
+    "sport": "tenis",
+    "sportKey": "raquete",
+    "type": "Arena de Padel",
+    "status": "available",
+    "address": "Vila Santa Cecília, Volta Redonda",
+    "latitude": -22.526,
+    "longitude": -44.101
+  },
+  {
+    "sourceKey": "corrida-aterrado",
+    "title": "Corrida — Aterrado",
+    "sport": "corrida",
+    "sportKey": "corrida",
+    "type": "Pista de Corrida",
+    "status": "available",
+    "address": "Orla do Aterrado, Volta Redonda",
+    "latitude": -22.507,
+    "longitude": -44.090
+  },
+  {
+    "sourceKey": "pista-atletismo-municipal",
+    "title": "Pista de Atletismo Municipal",
+    "sport": "corrida",
+    "sportKey": "corrida",
+    "type": "Pista de Atletismo",
+    "status": "available",
+    "address": "Santa Cruz, Volta Redonda",
+    "latitude": -22.4642,
+    "longitude": -44.091
+  },
+  {
+    "sourceKey": "piscina-municipal-vr",
+    "title": "Piscina Municipal VR",
+    "sport": "natacao",
+    "sportKey": "natacao",
+    "type": "Piscina Olímpica",
+    "status": "available",
+    "address": "Aterrado, Volta Redonda",
+    "latitude": -22.510,
+    "longitude": -44.092
+  },
+  {
+    "sourceKey": "ciclovia-rio-paraiba",
+    "title": "Ciclovia do Rio Paraíba",
+    "sport": "ciclismo",
+    "sportKey": "ciclismo",
+    "type": "Ciclovia",
+    "status": "available",
+    "address": "Margem do Rio Paraíba, Volta Redonda",
+    "latitude": -22.504,
+    "longitude": -44.084
+  }
+]

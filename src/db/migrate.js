@@ -2,6 +2,7 @@ import { readFile } from 'node:fs/promises'
 import { Pool } from 'pg'
 import eventos from '../databases/eventos.json' with { type: 'json' }
 import organizadores from '../databases/organizadores.json' with { type: 'json' }
+import quadras from '../databases/quadras.json' with { type: 'json' }
 
 const connectionString = process.env.DATABASE_URL_UNPOOLED
 
@@ -31,8 +32,28 @@ try {
         )
     }
 
+    for (const quadra of quadras) {
+        await client.query(
+            `INSERT INTO sports_map_places
+               (source_key, title, sport, sport_key, place_type, status, address, latitude, longitude)
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+             ON CONFLICT (source_key) DO NOTHING`,
+            [
+                quadra.sourceKey,
+                quadra.title,
+                quadra.sport,
+                quadra.sportKey,
+                quadra.type,
+                quadra.status,
+                quadra.address,
+                quadra.latitude,
+                quadra.longitude,
+            ]
+        )
+    }
+
     await client.query('COMMIT')
-    console.log(`Database ready: ${organizadores.length} organizers and ${eventos.length} events seeded.`)
+    console.log(`Database ready: ${organizadores.length} organizers, ${eventos.length} events, and ${quadras.length} map places seeded.`)
 } catch (error) {
     await client.query('ROLLBACK')
     throw error

@@ -1,12 +1,13 @@
 import { Router } from "express";
-import usuarioController from "../controllers/usuarioController.js"; // Lembre-se do .js no final para ES Modules
+import usuarioController from "../controllers/usuarioController.js";
+import { auth, authAdmin, authOwnerOrAdmin } from "../midwares/authMiddleware.js";
 
 const router = Router();
 
 router.post("/usuarios/login", usuarioController.login);
 router.post("/usuarios", usuarioController.criar);
-router.get("/usuarios", usuarioController.listar);
-router.put("/usuarios/:id", usuarioController.atualizar);
-router.delete("/usuarios/:id", usuarioController.deletar);
+router.get("/usuarios", auth, authAdmin, usuarioController.listar);
+router.put("/usuarios/:id", auth, authOwnerOrAdmin, usuarioController.atualizar);
+router.delete("/usuarios/:id", auth, authAdmin, usuarioController.deletar);
 
 export default router;

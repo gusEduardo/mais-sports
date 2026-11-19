@@ -320,13 +320,16 @@
             }
 
             const usuario = resultado.usuario || resultado.user;
-            if (!usuario || !usuario.nome || !usuario.email) {
+            if (!usuario || !usuario.nome || !usuario.email || typeof resultado.token !== 'string') {
               throw new Error('O servidor retornou dados de usuário inválidos.');
             }
 
             window.SportsAuth
-              ? window.SportsAuth.setUser(usuario)
-              : localStorage.setItem('sportsUser', JSON.stringify(usuario));
+              ? window.SportsAuth.setSession(usuario, resultado.token)
+              : (() => {
+                  localStorage.setItem('sportsUser', JSON.stringify(usuario));
+                  localStorage.setItem('sportsToken', resultado.token);
+                })();
             window.location.href = 'telaPerfil.html';
           } catch (error) {
             errSenha.textContent = error.message || 'Não foi possível entrar. Tente novamente.';

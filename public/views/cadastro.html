@@ -702,14 +702,16 @@
             throw new Error(resultado.message || resultado.error || `Não foi possível criar a conta (HTTP ${response.status}).`);
           }
 
-          const usuario = {
-            id: resultado.id,
-            nome: resultado.nome || nomeVal,
-            email: resultado.email || email.value.trim()
-          };
+          const usuario = resultado.usuario;
+          if (!usuario || typeof resultado.token !== 'string') {
+            throw new Error('O servidor retornou dados de usuário inválidos.');
+          }
           window.SportsAuth
-            ? window.SportsAuth.setUser(usuario)
-            : localStorage.setItem('sportsUser', JSON.stringify(usuario));
+            ? window.SportsAuth.setSession(usuario, resultado.token)
+            : (() => {
+                localStorage.setItem('sportsUser', JSON.stringify(usuario));
+                localStorage.setItem('sportsToken', resultado.token);
+              })();
           showSuccessModal(usuario.nome.split(/\s+/)[0]);
         } catch (error) {
           cadastroError.textContent = error.message || 'Não foi possível criar a conta. Tente novamente.';

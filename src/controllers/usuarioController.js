@@ -1,5 +1,29 @@
 import usuarioRepository from "../repositories/usuarioRepository.js";
 import bcrypt from "bcrypt";
+import { createAccessToken, getJwtSecret } from "../midwares/authMiddleware.js";
+
+function isAdminEmail(email) {
+  if (typeof email !== "string") {
+    return false;
+  }
+
+  const adminEmails = (process.env.JWT_ADMIN_EMAILS || "")
+    .split(",")
+    .map((adminEmail) => adminEmail.trim().toLowerCase());
+
+  return adminEmails.includes(email.toLowerCase());
+}
+
+function usuarioPublico(usuario) {
+  const acesso = isAdminEmail(usuario.email) ? "admin" : "usuario";
+
+  return {
+    id: usuario.id,
+    nome: usuario.nome,
+    email: usuario.email,
+    acesso,
+  };
+}
 
 const usuarioController = {
   async login(req, res, next) {
@@ -16,15 +40,13 @@ const usuarioController = {
         return res.status(401).json({ message: "E-mail ou senha inválidos." });
       }
 
+      const usuarioSeguro = usuarioPublico(usuario);
+      const token = createAccessToken(usuarioSeguro);
+
       return res.status(200).json({
         message: "Login realizado com sucesso.",
-        usuario: {
-          id: usuario.id,
-          nome: usuario.nome,
-          email: usuario.email,
-          cpf: usuario.cpf,
-          uf: usuario.uf,
-        },
+        token,
+        usuario: usuarioSeguro,
       });
     } catch (error) {
       next(error);
@@ -34,6 +56,11 @@ const usuarioController = {
   async criar(req, res, next) {
     try {
       const { nome, email, senha, cpf, uf } = req.body;
+      if (isAdminEmail(email)) {
+        return res.status(403).json({ message: "Cadastro não autorizado para este e-mail." });
+      }
+
+      getJwtSecret();
       const senhaHash = await bcrypt.hash(senha, 10);
 
       const novoUsuario = await usuarioRepository.criar(
@@ -43,7 +70,13 @@ const usuarioController = {
         cpf,
         uf,
       );
-      res.status(201).json(novoUsuario);
+      const usuarioSeguro = usuarioPublico(novoUsuario);
+
+      return res.status(201).json({
+        message: "Conta criada com sucesso.",
+        token: createAccessToken(usuarioSeguro),
+        usuario: usuarioSeguro,
+      });
     } catch (error) {
       next(error);
     }

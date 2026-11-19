@@ -8,7 +8,26 @@
   window.SportsAuth = {
     setUser:  function (d) { try { localStorage.setItem('sportsUser', JSON.stringify(d)); } catch (_) {} },
     getUser:  function ()  { try { return JSON.parse(localStorage.getItem('sportsUser') || 'null'); } catch (_) { return null; } },
-    clearUser:function ()  { try { localStorage.removeItem('sportsUser'); } catch (_) {} },
+    getToken: function ()  { try { return localStorage.getItem('sportsToken'); } catch (_) { return null; } },
+    setSession: function (user, token) {
+      try {
+        localStorage.setItem('sportsUser', JSON.stringify(user));
+        localStorage.setItem('sportsToken', token);
+      } catch (_) {}
+    },
+    fetchWithAuth: function (input, options) {
+      var requestOptions = options || {};
+      var headers = new Headers(requestOptions.headers || {});
+      var token = this.getToken();
+      if (token) headers.set('Authorization', 'Bearer ' + token);
+      return fetch(input, Object.assign({}, requestOptions, { headers: headers }));
+    },
+    clearUser:function () {
+      try {
+        localStorage.removeItem('sportsUser');
+        localStorage.removeItem('sportsToken');
+      } catch (_) {}
+    },
   };
 
   var user = window.SportsAuth.getUser();

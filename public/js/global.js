@@ -418,6 +418,7 @@
         window.SportsAuth.clearUser();
       } else {
         localStorage.removeItem('sportsUser');
+        localStorage.removeItem('sportsToken');
       }
       window.location.href = 'index.html';
     });

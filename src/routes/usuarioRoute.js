@@ -5,6 +5,7 @@ import { auth, authAdmin, authOwnerOrAdmin } from "../middlewares/authMiddleware
 const router = Router();
 
 router.post("/usuarios/login", usuarioController.login);
+router.get("/usuarios/verificar", usuarioController.verificar);
 router.post("/usuarios", usuarioController.criar);
 router.get("/usuarios", auth, authAdmin, usuarioController.listar);
 router.put("/usuarios/:id", auth, authOwnerOrAdmin, usuarioController.atualizar);

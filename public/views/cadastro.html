@@ -633,6 +633,7 @@
           setError(email, 'err-email', true); valid = false;
         } else {
           setError(email, 'err-email', false);
+          document.getElementById('err-email').textContent = 'Insira um e-mail válido.';
         }
 
         const cpfVal = cpf.value.replace(/\D/g, '');
@@ -640,6 +641,7 @@
           setError(cpf, 'err-cpf', true); valid = false;
         } else {
           setError(cpf, 'err-cpf', false);
+          document.getElementById('err-cpf').textContent = 'Insira um CPF com 11 dígitos.';
         }
 
         // Senha
@@ -655,6 +657,34 @@
         } else {
           setError(confirmar, 'err-confirmar', false);
         }
+
+        // Verificar dados que já existem no banco antes de enviar o cadastro
+        if (valid) {
+          try {
+            const verificacao = await fetch(
+              `/usuarios/verificar?email=${encodeURIComponent(email.value.trim())}&cpf=${encodeURIComponent(cpfVal)}`
+            );
+            const resultadoVerificacao = await verificacao.json().catch(() => ({}));
+
+            if (verificacao.status === 409) {
+              if (resultadoVerificacao.field === 'email') {
+                setError(email, 'err-email', true);
+                document.getElementById('err-email').textContent = 'E-mail já cadastrado.';
+              } else if (resultadoVerificacao.field === 'cpf') {
+                setError(cpf, 'err-cpf', true);
+                document.getElementById('err-cpf').textContent = 'CPF já cadastrado.';
+              }
+              valid = false;
+            }
+          } catch {
+            document.getElementById('err-cadastro').textContent =
+              'Não foi possível verificar os dados. Tente novamente.';
+            document.getElementById('err-cadastro').classList.remove('hidden');
+            valid = false;
+          }
+        }
+
+        if (!valid) return;
 
         // Termos
         if (!termos.checked) {

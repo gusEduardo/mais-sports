@@ -12,6 +12,17 @@ const usuarioRepository = {
     return resultado.rows[0];
   },
 
+  async buscarPorCpf(cpf) {
+    const query = `
+            SELECT id, nome, email, cpf, uf, criado_em
+            FROM usuarios
+            WHERE cpf = $1
+            LIMIT 1;
+        `;
+    const resultado = await pool.query(query, [cpf]);
+    return resultado.rows[0];
+  },
+
   async criar(nome, email, senhaHash, cpf, uf) {
     const query = `
             INSERT INTO usuarios (nome, email, senha, cpf, uf) 

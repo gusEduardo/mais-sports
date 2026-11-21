@@ -65,6 +65,16 @@ const mapPlaceRepository = {
     );
     return rows[0] ? toPublicPlace(rows[0]) : null;
   },
+
+  async remover(id) {
+    const { rows } = await pool.query(
+      `DELETE FROM sports_map_places
+       WHERE id = $1
+       RETURNING id`,
+      [id],
+    );
+    return Boolean(rows[0]);
+  },
 };
 
 export default mapPlaceRepository;

@@ -95,6 +95,23 @@ const mapPlaceController = {
       return next(error);
     }
   },
+
+  async remover(req, res, next) {
+    const id = getPlaceId(req.params.id);
+    if (id === null) {
+      return res.status(400).json({ message: "Identificador da quadra inválido." });
+    }
+
+    try {
+      const removed = await mapPlaceRepository.remover(id);
+      if (!removed) {
+        return res.status(404).json({ message: "Quadra não encontrada." });
+      }
+      return res.status(204).send();
+    } catch (error) {
+      return next(error);
+    }
+  },
 };
 
 export default mapPlaceController;

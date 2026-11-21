@@ -1,18 +1,19 @@
 ﻿<!doctype html>
 <html lang="pt-BR" class="scroll-smooth">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>+Sports — Mapa de Quadras</title>
-    <link rel="shortcut icon" href="../media/favicon.png" type="image/x-icon" />
 
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>+Sports — Mapa de Quadras</title>
+  <link rel="shortcut icon" href="../media/favicon.png" type="image/x-icon" />
 
-    <!-- Leaflet CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
-    <style type="text/tailwindcss">
-      @theme {
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+
+  <style type="text/tailwindcss">
+    @theme {
         --color-zinc950: #0c0c0e;
         --color-surface: #161618;
         --color-secondary: #1f2024;
@@ -119,471 +120,498 @@
       #placeList::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
     </style>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=JetBrains+Mono:wght@500;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet" />
-  </head>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=JetBrains+Mono:wght@500;700&family=Barlow:wght@400;500;600&display=swap"
+    rel="stylesheet" />
+</head>
 
-  <body class="bg-zinc950 text-fg font-body antialiased" style="display:flex;flex-direction:column;height:100vh;overflow:hidden;">
+<body class="bg-zinc950 text-fg font-body antialiased"
+  style="display:flex;flex-direction:column;height:100vh;overflow:hidden;">
 
-    <!-- ══ NAV ════════════════════════════════════════════════════════════════════ -->
-    <header class="flex-shrink-0 sticky top-0 z-50 bg-zinc950/90 backdrop-blur border-b border-white/10">
-      <nav class="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between gap-4 relative">
-        <a href="index.html" class="flex items-center hover:opacity-80 transition-opacity z-10" aria-label="Início">
-          <img src="../media/logo.svg" alt="+Sports" class="h-6 w-auto" />
-        </a>
+  <!-- ══ NAV ════════════════════════════════════════════════════════════════════ -->
+  <header class="flex-shrink-0 sticky top-0 z-50 bg-zinc950/90 backdrop-blur border-b border-white/10">
+    <nav class="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between gap-4 relative">
+      <a href="index.html" class="flex items-center hover:opacity-80 transition-opacity z-10" aria-label="Início">
+        <img src="../media/logo.svg" alt="+Sports" class="h-6 w-auto" />
+      </a>
 
-        <div class="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-6 text-[15px] font-medium text-muted">
-          <a href="index.html" class="hover:text-lime transition-colors">Home</a>
-          <a href="eventos.html" class="hover:text-lime transition-colors">Eventos</a>
-          <a href="jj.html" class="hover:text-lime transition-colors">Joga Junto</a>
-          <a href="mapa.html" class="text-lime">Mapa</a>
-        </div>
-
-        <div class="flex items-center gap-2 ml-auto z-10">
-          <a href="login.html" class="hidden md:block text-sm border border-white/20 text-fg px-3 py-1.5 rounded-lg hover:bg-surface transition-colors">Entrar</a>
-          <a href="cadastro.html" class="hidden md:block text-sm bg-lime text-zinc-900 font-semibold px-3 py-1.5 rounded-lg hover:glow-lime-sm transition-all">Criar Conta</a>
-          <button id="btnMenu" class="md:hidden text-fg text-xl w-8 h-8 flex items-center justify-center rounded-lg hover:bg-surface transition-colors" aria-label="Menu">☰</button>
-        </div>
-      </nav>
-
-      <!-- Drawer mobile -->
-      <div id="menuMobile" class="hidden md:hidden bg-surface border-b border-white/10 px-4 py-4 flex flex-col gap-3 text-sm font-medium">
-        <a href="index.html" class="text-fg hover:text-lime transition-colors">Home</a>
-        <a href="eventos.html" class="text-fg hover:text-lime transition-colors">Eventos</a>
-        <a href="jj.html" class="text-fg hover:text-lime transition-colors">Joga Junto</a>
+      <div
+        class="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-6 text-[15px] font-medium text-muted">
+        <a href="index.html" class="hover:text-lime transition-colors">Home</a>
+        <a href="eventos.html" class="hover:text-lime transition-colors">Eventos</a>
+        <a href="jj.html" class="hover:text-lime transition-colors">Joga Junto</a>
         <a href="mapa.html" class="text-lime">Mapa</a>
-        <hr class="border-white/10" />
-        <a href="login.html" class="text-muted hover:text-fg transition-colors">Login</a>
-        <a href="cadastro.html" class="bg-lime text-zinc-900 font-semibold px-4 py-2 rounded-lg text-center">Criar Conta</a>
       </div>
-    </header>
 
-    <!-- ══ MAIN ═══════════════════════════════════════════════════════════════════ -->
-    <main style="flex:1;display:flex;overflow:hidden;position:relative;">
+      <div class="flex items-center gap-2 ml-auto z-10">
+        <a href="login.html"
+          class="hidden md:block text-sm border border-white/20 text-fg px-3 py-1.5 rounded-lg hover:bg-surface transition-colors">Entrar</a>
+        <a href="cadastro.html"
+          class="hidden md:block text-sm bg-lime text-zinc-900 font-semibold px-3 py-1.5 rounded-lg hover:glow-lime-sm transition-all">Criar
+          Conta</a>
+        <button id="btnMenu"
+          class="md:hidden text-fg text-xl w-8 h-8 flex items-center justify-center rounded-lg hover:bg-surface transition-colors"
+          aria-label="Menu">☰</button>
+      </div>
+    </nav>
 
-      <!-- ── SIDEBAR ──────────────────────────────────────────────────────────── -->
-      <aside id="sidebar" class="w-80 flex-shrink-0 bg-surface border-r border-white/10 flex flex-col overflow-hidden z-[410]" style="position:relative;">
+    <!-- Drawer mobile -->
+    <div id="menuMobile"
+      class="hidden md:hidden bg-surface border-b border-white/10 px-4 py-4 flex flex-col gap-3 text-sm font-medium">
+      <a href="index.html" class="text-fg hover:text-lime transition-colors">Home</a>
+      <a href="eventos.html" class="text-fg hover:text-lime transition-colors">Eventos</a>
+      <a href="jj.html" class="text-fg hover:text-lime transition-colors">Joga Junto</a>
+      <a href="mapa.html" class="text-lime">Mapa</a>
+      <hr class="border-white/10" />
+      <a href="login.html" class="text-muted hover:text-fg transition-colors">Login</a>
+      <a href="cadastro.html" class="bg-lime text-zinc-900 font-semibold px-4 py-2 rounded-lg text-center">Criar
+        Conta</a>
+    </div>
+  </header>
 
-        <!-- Cabeçalho da sidebar -->
-        <div class="px-4 py-4 border-b border-white/10 flex-shrink-0">
-          <div class="flex items-center justify-between mb-1">
-            <h1 class="font-display text-base text-fg">Quadras & Centros</h1>
-            <button id="closeSidebar" class="w-7 h-7 flex items-center justify-center rounded-lg text-muted hover:text-fg hover:bg-secondary transition-colors" aria-label="Fechar painel">
-              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-              </svg>
-            </button>
-          </div>
-          <div class="flex items-center gap-1.5">
-            <span class="w-1.5 h-1.5 rounded-full bg-lime live-pin flex-shrink-0"></span>
-            <p class="font-mono text-[10px] text-muted uppercase tracking-widest">Volta Redonda, RJ</p>
-          </div>
-        </div>
+  <!-- ══ MAIN ═══════════════════════════════════════════════════════════════════ -->
+  <main style="flex:1;display:flex;overflow:hidden;position:relative;">
 
-        <!-- Filtros por esporte -->
-        <div class="px-4 py-3 border-b border-white/10 flex-shrink-0">
-          <p class="font-mono text-[10px] text-muted uppercase tracking-widest mb-2">Filtrar por esporte</p>
-          <div class="flex flex-wrap gap-1.5" id="filterBar">
-            <button class="filter-chip active" data-filter="all">🗺️ Todos</button>
-            <button class="filter-chip" data-filter="futebol">⚽ Futebol</button>
-            <button class="filter-chip" data-filter="volei">🏐 Vôlei</button>
-            <button class="filter-chip" data-filter="basquete">🏀 Basquete</button>
-            <button class="filter-chip" data-filter="tenis">🎾 Tênis & Padel</button>
-            <button class="filter-chip" data-filter="corrida">🏃 Corrida</button>
-            <button class="filter-chip" data-filter="natacao">🏊 Natação</button>
-            <button class="filter-chip" data-filter="ciclismo">🚴 Ciclismo</button>
-          </div>
-          <button id="addPlaceButton" type="button" class="hidden mt-3 w-full rounded-lg bg-lime px-3 py-2 text-sm font-semibold text-zinc-900 hover:glow-lime-sm transition-all">
-            Adicionar quadra
+    <!-- ── SIDEBAR ──────────────────────────────────────────────────────────── -->
+    <aside id="sidebar"
+      class="w-80 flex-shrink-0 bg-surface border-r border-white/10 flex flex-col overflow-hidden z-[410]"
+      style="position:relative;">
+
+      <!-- Cabeçalho da sidebar -->
+      <div class="px-4 py-4 border-b border-white/10 flex-shrink-0">
+        <div class="flex items-center justify-between mb-1">
+          <h1 class="font-display text-base text-fg">Quadras & Centros</h1>
+          <button id="closeSidebar"
+            class="w-7 h-7 flex items-center justify-center rounded-lg text-muted hover:text-fg hover:bg-secondary transition-colors"
+            aria-label="Fechar painel">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
           </button>
-          <p id="placeSelectionHint" class="hidden mt-2 text-xs text-lime" role="status"></p>
         </div>
-
-        <!-- Contagem de resultados -->
-        <div class="px-4 py-2 border-b border-white/10 flex-shrink-0">
-          <p class="font-mono text-[10px] text-muted"><span id="resultCount">13</span> locais encontrados</p>
-          <p id="mapNotice" class="hidden mt-2 text-xs text-yellow-300" role="status"></p>
+        <div class="flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-lime live-pin flex-shrink-0"></span>
+          <p class="font-mono text-[10px] text-muted uppercase tracking-widest">Volta Redonda, RJ</p>
         </div>
+      </div>
 
-        <!-- Lista de locais -->
-        <div id="placeList" class="flex-1 overflow-y-auto p-3 flex flex-col gap-2"></div>
-      </aside>
-
-      <!-- ── MAPA ──────────────────────────────────────────────────────────────── -->
-      <div style="flex:1;position:relative;">
-
-        <!-- Botão para abrir sidebar (quando fechada) -->
-        <button
-          id="openSidebar"
-          class="hidden absolute top-4 left-4 z-[410] bg-surface border border-white/20 text-fg w-10 h-10 flex items-center justify-center rounded-xl shadow-xl hover:border-lime/40 hover:text-lime transition-colors"
-          aria-label="Abrir painel de locais"
-        >
-          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
+      <!-- Filtros por esporte -->
+      <div class="px-4 py-3 border-b border-white/10 flex-shrink-0">
+        <p class="font-mono text-[10px] text-muted uppercase tracking-widest mb-2">Filtrar por esporte</p>
+        <div class="flex flex-wrap gap-1.5" id="filterBar">
+          <button class="filter-chip active" data-filter="all">🗺️ Todos</button>
+          <button class="filter-chip" data-filter="futebol">⚽ Futebol</button>
+          <button class="filter-chip" data-filter="volei">🏐 Vôlei</button>
+          <button class="filter-chip" data-filter="basquete">🏀 Basquete</button>
+          <button class="filter-chip" data-filter="tenis">🎾 Tênis & Padel</button>
+          <button class="filter-chip" data-filter="corrida">🏃 Corrida</button>
+          <button class="filter-chip" data-filter="natacao">🏊 Natação</button>
+          <button class="filter-chip" data-filter="ciclismo">🚴 Ciclismo</button>
+        </div>
+        <button id="addPlaceButton" type="button"
+          class="hidden mt-3 w-full rounded-lg bg-lime px-3 py-2 text-sm font-semibold text-zinc-900 hover:glow-lime-sm transition-all">
+          Adicionar quadra
         </button>
+        <p id="placeSelectionHint" class="hidden mt-2 text-xs text-lime" role="status"></p>
+      </div>
 
-        <!-- Mapa Leaflet -->
-        <div id="mapa-principal" style="width:100%;height:100%;"></div>
+      <!-- Contagem de resultados -->
+      <div class="px-4 py-2 border-b border-white/10 flex-shrink-0">
+        <p class="font-mono text-[10px] text-muted"><span id="resultCount">13</span> locais encontrados</p>
+        <p id="mapNotice" class="hidden mt-2 text-xs text-yellow-300" role="status"></p>
+      </div>
 
-        <!-- Legenda de status -->
-        <div class="absolute bottom-5 right-4 z-[410] bg-zinc950/85 backdrop-blur-md border border-white/10 rounded-xl px-4 py-3">
-          <p class="font-mono text-[10px] text-muted uppercase tracking-widest mb-2">Status</p>
-          <div class="flex flex-col gap-1.5 font-mono text-xs font-bold">
-            <span class="flex items-center gap-2 text-lime">
-              <span class="w-2 h-2 rounded-full bg-lime live-pin"></span>Disponível
-            </span>
-            <span class="flex items-center gap-2 text-yellow-400">
-              <span class="w-2 h-2 rounded-full bg-yellow-400"></span>Reserva
-            </span>
-            <span class="flex items-center gap-2 text-zinc-400">
-              <span class="w-2 h-2 rounded-full bg-zinc-400"></span>Completo
-            </span>
-          </div>
+      <!-- Lista de locais -->
+      <div id="placeList" class="flex-1 overflow-y-auto p-3 flex flex-col gap-2"></div>
+    </aside>
+
+    <!-- ── MAPA ──────────────────────────────────────────────────────────────── -->
+    <div style="flex:1;position:relative;">
+
+      <!-- Botão para abrir sidebar (quando fechada) -->
+      <button id="openSidebar"
+        class="hidden absolute top-4 left-4 z-[410] bg-surface border border-white/20 text-fg w-10 h-10 flex items-center justify-center rounded-xl shadow-xl hover:border-lime/40 hover:text-lime transition-colors"
+        aria-label="Abrir painel de locais">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+
+      <!-- Mapa Leaflet -->
+      <div id="mapa-principal" style="width:100%;height:100%;"></div>
+
+      <!-- Legenda de status -->
+      <div
+        class="absolute bottom-5 right-4 z-[410] bg-zinc950/85 backdrop-blur-md border border-white/10 rounded-xl px-4 py-3">
+        <p class="font-mono text-[10px] text-muted uppercase tracking-widest mb-2">Status</p>
+        <div class="flex flex-col gap-1.5 font-mono text-xs font-bold">
+          <span class="flex items-center gap-2 text-lime">
+            <span class="w-2 h-2 rounded-full bg-lime live-pin"></span>Disponível
+          </span>
+          <span class="flex items-center gap-2 text-yellow-400">
+            <span class="w-2 h-2 rounded-full bg-yellow-400"></span>Reserva
+          </span>
+          <span class="flex items-center gap-2 text-zinc-400">
+            <span class="w-2 h-2 rounded-full bg-zinc-400"></span>Completo
+          </span>
         </div>
       </div>
+    </div>
 
-      <div id="addPlaceModal" class="hidden fixed inset-0 z-[1000] items-center justify-center bg-black/70 p-4" role="dialog" aria-modal="true" aria-labelledby="addPlaceTitle">
-        <form id="addPlaceForm" class="w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-2xl border border-white/10 bg-surface p-6 shadow-2xl">
-          <h2 id="addPlaceTitle" class="font-display text-xl text-fg">Adicionar quadra</h2>
-          <p id="addPlaceDescription" class="mt-1 text-sm text-muted">A localização foi marcada no mapa. Complete os dados do local.</p>
-          <p id="selectedCoordinates" class="mt-2 font-mono text-xs text-lime"></p>
-          <input id="placeLatitude" name="latitude" type="hidden" required />
-          <input id="placeLongitude" name="longitude" type="hidden" required />
-          <button id="choosePlaceLocation" type="button" class="hidden mt-2 text-sm text-lime underline underline-offset-2">Escolher outro ponto no mapa</button>
+    <div id="addPlaceModal" class="hidden fixed inset-0 z-[1000] items-center justify-center bg-black/70 p-4"
+      role="dialog" aria-modal="true" aria-labelledby="addPlaceTitle">
+      <form id="addPlaceForm"
+        class="w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-2xl border border-white/10 bg-surface p-6 shadow-2xl">
+        <h2 id="addPlaceTitle" class="font-display text-xl text-fg">Adicionar quadra</h2>
+        <p id="addPlaceDescription" class="mt-1 text-sm text-muted">A localização foi marcada no mapa. Complete os dados
+          do local.</p>
+        <p id="selectedCoordinates" class="mt-2 font-mono text-xs text-lime"></p>
+        <input id="placeLatitude" name="latitude" type="hidden" required />
+        <input id="placeLongitude" name="longitude" type="hidden" required />
+        <button id="choosePlaceLocation" type="button"
+          class="hidden mt-2 text-sm text-lime underline underline-offset-2">Escolher outro ponto no mapa</button>
 
-          <div class="mt-5 grid gap-4 sm:grid-cols-2">
-            <label class="text-sm text-muted sm:col-span-2">
-              Nome da quadra
-              <input name="title" maxlength="120" required class="mt-1 w-full rounded-lg border border-white/10 bg-zinc950 px-3 py-2 text-fg" />
-            </label>
-            <label class="text-sm text-muted">
-              Esporte
-              <select name="sport" required class="mt-1 w-full rounded-lg border border-white/10 bg-zinc950 px-3 py-2 text-fg">
-                <option value="society">Futebol society</option>
-                <option value="futebol">Futebol</option>
-                <option value="volei">Vôlei</option>
-                <option value="basquete">Basquete</option>
-                <option value="tenis">Tênis</option>
-                <option value="raquete">Padel</option>
-                <option value="corrida">Corrida</option>
-                <option value="natacao">Natação</option>
-                <option value="ciclismo">Ciclismo</option>
-              </select>
-            </label>
-            <label class="text-sm text-muted">
-              Tipo de local
-              <input name="type" maxlength="80" required placeholder="Ex.: Quadra coberta" class="mt-1 w-full rounded-lg border border-white/10 bg-zinc950 px-3 py-2 text-fg" />
-            </label>
-            <label class="text-sm text-muted">
-              Status
-              <select name="status" required class="mt-1 w-full rounded-lg border border-white/10 bg-zinc950 px-3 py-2 text-fg">
-                <option value="available">Disponível</option>
-                <option value="reserve">Reserva</option>
-                <option value="unavailable">Completo</option>
-              </select>
-            </label>
-            <label class="text-sm text-muted">
-              Endereço ou bairro
-              <input name="address" maxlength="240" required class="mt-1 w-full rounded-lg border border-white/10 bg-zinc950 px-3 py-2 text-fg" />
-            </label>
-          </div>
+        <div class="mt-5 grid gap-4 sm:grid-cols-2">
+          <label class="text-sm text-muted sm:col-span-2">
+            Nome da quadra
+            <input name="title" maxlength="120" required
+              class="mt-1 w-full rounded-lg border border-white/10 bg-zinc950 px-3 py-2 text-fg" />
+          </label>
+          <label class="text-sm text-muted">
+            Esporte
+            <select name="sport" required
+              class="mt-1 w-full rounded-lg border border-white/10 bg-zinc950 px-3 py-2 text-fg">
+              <option value="society">Futebol society</option>
+              <option value="futebol">Futebol</option>
+              <option value="volei">Vôlei</option>
+              <option value="basquete">Basquete</option>
+              <option value="tenis">Tênis</option>
+              <option value="raquete">Padel</option>
+              <option value="corrida">Corrida</option>
+              <option value="natacao">Natação</option>
+              <option value="ciclismo">Ciclismo</option>
+            </select>
+          </label>
+          <label class="text-sm text-muted">
+            Tipo de local
+            <input name="type" maxlength="80" required placeholder="Ex.: Quadra coberta"
+              class="mt-1 w-full rounded-lg border border-white/10 bg-zinc950 px-3 py-2 text-fg" />
+          </label>
+          <label class="text-sm text-muted">
+            Status
+            <select name="status" required
+              class="mt-1 w-full rounded-lg border border-white/10 bg-zinc950 px-3 py-2 text-fg">
+              <option value="available">Disponível</option>
+              <option value="reserve">Reserva</option>
+              <option value="unavailable">Completo</option>
+            </select>
+          </label>
+          <label class="text-sm text-muted">
+            Endereço ou bairro
+            <input name="address" maxlength="240" required
+              class="mt-1 w-full rounded-lg border border-white/10 bg-zinc950 px-3 py-2 text-fg" />
+          </label>
+        </div>
 
-          <p id="addPlaceError" class="hidden mt-4 text-sm text-red-400" role="alert"></p>
-          <div class="mt-6 flex justify-end gap-3">
-            <button id="cancelAddPlace" type="button" class="rounded-lg border border-white/15 px-4 py-2 text-sm text-fg hover:bg-secondary">Cancelar</button>
-            <button id="submitAddPlace" type="submit" class="rounded-lg bg-lime px-4 py-2 text-sm font-semibold text-zinc-900 hover:glow-lime-sm">Salvar quadra</button>
-          </div>
-        </form>
-      </div>
-    </main>
+        <p id="addPlaceError" class="hidden mt-4 text-sm text-red-400" role="alert"></p>
+        <div class="mt-6 flex justify-end gap-3">
+          <button id="cancelAddPlace" type="button"
+            class="rounded-lg border border-white/15 px-4 py-2 text-sm text-fg hover:bg-secondary">Cancelar</button>
+          <button id="submitAddPlace" type="submit"
+            class="rounded-lg bg-lime px-4 py-2 text-sm font-semibold text-zinc-900 hover:glow-lime-sm">Salvar
+            quadra</button>
+        </div>
+      </form>
+    </div>
+  </main>
 
-    <!-- Leaflet JS -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 
-    <!-- global.js para hamburger mobile -->
-    <script src="../js/global.js"></script>
-    <script src="../js/auth.js"></script>
+  <!-- global.js para hamburger mobile -->
+  <script src="../js/global.js"></script>
+  <script src="../js/auth.js"></script>
 
-    <script>
-      // ── Dados dos locais ────────────────────────────────────────────────────────
-      let PLACES = [
-        {
-          id: 1,
-          sourceKey: 'campo-society-aterrado',
-          title: 'Campo Society Aterrado',
-          sport: 'futebol',
-          sportKey: 'society',
-          type: 'Campo Society',
-          status: 'available',
-          coords: [-22.505, -44.092],
-          address: 'Av. Paulo de Frontin, Aterrado',
-          icon: '../media/pins/pin-society.svg',
-        },
-        {
-          id: 2,
-          sourceKey: 'arena-jardim-belvedere',
-          title: 'Arena Jardim Belvedere',
-          sport: 'futebol',
-          sportKey: 'society',
-          type: 'Campo Society',
-          status: 'available',
-          coords: [-22.537, -44.079],
-          address: 'R. Dep. Cupertino, Jardim Belvedere',
-          icon: '../media/pins/pin-society.svg',
-        },
-        {
-          id: 3,
-          sourceKey: 'campo-municipal-vila-mury',
-          title: 'Campo Municipal Vila Mury',
-          sport: 'futebol',
-          sportKey: 'futebol',
-          type: 'Campo de Futebol',
-          status: 'reserve',
-          coords: [-22.501, -44.102],
-          address: 'Vila Mury, Volta Redonda',
-          icon: '../media/pins/pin-futebol.svg',
-        },
-        {
-          id: 4,
-          sourceKey: 'quadra-volei-aterrado',
-          title: 'Quadra de Vôlei do Aterrado',
-          sport: 'volei',
-          sportKey: 'volei',
-          type: 'Quadra de Vôlei',
-          status: 'available',
-          coords: [-22.511, -44.098],
-          address: 'Aterrado, Volta Redonda',
-          icon: '../media/pins/pin-volei.svg',
-        },
-        {
-          id: 5,
-          sourceKey: 'quadra-volei-areia-393',
-          title: 'Quadra Vôlei de Areia — 393',
-          sport: 'volei',
-          sportKey: 'volei',
-          type: 'Quadra de Areia',
-          status: 'reserve',
-          coords: [-22.505, -44.074],
-          address: 'Água Limpa, Volta Redonda',
-          icon: '../media/pins/pin-volei.svg',
-        },
-        {
-          id: 6,
-          sourceKey: 'quadra-basquete',
-          title: 'Quadra de Basquete',
-          sport: 'basquete',
-          sportKey: 'basquete',
-          type: 'Quadra de Basquete',
-          status: 'available',
-          coords: [-22.510, -44.075],
-          address: 'Jardim Amalia, Volta Redonda',
-          icon: '../media/pins/pin-basquete.svg',
-        },
+  <script>
+    // ── Dados dos locais ────────────────────────────────────────────────────────
+    let PLACES = [
+      {
+        id: 1,
+        sourceKey: 'campo-society-aterrado',
+        title: 'Campo Society Aterrado',
+        sport: 'futebol',
+        sportKey: 'society',
+        type: 'Campo Society',
+        status: 'available',
+        coords: [-22.505, -44.092],
+        address: 'Av. Paulo de Frontin, Aterrado',
+        icon: '../media/pins/pin-society.svg',
+      },
+      {
+        id: 2,
+        sourceKey: 'arena-jardim-belvedere',
+        title: 'Arena Jardim Belvedere',
+        sport: 'futebol',
+        sportKey: 'society',
+        type: 'Campo Society',
+        status: 'available',
+        coords: [-22.537, -44.079],
+        address: 'R. Dep. Cupertino, Jardim Belvedere',
+        icon: '../media/pins/pin-society.svg',
+      },
+      {
+        id: 3,
+        sourceKey: 'campo-municipal-vila-mury',
+        title: 'Campo Municipal Vila Mury',
+        sport: 'futebol',
+        sportKey: 'futebol',
+        type: 'Campo de Futebol',
+        status: 'reserve',
+        coords: [-22.501, -44.102],
+        address: 'Vila Mury, Volta Redonda',
+        icon: '../media/pins/pin-futebol.svg',
+      },
+      {
+        id: 4,
+        sourceKey: 'quadra-volei-aterrado',
+        title: 'Quadra de Vôlei do Aterrado',
+        sport: 'volei',
+        sportKey: 'volei',
+        type: 'Quadra de Vôlei',
+        status: 'available',
+        coords: [-22.511, -44.098],
+        address: 'Aterrado, Volta Redonda',
+        icon: '../media/pins/pin-volei.svg',
+      },
+      {
+        id: 5,
+        sourceKey: 'quadra-volei-areia-393',
+        title: 'Quadra Vôlei de Areia — 393',
+        sport: 'volei',
+        sportKey: 'volei',
+        type: 'Quadra de Areia',
+        status: 'reserve',
+        coords: [-22.505, -44.074],
+        address: 'Água Limpa, Volta Redonda',
+        icon: '../media/pins/pin-volei.svg',
+      },
+      {
+        id: 6,
+        sourceKey: 'quadra-basquete',
+        title: 'Quadra de Basquete',
+        sport: 'basquete',
+        sportKey: 'basquete',
+        type: 'Quadra de Basquete',
+        status: 'available',
+        coords: [-22.510, -44.075],
+        address: 'Jardim Amalia, Volta Redonda',
+        icon: '../media/pins/pin-basquete.svg',
+      },
 
-        {
-          id: 8,
-          sourceKey: 'clube-tenis-vr',
-          title: 'Clube de Tênis VR',
-          sport: 'tenis',
-          sportKey: 'tenis',
-          type: 'Clube de Tênis',
-          status: 'available',
-          coords: [-22.524, -44.120],
-          address: 'Conforto, Volta Redonda',
-          icon: '../media/pins/pin-tenis.svg',
-        },
-        {
-          id: 9,
-          sourceKey: 'centro-padel-vila-santa-cecilia',
-          title: 'Centro de Padel Vila Santa Cecília',
-          sport: 'tenis',
-          sportKey: 'raquete',
-          type: 'Arena de Padel',
-          status: 'available',
-          coords: [-22.526, -44.101],
-          address: 'Vila Santa Cecília, Volta Redonda',
-          icon: '../media/pins/pin-raquete.svg',
-        },
-        {
-          id: 10,
-          sourceKey: 'corrida-aterrado',
-          title: 'Corrida — Aterrado',
-          sport: 'corrida',
-          sportKey: 'corrida',
-          type: 'Pista de Corrida',
-          status: 'available',
-          coords: [-22.507, -44.090],
-          address: 'Orla do Aterrado, Volta Redonda',
-          icon: '../media/pins/pin-corrida.svg',
-        },
-        {
-          id: 11,
-          sourceKey: 'pista-atletismo-municipal',
-          title: 'Pista de Atletismo Municipal',
-          sport: 'corrida',
-          sportKey: 'corrida',
-          type: 'Pista de Atletismo',
-          status: 'available',
-          coords: [-22.4642, -44.091],
-          address: 'Santa Cruz, Volta Redonda',
-          icon: '../media/pins/pin-corrida.svg',
-        },
-        {
-          id: 12,
-          sourceKey: 'piscina-municipal-vr',
-          title: 'Piscina Municipal VR',
-          sport: 'natacao',
-          sportKey: 'natacao',
-          type: 'Piscina Olímpica',
-          status: 'available',
-          coords: [-22.510, -44.092],
-          address: 'Aterrado, Volta Redonda',
-          icon: '../media/pins/pin-natacao.svg',
-        },
-        {
-          id: 13,
-          sourceKey: 'ciclovia-rio-paraiba',
-          title: 'Ciclovia do Rio Paraíba',
-          sport: 'ciclismo',
-          sportKey: 'ciclismo',
-          type: 'Ciclovia',
-          status: 'available',
-          coords: [-22.504, -44.084],
-          address: 'Margem do Rio Paraíba, Volta Redonda',
-          icon: '../media/pins/pin-bicicleta.svg',
-        },
-      ];
+      {
+        id: 8,
+        sourceKey: 'clube-tenis-vr',
+        title: 'Clube de Tênis VR',
+        sport: 'tenis',
+        sportKey: 'tenis',
+        type: 'Clube de Tênis',
+        status: 'available',
+        coords: [-22.524, -44.120],
+        address: 'Conforto, Volta Redonda',
+        icon: '../media/pins/pin-tenis.svg',
+      },
+      {
+        id: 9,
+        sourceKey: 'centro-padel-vila-santa-cecilia',
+        title: 'Centro de Padel Vila Santa Cecília',
+        sport: 'tenis',
+        sportKey: 'raquete',
+        type: 'Arena de Padel',
+        status: 'available',
+        coords: [-22.526, -44.101],
+        address: 'Vila Santa Cecília, Volta Redonda',
+        icon: '../media/pins/pin-raquete.svg',
+      },
+      {
+        id: 10,
+        sourceKey: 'corrida-aterrado',
+        title: 'Corrida — Aterrado',
+        sport: 'corrida',
+        sportKey: 'corrida',
+        type: 'Pista de Corrida',
+        status: 'available',
+        coords: [-22.507, -44.090],
+        address: 'Orla do Aterrado, Volta Redonda',
+        icon: '../media/pins/pin-corrida.svg',
+      },
+      {
+        id: 11,
+        sourceKey: 'pista-atletismo-municipal',
+        title: 'Pista de Atletismo Municipal',
+        sport: 'corrida',
+        sportKey: 'corrida',
+        type: 'Pista de Atletismo',
+        status: 'available',
+        coords: [-22.4642, -44.091],
+        address: 'Santa Cruz, Volta Redonda',
+        icon: '../media/pins/pin-corrida.svg',
+      },
+      {
+        id: 12,
+        sourceKey: 'piscina-municipal-vr',
+        title: 'Piscina Municipal VR',
+        sport: 'natacao',
+        sportKey: 'natacao',
+        type: 'Piscina Olímpica',
+        status: 'available',
+        coords: [-22.510, -44.092],
+        address: 'Aterrado, Volta Redonda',
+        icon: '../media/pins/pin-natacao.svg',
+      },
+      {
+        id: 13,
+        sourceKey: 'ciclovia-rio-paraiba',
+        title: 'Ciclovia do Rio Paraíba',
+        sport: 'ciclismo',
+        sportKey: 'ciclismo',
+        type: 'Ciclovia',
+        status: 'available',
+        coords: [-22.504, -44.084],
+        address: 'Margem do Rio Paraíba, Volta Redonda',
+        icon: '../media/pins/pin-bicicleta.svg',
+      },
+    ];
 
-      // Mapeamento filtro → sport keys
-      const FILTER_SPORTS = {
-        all:      null,
-        futebol:  ['futebol', 'society'],
-        volei:    ['volei'],
-        basquete: ['basquete'],
-        tenis:    ['tenis', 'raquete'],
-        corrida:  ['corrida'],
-        natacao:  ['natacao'],
-        ciclismo: ['ciclismo'],
-      };
+    // Mapeamento filtro → sport keys
+    const FILTER_SPORTS = {
+      all: null,
+      futebol: ['futebol', 'society'],
+      volei: ['volei'],
+      basquete: ['basquete'],
+      tenis: ['tenis', 'raquete'],
+      corrida: ['corrida'],
+      natacao: ['natacao'],
+      ciclismo: ['ciclismo'],
+    };
 
-      const STATUS_LABELS = { available: 'Disponível', reserve: 'Reserva', unavailable: 'Completo' };
-      const STATUS_COLORS = { available: 'text-lime', reserve: 'text-yellow-400', unavailable: 'text-zinc-400' };
-      const STATUS_DOT    = { available: 'bg-lime', reserve: 'bg-yellow-400', unavailable: 'bg-zinc-400' };
-      const currentUser = window.SportsAuth?.getUser();
-      const isAdmin = currentUser?.acesso === 'admin' && Boolean(window.SportsAuth?.getToken());
-      const SPORT_ICONS = {
-        society: '../media/pins/pin-society.svg',
-        futebol: '../media/pins/pin-futebol.svg',
-        volei: '../media/pins/pin-volei.svg',
-        basquete: '../media/pins/pin-basquete.svg',
-        tenis: '../media/pins/pin-tenis.svg',
-        raquete: '../media/pins/pin-raquete.svg',
-        corrida: '../media/pins/pin-corrida.svg',
-        natacao: '../media/pins/pin-natacao.svg',
-        ciclismo: '../media/pins/pin-bicicleta.svg',
-      };
+    const STATUS_LABELS = { available: 'Disponível', reserve: 'Reserva', unavailable: 'Indisponível' };
+    const STATUS_COLORS = { available: 'text-lime', reserve: 'text-yellow-400', unavailable: 'text-red-600' };
+    const STATUS_DOT = { available: 'bg-lime', reserve: 'bg-yellow-400', unavailable: 'bg-red-600' };
+    const currentUser = window.SportsAuth?.getUser();
+    const isAdmin = currentUser?.acesso === 'admin' && Boolean(window.SportsAuth?.getToken());
+    const SPORT_ICONS = {
+      society: '../media/pins/pin-society.svg',
+      futebol: '../media/pins/pin-futebol.svg',
+      volei: '../media/pins/pin-volei.svg',
+      basquete: '../media/pins/pin-basquete.svg',
+      tenis: '../media/pins/pin-tenis.svg',
+      raquete: '../media/pins/pin-raquete.svg',
+      corrida: '../media/pins/pin-corrida.svg',
+      natacao: '../media/pins/pin-natacao.svg',
+      ciclismo: '../media/pins/pin-bicicleta.svg',
+    };
 
-      // ── Mapa Leaflet ────────────────────────────────────────────────────────────
-      const map = L.map('mapa-principal', {
-        zoomControl: false,
-        attributionControl: false,
-      }).setView([-22.512, -44.087], 13);
+    // ── Mapa Leaflet ────────────────────────────────────────────────────────────
+    const map = L.map('mapa-principal', {
+      zoomControl: false,
+      attributionControl: false,
+    }).setView([-22.512, -44.087], 13);
 
-      L.control.attribution({ position: 'topright' }).addTo(map);
-      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-      }).addTo(map);
+    L.control.attribution({ position: 'topright' }).addTo(map);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    }).addTo(map);
 
-      L.control.zoom({ position: 'bottomleft' }).addTo(map);
+    L.control.zoom({ position: 'bottomleft' }).addTo(map);
 
-      function escAttr(v) {
-        return String(v).replace(/[&<>"']/g, c =>
-          ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;' })[c]);
-      }
+    function escAttr(v) {
+      return String(v).replace(/[&<>"']/g, c =>
+        ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[c]);
+    }
 
-      function makePinIcon(place) {
-        const title = `${place.title} — ${STATUS_LABELS[place.status]}`;
-        return L.divIcon({
-          html: `
+    function makePinIcon(place) {
+      const title = `${place.title} — ${STATUS_LABELS[place.status]}`;
+      return L.divIcon({
+        html: `
             <div class="sports-map-pin sports-map-pin--${place.status}" title="${escAttr(title)}" aria-label="${escAttr(title)}">
               <span class="sports-map-pin__drop"></span>
               <span class="sports-map-pin__icon">
                 <img src="${place.icon}" alt="${escAttr(place.sportKey)}" />
               </span>
             </div>`,
-          className: 'sports-map-marker',
-          iconSize: [44, 56],
-          iconAnchor: [22, 55],
-        });
-      }
+        className: 'sports-map-marker',
+        iconSize: [44, 56],
+        iconAnchor: [22, 55],
+      });
+    }
 
-      // Cria markers
-      const markerMap = {};
-      function addPlaceMarker(place) {
-        const marker = L.marker(place.coords, { icon: makePinIcon(place), riseOnHover: true }).addTo(map);
-        marker.on('click', () => selectPlace(place.id));
-        markerMap[place.id] = marker;
-      }
-      PLACES.forEach(addPlaceMarker);
+    // Cria markers
+    const markerMap = {};
+    function addPlaceMarker(place) {
+      const marker = L.marker(place.coords, { icon: makePinIcon(place), riseOnHover: true }).addTo(map);
+      marker.on('click', () => selectPlace(place.id));
+      markerMap[place.id] = marker;
+    }
+    PLACES.forEach(addPlaceMarker);
 
-      // ── Estado ─────────────────────────────────────────────────────────────────
-      let activeFilter = 'all';
-      let selectedId   = null;
+    // ── Estado ─────────────────────────────────────────────────────────────────
+    let activeFilter = 'all';
+    let selectedId = null;
 
-      function selectPlace(id) {
-        selectedId = id;
-        // Atualiza pins
-        PLACES.forEach(p => {
-          const el = markerMap[p.id].getElement()?.querySelector('.sports-map-pin');
-          el?.classList.toggle('is-selected', p.id === id);
-          markerMap[p.id].setZIndexOffset(p.id === id ? 1000 : 0);
-        });
-        // Atualiza cards
-        document.querySelectorAll('.place-card').forEach(card => {
-          card.classList.toggle('is-active', card.dataset.id === String(id));
-        });
-        // Scroll para o card
-        const card = document.querySelector(`.place-card[data-id="${id}"]`);
-        if (card) card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        // Voa para o marcador
-        const place = PLACES.find(p => p.id === id);
-        if (place) map.flyTo(place.coords, 15, { duration: 0.8 });
-      }
+    function selectPlace(id) {
+      selectedId = id;
+      // Atualiza pins
+      PLACES.forEach(p => {
+        const el = markerMap[p.id].getElement()?.querySelector('.sports-map-pin');
+        el?.classList.toggle('is-selected', p.id === id);
+        markerMap[p.id].setZIndexOffset(p.id === id ? 1000 : 0);
+      });
+      // Atualiza cards
+      document.querySelectorAll('.place-card').forEach(card => {
+        card.classList.toggle('is-active', card.dataset.id === String(id));
+      });
+      // Scroll para o card
+      const card = document.querySelector(`.place-card[data-id="${id}"]`);
+      if (card) card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      // Voa para o marcador
+      const place = PLACES.find(p => p.id === id);
+      if (place) map.flyTo(place.coords, 15, { duration: 0.8 });
+    }
 
-      // ── Renderiza cards ────────────────────────────────────────────────────────
-      function renderCards(filter) {
-        const list   = document.getElementById('placeList');
-        const sports = FILTER_SPORTS[filter];
-        const visible = sports ? PLACES.filter(p => sports.includes(p.sportKey)) : PLACES;
+    // ── Renderiza cards ────────────────────────────────────────────────────────
+    function renderCards(filter) {
+      const list = document.getElementById('placeList');
+      const sports = FILTER_SPORTS[filter];
+      const visible = sports ? PLACES.filter(p => sports.includes(p.sportKey)) : PLACES;
 
-        document.getElementById('resultCount').textContent = visible.length;
+      document.getElementById('resultCount').textContent = visible.length;
 
-        // Mostra/oculta markers
-        PLACES.forEach(p => {
-          const isVisible = !sports || sports.includes(p.sportKey);
-          const el = markerMap[p.id].getElement();
-          if (el) el.style.display = isVisible ? '' : 'none';
-        });
+      // Mostra/oculta markers
+      PLACES.forEach(p => {
+        const isVisible = !sports || sports.includes(p.sportKey);
+        const el = markerMap[p.id].getElement();
+        if (el) el.style.display = isVisible ? '' : 'none';
+      });
 
-        list.innerHTML = '';
+      list.innerHTML = '';
 
-        if (visible.length === 0) {
-          list.innerHTML = `
+      if (visible.length === 0) {
+        list.innerHTML = `
             <div class="text-center py-10 text-muted">
               <p class="text-3xl mb-3">🔍</p>
               <p class="text-sm">Nenhum local encontrado para este filtro.</p>
             </div>`;
-          return;
-        }
+        return;
+      }
 
-        visible.forEach(place => {
-          const card = document.createElement('div');
-          card.className = 'place-card bg-secondary border border-white/8 rounded-xl p-3';
-          card.dataset.id = String(place.id);
-          card.innerHTML = `
+      visible.forEach(place => {
+        const card = document.createElement('div');
+        card.className = 'place-card bg-secondary border border-white/8 rounded-xl p-3';
+        card.dataset.id = String(place.id);
+        card.innerHTML = `
             <div class="flex items-start gap-3">
               <div class="w-9 h-9 rounded-lg bg-zinc950 border border-white/10 flex items-center justify-center flex-shrink-0 mt-0.5">
                 <img src="${escAttr(place.icon)}" alt="${escAttr(place.sportKey)}" class="w-5 h-5" style="filter:brightness(0) invert(1);opacity:0.85;" />
@@ -604,297 +632,297 @@
                 ${STATUS_LABELS[place.status]}
               </span>
             </div>`;
-          card.addEventListener('click', () => selectPlace(place.id));
-          if (isAdmin && place.persisted) {
-            const editButton = document.createElement('button');
-            editButton.type = 'button';
-            editButton.className = 'mt-2 text-xs font-semibold text-lime hover:underline';
-            editButton.textContent = 'Editar';
-            editButton.addEventListener('click', event => {
-              event.stopPropagation();
-              openEditPlace(place);
-            });
-            card.appendChild(editButton);
-          }
-          list.appendChild(card);
-        });
-
-        // Re-seleciona o card ativo se ainda visível
-        if (selectedId && visible.find(p => String(p.id) === String(selectedId))) {
-          document.querySelector(`.place-card[data-id="${selectedId}"]`)?.classList.add('is-active');
+        card.addEventListener('click', () => selectPlace(place.id));
+        if (isAdmin && place.persisted) {
+          const editButton = document.createElement('button');
+          editButton.type = 'button';
+          editButton.className = 'mt-2 text-xs font-semibold text-lime hover:underline';
+          editButton.textContent = 'Editar';
+          editButton.addEventListener('click', event => {
+            event.stopPropagation();
+            openEditPlace(place);
+          });
+          card.appendChild(editButton);
         }
-      }
+        list.appendChild(card);
+      });
 
-      // ── Filtros ────────────────────────────────────────────────────────────────
-      function activateFilter(filter) {
-        document.querySelectorAll('.filter-chip').forEach(chip => {
-          chip.classList.toggle('active', chip.dataset.filter === filter);
-        });
-        activeFilter = filter;
-        renderCards(activeFilter);
+      // Re-seleciona o card ativo se ainda visível
+      if (selectedId && visible.find(p => String(p.id) === String(selectedId))) {
+        document.querySelector(`.place-card[data-id="${selectedId}"]`)?.classList.add('is-active');
       }
+    }
 
+    // ── Filtros ────────────────────────────────────────────────────────────────
+    function activateFilter(filter) {
       document.querySelectorAll('.filter-chip').forEach(chip => {
-        chip.addEventListener('click', () => {
-          activateFilter(chip.dataset.filter);
-        });
+        chip.classList.toggle('active', chip.dataset.filter === filter);
       });
+      activeFilter = filter;
+      renderCards(activeFilter);
+    }
 
-      // ── Sidebar toggle ─────────────────────────────────────────────────────────
-      const sidebar    = document.getElementById('sidebar');
-      const openBtn    = document.getElementById('openSidebar');
-      const closeBtn   = document.getElementById('closeSidebar');
-
-      closeBtn.addEventListener('click', () => {
-        sidebar.classList.add('sidebar-hidden');
-        openBtn.classList.remove('hidden');
-        openBtn.classList.add('flex');
-        setTimeout(() => map.invalidateSize(), 310);
+    document.querySelectorAll('.filter-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        activateFilter(chip.dataset.filter);
       });
-      openBtn.addEventListener('click', () => {
-        sidebar.classList.remove('sidebar-hidden');
-        openBtn.classList.add('hidden');
-        openBtn.classList.remove('flex');
-        setTimeout(() => map.invalidateSize(), 310);
-      });
+    });
 
-      // ── Init ───────────────────────────────────────────────────────────────────
-      renderCards('all');
-      selectPlace(1);
+    // ── Sidebar toggle ─────────────────────────────────────────────────────────
+    const sidebar = document.getElementById('sidebar');
+    const openBtn = document.getElementById('openSidebar');
+    const closeBtn = document.getElementById('closeSidebar');
 
-      const addPlaceButton = document.getElementById('addPlaceButton');
-      const placeSelectionHint = document.getElementById('placeSelectionHint');
-      const addPlaceModal = document.getElementById('addPlaceModal');
-      const addPlaceForm = document.getElementById('addPlaceForm');
-      const addPlaceError = document.getElementById('addPlaceError');
-      const mapNotice = document.getElementById('mapNotice');
-      const placeLatitude = document.getElementById('placeLatitude');
-      const placeLongitude = document.getElementById('placeLongitude');
-      const submitAddPlace = document.getElementById('submitAddPlace');
-      const addPlaceTitle = document.getElementById('addPlaceTitle');
-      const addPlaceDescription = document.getElementById('addPlaceDescription');
-      const selectedCoordinates = document.getElementById('selectedCoordinates');
-      const choosePlaceLocation = document.getElementById('choosePlaceLocation');
-      let selectingPlaceLocation = false;
-      let selectionMode = null;
-      let editingPlace = null;
+    closeBtn.addEventListener('click', () => {
+      sidebar.classList.add('sidebar-hidden');
+      openBtn.classList.remove('hidden');
+      openBtn.classList.add('flex');
+      setTimeout(() => map.invalidateSize(), 310);
+    });
+    openBtn.addEventListener('click', () => {
+      sidebar.classList.remove('sidebar-hidden');
+      openBtn.classList.add('hidden');
+      openBtn.classList.remove('flex');
+      setTimeout(() => map.invalidateSize(), 310);
+    });
 
-      if (isAdmin) {
-        addPlaceButton.classList.remove('hidden');
+    // ── Init ───────────────────────────────────────────────────────────────────
+    renderCards('all');
+    selectPlace(1);
+
+    const addPlaceButton = document.getElementById('addPlaceButton');
+    const placeSelectionHint = document.getElementById('placeSelectionHint');
+    const addPlaceModal = document.getElementById('addPlaceModal');
+    const addPlaceForm = document.getElementById('addPlaceForm');
+    const addPlaceError = document.getElementById('addPlaceError');
+    const mapNotice = document.getElementById('mapNotice');
+    const placeLatitude = document.getElementById('placeLatitude');
+    const placeLongitude = document.getElementById('placeLongitude');
+    const submitAddPlace = document.getElementById('submitAddPlace');
+    const addPlaceTitle = document.getElementById('addPlaceTitle');
+    const addPlaceDescription = document.getElementById('addPlaceDescription');
+    const selectedCoordinates = document.getElementById('selectedCoordinates');
+    const choosePlaceLocation = document.getElementById('choosePlaceLocation');
+    let selectingPlaceLocation = false;
+    let selectionMode = null;
+    let editingPlace = null;
+
+    if (isAdmin) {
+      addPlaceButton.classList.remove('hidden');
+    }
+
+    function showMapNotice(message) {
+      mapNotice.textContent = message;
+      mapNotice.classList.remove('hidden');
+    }
+
+    function stopSelectingLocation() {
+      selectingPlaceLocation = false;
+      selectionMode = null;
+      placeSelectionHint.classList.add('hidden');
+      addPlaceButton.textContent = 'Adicionar quadra';
+      map.getContainer().style.cursor = '';
+    }
+
+    function startSelectingLocation(mode) {
+      selectingPlaceLocation = true;
+      selectionMode = mode;
+      placeSelectionHint.textContent = mode === 'edit'
+        ? 'Clique no mapa para atualizar a localização. Cancelar mantém a localização atual.'
+        : 'Clique no mapa para marcar a localização. Clique em “Cancelar” para sair.';
+      placeSelectionHint.classList.remove('hidden');
+      addPlaceButton.textContent = 'Cancelar seleção';
+      map.getContainer().style.cursor = 'crosshair';
+    }
+
+    function showPlaceModal() {
+      addPlaceModal.classList.remove('hidden');
+      addPlaceModal.classList.add('flex');
+    }
+
+    function openNewPlace(coords) {
+      editingPlace = null;
+      addPlaceForm.reset();
+      placeLatitude.value = coords[0];
+      placeLongitude.value = coords[1];
+      addPlaceTitle.textContent = 'Adicionar quadra';
+      addPlaceDescription.textContent = 'A localização foi marcada no mapa. Complete os dados do local.';
+      selectedCoordinates.textContent = `Localização: ${coords[0]}, ${coords[1]}`;
+      choosePlaceLocation.classList.add('hidden');
+      submitAddPlace.textContent = 'Salvar quadra';
+      showPlaceModal();
+      addPlaceForm.elements.title.focus();
+    }
+
+    function openEditPlace(place) {
+      editingPlace = place;
+      addPlaceForm.elements.title.value = place.title;
+      addPlaceForm.elements.sport.value = place.sportKey;
+      addPlaceForm.elements.type.value = place.type;
+      addPlaceForm.elements.status.value = place.status;
+      addPlaceForm.elements.address.value = place.address;
+      placeLatitude.value = place.coords[0];
+      placeLongitude.value = place.coords[1];
+      addPlaceTitle.textContent = 'Editar quadra';
+      addPlaceDescription.textContent = 'Altere os dados e salve para atualizar o pin no mapa.';
+      selectedCoordinates.textContent = `Localização: ${place.coords[0]}, ${place.coords[1]}`;
+      choosePlaceLocation.classList.remove('hidden');
+      submitAddPlace.textContent = 'Salvar alterações';
+      addPlaceError.classList.add('hidden');
+      showPlaceModal();
+      addPlaceForm.elements.title.focus();
+    }
+
+    addPlaceButton.addEventListener('click', () => {
+      if (selectingPlaceLocation) {
+        const mode = selectionMode;
+        stopSelectingLocation();
+        if (mode === 'edit') showPlaceModal();
+        return;
       }
+      startSelectingLocation('create');
+    });
 
-      function showMapNotice(message) {
-        mapNotice.textContent = message;
-        mapNotice.classList.remove('hidden');
-      }
-
-      function stopSelectingLocation() {
-        selectingPlaceLocation = false;
-        selectionMode = null;
-        placeSelectionHint.classList.add('hidden');
-        addPlaceButton.textContent = 'Adicionar quadra';
-        map.getContainer().style.cursor = '';
-      }
-
-      function startSelectingLocation(mode) {
-        selectingPlaceLocation = true;
-        selectionMode = mode;
-        placeSelectionHint.textContent = mode === 'edit'
-          ? 'Clique no mapa para atualizar a localização. Cancelar mantém a localização atual.'
-          : 'Clique no mapa para marcar a localização. Clique em “Cancelar” para sair.';
-        placeSelectionHint.classList.remove('hidden');
-        addPlaceButton.textContent = 'Cancelar seleção';
-        map.getContainer().style.cursor = 'crosshair';
-      }
-
-      function showPlaceModal() {
-        addPlaceModal.classList.remove('hidden');
-        addPlaceModal.classList.add('flex');
-      }
-
-      function openNewPlace(coords) {
-        editingPlace = null;
-        addPlaceForm.reset();
+    map.on('click', event => {
+      if (!selectingPlaceLocation) return;
+      const mode = selectionMode;
+      const coords = [event.latlng.lat.toFixed(6), event.latlng.lng.toFixed(6)];
+      stopSelectingLocation();
+      if (mode === 'create') {
+        openNewPlace(coords);
+      } else if (mode === 'edit' && editingPlace) {
         placeLatitude.value = coords[0];
         placeLongitude.value = coords[1];
-        addPlaceTitle.textContent = 'Adicionar quadra';
-        addPlaceDescription.textContent = 'A localização foi marcada no mapa. Complete os dados do local.';
         selectedCoordinates.textContent = `Localização: ${coords[0]}, ${coords[1]}`;
-        choosePlaceLocation.classList.add('hidden');
-        submitAddPlace.textContent = 'Salvar quadra';
         showPlaceModal();
-        addPlaceForm.elements.title.focus();
       }
+    });
 
-      function openEditPlace(place) {
-        editingPlace = place;
-        addPlaceForm.elements.title.value = place.title;
-        addPlaceForm.elements.sport.value = place.sportKey;
-        addPlaceForm.elements.type.value = place.type;
-        addPlaceForm.elements.status.value = place.status;
-        addPlaceForm.elements.address.value = place.address;
-        placeLatitude.value = place.coords[0];
-        placeLongitude.value = place.coords[1];
-        addPlaceTitle.textContent = 'Editar quadra';
-        addPlaceDescription.textContent = 'Altere os dados e salve para atualizar o pin no mapa.';
-        selectedCoordinates.textContent = `Localização: ${place.coords[0]}, ${place.coords[1]}`;
-        choosePlaceLocation.classList.remove('hidden');
-        submitAddPlace.textContent = 'Salvar alterações';
-        addPlaceError.classList.add('hidden');
-        showPlaceModal();
-        addPlaceForm.elements.title.focus();
-      }
+    function closeAddPlaceModal() {
+      addPlaceModal.classList.add('hidden');
+      addPlaceModal.classList.remove('flex');
+      addPlaceForm.reset();
+      addPlaceError.classList.add('hidden');
+      editingPlace = null;
+      addPlaceTitle.textContent = 'Adicionar quadra';
+      addPlaceDescription.textContent = 'A localização foi marcada no mapa. Complete os dados do local.';
+      choosePlaceLocation.classList.add('hidden');
+      submitAddPlace.textContent = 'Salvar quadra';
+    }
 
-      addPlaceButton.addEventListener('click', () => {
-        if (selectingPlaceLocation) {
-          const mode = selectionMode;
-          stopSelectingLocation();
-          if (mode === 'edit') showPlaceModal();
-          return;
-        }
-        startSelectingLocation('create');
-      });
+    document.getElementById('cancelAddPlace').addEventListener('click', closeAddPlaceModal);
+    choosePlaceLocation.addEventListener('click', () => {
+      addPlaceModal.classList.add('hidden');
+      addPlaceModal.classList.remove('flex');
+      startSelectingLocation('edit');
+    });
+    addPlaceModal.addEventListener('click', event => {
+      if (event.target === addPlaceModal) closeAddPlaceModal();
+    });
 
-      map.on('click', event => {
-        if (!selectingPlaceLocation) return;
-        const mode = selectionMode;
-        const coords = [event.latlng.lat.toFixed(6), event.latlng.lng.toFixed(6)];
-        stopSelectingLocation();
-        if (mode === 'create') {
-          openNewPlace(coords);
-        } else if (mode === 'edit' && editingPlace) {
-          placeLatitude.value = coords[0];
-          placeLongitude.value = coords[1];
-          selectedCoordinates.textContent = `Localização: ${coords[0]}, ${coords[1]}`;
-          showPlaceModal();
-        }
-      });
+    addPlaceForm.addEventListener('submit', async event => {
+      event.preventDefault();
+      addPlaceError.classList.add('hidden');
+      if (!addPlaceForm.reportValidity()) return;
 
-      function closeAddPlaceModal() {
-        addPlaceModal.classList.add('hidden');
-        addPlaceModal.classList.remove('flex');
-        addPlaceForm.reset();
-        addPlaceError.classList.add('hidden');
-        editingPlace = null;
-        addPlaceTitle.textContent = 'Adicionar quadra';
-        addPlaceDescription.textContent = 'A localização foi marcada no mapa. Complete os dados do local.';
-        choosePlaceLocation.classList.add('hidden');
-        submitAddPlace.textContent = 'Salvar quadra';
-      }
+      const formData = new FormData(addPlaceForm);
+      const payload = {
+        title: formData.get('title'),
+        sport: formData.get('sport'),
+        type: formData.get('type'),
+        status: formData.get('status'),
+        address: formData.get('address'),
+        latitude: Number(placeLatitude.value),
+        longitude: Number(placeLongitude.value),
+      };
+      const placeBeingEdited = editingPlace;
+      const isEditing = Boolean(placeBeingEdited);
+      submitAddPlace.disabled = true;
 
-      document.getElementById('cancelAddPlace').addEventListener('click', closeAddPlaceModal);
-      choosePlaceLocation.addEventListener('click', () => {
-        addPlaceModal.classList.add('hidden');
-        addPlaceModal.classList.remove('flex');
-        startSelectingLocation('edit');
-      });
-      addPlaceModal.addEventListener('click', event => {
-        if (event.target === addPlaceModal) closeAddPlaceModal();
-      });
+      try {
+        const endpoint = isEditing
+          ? `/api/quadras/${encodeURIComponent(placeBeingEdited.id)}`
+          : '/api/quadras';
+        const response = await window.SportsAuth.fetchWithAuth(endpoint, {
+          method: isEditing ? 'PUT' : 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.message || `Erro HTTP ${response.status}.`);
 
-      addPlaceForm.addEventListener('submit', async event => {
-        event.preventDefault();
-        addPlaceError.classList.add('hidden');
-        if (!addPlaceForm.reportValidity()) return;
-
-        const formData = new FormData(addPlaceForm);
-        const payload = {
-          title: formData.get('title'),
-          sport: formData.get('sport'),
-          type: formData.get('type'),
-          status: formData.get('status'),
-          address: formData.get('address'),
-          latitude: Number(placeLatitude.value),
-          longitude: Number(placeLongitude.value),
+        const place = {
+          ...result,
+          persisted: true,
+          icon: SPORT_ICONS[result.sportKey] || '../media/pins/pin-base.svg',
         };
-        const placeBeingEdited = editingPlace;
-        const isEditing = Boolean(placeBeingEdited);
-        submitAddPlace.disabled = true;
-
-        try {
-          const endpoint = isEditing
-            ? `/api/quadras/${encodeURIComponent(placeBeingEdited.id)}`
-            : '/api/quadras';
-          const response = await window.SportsAuth.fetchWithAuth(endpoint, {
-            method: isEditing ? 'PUT' : 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload),
-          });
-          const result = await response.json();
-          if (!response.ok) throw new Error(result.message || `Erro HTTP ${response.status}.`);
-
-          const place = {
-            ...result,
-            persisted: true,
-            icon: SPORT_ICONS[result.sportKey] || '../media/pins/pin-base.svg',
-          };
-          if (isEditing) {
-            const placeIndex = PLACES.findIndex(item => String(item.id) === String(placeBeingEdited.id));
-            if (placeIndex === -1) throw new Error('A quadra não está mais disponível para edição.');
-            PLACES[placeIndex] = place;
-            const marker = markerMap[placeBeingEdited.id];
-            marker.setLatLng(place.coords);
-            marker.setIcon(makePinIcon(place));
-            markerMap[place.id] = marker;
-            if (String(placeBeingEdited.id) !== String(place.id)) {
-              delete markerMap[placeBeingEdited.id];
-            }
-            if (String(selectedId) === String(placeBeingEdited.id)) selectedId = place.id;
-          } else {
-            PLACES.push(place);
-            addPlaceMarker(place);
+        if (isEditing) {
+          const placeIndex = PLACES.findIndex(item => String(item.id) === String(placeBeingEdited.id));
+          if (placeIndex === -1) throw new Error('A quadra não está mais disponível para edição.');
+          PLACES[placeIndex] = place;
+          const marker = markerMap[placeBeingEdited.id];
+          marker.setLatLng(place.coords);
+          marker.setIcon(makePinIcon(place));
+          markerMap[place.id] = marker;
+          if (String(placeBeingEdited.id) !== String(place.id)) {
+            delete markerMap[placeBeingEdited.id];
           }
-          closeAddPlaceModal();
-          activateFilter('all');
-          selectPlace(place.id);
-          showMapNotice(isEditing ? 'Quadra atualizada.' : 'Quadra adicionada ao mapa.');
-        } catch (error) {
-          addPlaceError.textContent = error.message || 'Não foi possível adicionar a quadra.';
-          addPlaceError.classList.remove('hidden');
-        } finally {
-          submitAddPlace.disabled = false;
+          if (String(selectedId) === String(placeBeingEdited.id)) selectedId = place.id;
+        } else {
+          PLACES.push(place);
+          addPlaceMarker(place);
         }
-      });
-
-      async function loadCustomPlaces() {
-        try {
-          const response = await fetch('/api/quadras');
-          if (!response.ok) throw new Error(`Erro HTTP ${response.status}.`);
-          const places = await response.json();
-          if (!Array.isArray(places)) throw new Error('Resposta inválida da API de quadras.');
-
-          places.forEach(place => {
-            const normalizedPlace = {
-              ...place,
-              persisted: true,
-              icon: SPORT_ICONS[place.sportKey] || '../media/pins/pin-base.svg',
-            };
-            const fallbackIndex = PLACES.findIndex(item => item.sourceKey
-              && item.sourceKey === normalizedPlace.sourceKey);
-            if (fallbackIndex !== -1) {
-              const fallbackPlace = PLACES[fallbackIndex];
-              const fallbackMarker = markerMap[fallbackPlace.id];
-              if (fallbackMarker) map.removeLayer(fallbackMarker);
-              delete markerMap[fallbackPlace.id];
-              PLACES[fallbackIndex] = normalizedPlace;
-              if (String(selectedId) === String(fallbackPlace.id)) selectedId = normalizedPlace.id;
-              addPlaceMarker(normalizedPlace);
-              return;
-            }
-            if (markerMap[normalizedPlace.id]) return;
-            PLACES.push(normalizedPlace);
-            addPlaceMarker(normalizedPlace);
-          });
-          renderCards(activeFilter);
-          if (selectedId) selectPlace(selectedId);
-        } catch (error) {
-          console.error('Não foi possível carregar as quadras cadastradas.', error);
-          showMapNotice('Não foi possível carregar as quadras cadastradas. Os locais existentes continuam visíveis.');
-        }
+        closeAddPlaceModal();
+        activateFilter('all');
+        selectPlace(place.id);
+        showMapNotice(isEditing ? 'Quadra atualizada.' : 'Quadra adicionada ao mapa.');
+      } catch (error) {
+        addPlaceError.textContent = error.message || 'Não foi possível adicionar a quadra.';
+        addPlaceError.classList.remove('hidden');
+      } finally {
+        submitAddPlace.disabled = false;
       }
+    });
 
-      loadCustomPlaces();
-    </script>
-  </body>
+    async function loadCustomPlaces() {
+      try {
+        const response = await fetch('/api/quadras');
+        if (!response.ok) throw new Error(`Erro HTTP ${response.status}.`);
+        const places = await response.json();
+        if (!Array.isArray(places)) throw new Error('Resposta inválida da API de quadras.');
+
+        places.forEach(place => {
+          const normalizedPlace = {
+            ...place,
+            persisted: true,
+            icon: SPORT_ICONS[place.sportKey] || '../media/pins/pin-base.svg',
+          };
+          const fallbackIndex = PLACES.findIndex(item => item.sourceKey
+            && item.sourceKey === normalizedPlace.sourceKey);
+          if (fallbackIndex !== -1) {
+            const fallbackPlace = PLACES[fallbackIndex];
+            const fallbackMarker = markerMap[fallbackPlace.id];
+            if (fallbackMarker) map.removeLayer(fallbackMarker);
+            delete markerMap[fallbackPlace.id];
+            PLACES[fallbackIndex] = normalizedPlace;
+            if (String(selectedId) === String(fallbackPlace.id)) selectedId = normalizedPlace.id;
+            addPlaceMarker(normalizedPlace);
+            return;
+          }
+          if (markerMap[normalizedPlace.id]) return;
+          PLACES.push(normalizedPlace);
+          addPlaceMarker(normalizedPlace);
+        });
+        renderCards(activeFilter);
+        if (selectedId) selectPlace(selectedId);
+      } catch (error) {
+        console.error('Não foi possível carregar as quadras cadastradas.', error);
+        showMapNotice('Não foi possível carregar as quadras cadastradas. Os locais existentes continuam visíveis.');
+      }
+    }
+
+    loadCustomPlaces();
+  </script>
+</body>
+
 </html>
-

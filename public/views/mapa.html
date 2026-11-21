@@ -316,12 +316,18 @@
         </div>
 
         <p id="addPlaceError" class="hidden mt-4 text-sm text-red-400" role="alert"></p>
-        <div class="mt-6 flex justify-end gap-3">
-          <button id="cancelAddPlace" type="button"
-            class="rounded-lg border border-white/15 px-4 py-2 text-sm text-fg hover:bg-secondary">Cancelar</button>
-          <button id="submitAddPlace" type="submit"
-            class="rounded-lg bg-lime px-4 py-2 text-sm font-semibold text-zinc-900 hover:glow-lime-sm">Salvar
-            quadra</button>
+        <div class="mt-6 flex items-center justify-between gap-3">
+          <button id="deletePlace" type="button"
+            class="hidden rounded-lg border border-red-500/40 px-4 py-2 text-sm font-semibold text-red-400 hover:bg-red-500/10">
+            Remover quadra
+          </button>
+          <div class="ml-auto flex gap-3">
+            <button id="cancelAddPlace" type="button"
+              class="rounded-lg border border-white/15 px-4 py-2 text-sm text-fg hover:bg-secondary">Cancelar</button>
+            <button id="submitAddPlace" type="submit"
+              class="rounded-lg bg-lime px-4 py-2 text-sm font-semibold text-zinc-900 hover:glow-lime-sm">Salvar
+              quadra</button>
+          </div>
         </div>
       </form>
     </div>
@@ -699,6 +705,7 @@
     const placeLatitude = document.getElementById('placeLatitude');
     const placeLongitude = document.getElementById('placeLongitude');
     const submitAddPlace = document.getElementById('submitAddPlace');
+    const deletePlace = document.getElementById('deletePlace');
     const addPlaceTitle = document.getElementById('addPlaceTitle');
     const addPlaceDescription = document.getElementById('addPlaceDescription');
     const selectedCoordinates = document.getElementById('selectedCoordinates');
@@ -750,6 +757,8 @@
       selectedCoordinates.textContent = `Localização: ${coords[0]}, ${coords[1]}`;
       choosePlaceLocation.classList.add('hidden');
       submitAddPlace.textContent = 'Salvar quadra';
+      deletePlace.classList.add('hidden');
+      deletePlace.disabled = false;
       showPlaceModal();
       addPlaceForm.elements.title.focus();
     }
@@ -768,6 +777,8 @@
       selectedCoordinates.textContent = `Localização: ${place.coords[0]}, ${place.coords[1]}`;
       choosePlaceLocation.classList.remove('hidden');
       submitAddPlace.textContent = 'Salvar alterações';
+      deletePlace.classList.remove('hidden');
+      deletePlace.disabled = false;
       addPlaceError.classList.add('hidden');
       showPlaceModal();
       addPlaceForm.elements.title.focus();
@@ -808,6 +819,8 @@
       addPlaceDescription.textContent = 'A localização foi marcada no mapa. Complete os dados do local.';
       choosePlaceLocation.classList.add('hidden');
       submitAddPlace.textContent = 'Salvar quadra';
+      deletePlace.classList.add('hidden');
+      deletePlace.disabled = false;
     }
 
     document.getElementById('cancelAddPlace').addEventListener('click', closeAddPlaceModal);
@@ -818,6 +831,50 @@
     });
     addPlaceModal.addEventListener('click', event => {
       if (event.target === addPlaceModal) closeAddPlaceModal();
+    });
+
+    deletePlace.addEventListener('click', async () => {
+      if (!editingPlace) return;
+      const placeBeingDeleted = editingPlace;
+      if (!window.confirm(`Remover a quadra "${placeBeingDeleted.title}"? Esta ação não pode ser desfeita.`)) return;
+
+      addPlaceError.classList.add('hidden');
+      deletePlace.disabled = true;
+      submitAddPlace.disabled = true;
+
+      try {
+        const response = await window.SportsAuth.fetchWithAuth(
+          `/api/quadras/${encodeURIComponent(placeBeingDeleted.id)}`,
+          { method: 'DELETE' },
+        );
+        if (!response.ok) {
+          const result = await response.json().catch(() => ({}));
+          throw new Error(result.message || `Erro HTTP ${response.status}.`);
+        }
+
+        const placeIndex = PLACES.findIndex(item => String(item.id) === String(placeBeingDeleted.id));
+        if (placeIndex === -1) throw new Error('A quadra não está mais disponível.');
+
+        const marker = markerMap[placeBeingDeleted.id];
+        if (marker) map.removeLayer(marker);
+        delete markerMap[placeBeingDeleted.id];
+        PLACES.splice(placeIndex, 1);
+
+        closeAddPlaceModal();
+        activateFilter('all');
+        if (String(selectedId) === String(placeBeingDeleted.id)) {
+          selectedId = null;
+          const nextPlace = PLACES[0];
+          if (nextPlace) selectPlace(nextPlace.id);
+        }
+        showMapNotice('Quadra removida.');
+      } catch (error) {
+        addPlaceError.textContent = error.message || 'Não foi possível remover a quadra.';
+        addPlaceError.classList.remove('hidden');
+      } finally {
+        deletePlace.disabled = false;
+        submitAddPlace.disabled = false;
+      }
     });
 
     addPlaceForm.addEventListener('submit', async event => {

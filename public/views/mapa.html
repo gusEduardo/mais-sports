@@ -83,10 +83,12 @@
 
       /* ── Sidebar ──────────────────────────────────────────────── */
       #sidebar {
-        transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+        flex-basis: 20rem;
+        transition: width 0.3s cubic-bezier(0.4,0,0.2,1), flex-basis 0.3s cubic-bezier(0.4,0,0.2,1);
       }
       #sidebar.sidebar-hidden {
-        transform: translateX(-100%);
+        width: 0;
+        flex-basis: 0;
       }
 
       /* ── Place card hover ─────────────────────────────────────── */
@@ -232,7 +234,7 @@
 
       <!-- Botão para abrir sidebar (quando fechada) -->
       <button id="openSidebar"
-        class="hidden absolute top-4 left-4 z-[410] bg-surface border border-white/20 text-fg w-10 h-10 flex items-center justify-center rounded-xl shadow-xl hover:border-lime/40 hover:text-lime transition-colors"
+        class="hidden absolute top-4 left-4 z-[410] bg-surface border border-white/20 text-fg w-10 h-10 items-center justify-center rounded-xl shadow-xl hover:border-lime/40 hover:text-lime transition-colors"
         aria-label="Abrir painel de locais">
         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />

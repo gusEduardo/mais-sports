@@ -91,6 +91,10 @@
         flex-basis: 0;
       }
 
+      .map-status-legend {
+        bottom: max(1.25rem, env(safe-area-inset-bottom));
+      }
+
       /* ── Place card hover ─────────────────────────────────────── */
       .place-card {
         transition: border-color 0.15s, background 0.15s;
@@ -130,7 +134,7 @@
 </head>
 
 <body class="bg-zinc950 text-fg font-body antialiased"
-  style="display:flex;flex-direction:column;height:100vh;overflow:hidden;">
+  style="display:flex;flex-direction:column;height:100vh;height:100dvh;overflow:hidden;">
 
   <!-- ══ NAV ════════════════════════════════════════════════════════════════════ -->
   <header class="flex-shrink-0 sticky top-0 z-50 bg-zinc950/90 backdrop-blur border-b border-white/10">
@@ -246,7 +250,7 @@
 
       <!-- Legenda de status -->
       <div
-        class="absolute bottom-5 right-4 z-[410] bg-zinc950/85 backdrop-blur-md border border-white/10 rounded-xl px-4 py-3">
+        class="map-status-legend absolute right-4 z-[410] bg-zinc950/85 backdrop-blur-md border border-white/10 rounded-xl px-4 py-3">
         <p class="font-mono text-[10px] text-muted uppercase tracking-widest mb-2">Status</p>
         <div class="flex flex-col gap-1.5 font-mono text-xs font-bold">
           <span class="flex items-center gap-2 text-lime">
